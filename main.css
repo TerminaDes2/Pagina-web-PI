@@ -19,6 +19,11 @@
     display: flex;
     align-items: center;
   }
+
+  .logo h1 a {
+    color: #fff;
+    text-decoration: none;
+  }
   
   .logo h1 {
     font-size: 1.5rem;
@@ -62,11 +67,10 @@
     display: inline-block;
   }
 
-  /* Hacemos que el contenedor del sidebar use Flexbox */
   .sidebar {
     position: fixed;
     top: 0;
-    left: -250px; /* Oculto inicialmente */
+    left: -250px; 
     width: 250px;
     height: 100%;
     background-color: #333;
@@ -79,12 +83,10 @@
     flex-direction: column;
   }
 
-  /* Cuando el sidebar esté activo */
   .sidebar.active {
     left: 0;
   }
 
-  /* Estilo para el botón de cerrar */
   .close-button {
     background-color: #444;
     color: #fff;
@@ -94,26 +96,22 @@
     margin-bottom: 20px;
   }
 
-  /* Estilo para la lista del menú */
   .sidebar ul {
     list-style: none;
     padding: 0;
     margin: 0;
   }
 
-  /* Cada elemento de la lista */
   .sidebar ul li {
     padding: 15px 0;
     border-bottom: 1px solid #444;
   }
 
-  /* Enlaces dentro de la lista */
   .sidebar ul li a {
     color: #fff;
     text-decoration: none;
   }
 
-  /* Botón de login: se posiciona al final con margin-top auto */
   .login-button {
     margin-top: auto;
     background-color: #007BFF;
@@ -149,9 +147,8 @@
   }
 
   main img {
-    max-width: 80%;
+    max-width: 100%;
     height: auto;
-    margin: 10%;
   }
 
   main {
@@ -176,10 +173,6 @@
     align-content: center;
     justify-self: center;
     padding: 5px;
-  }
-  
-  .card img {
-    margin-left: 11%;
   }
 
   .semicuerpo p {

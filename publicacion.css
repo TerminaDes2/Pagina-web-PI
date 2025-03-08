@@ -20,6 +20,11 @@
     align-items: center;
   }
   
+  .logo h1 a {
+    color: #fff;
+    text-decoration: none;
+  }
+
   .logo h1 {
     font-size: 1.5rem;
     text-align: center;
@@ -157,8 +162,13 @@
     align-items: center;
     padding: 7px;
     width: 20%;
+    overflow-wrap: break-word;
     background-color: grey;
     border: 6px solid #ccc;
+  }
+
+  .indice li{
+    margin-left: 7%;
   }
 
   .noticia {
