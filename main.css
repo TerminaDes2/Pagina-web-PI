@@ -108,11 +108,16 @@
 
   .fotos {
     align-content: center;
+    justify-self: center;
     padding: 5px;
   }
   
+  .card img {
+    margin-left: 11%;
+  }
+
   .semicuerpo p {
-    font-size: 8px;
+    font-size: 70%;
   }
 
   .card h3 {
