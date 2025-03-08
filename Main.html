@@ -5,15 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Voces del Proceso</title>
   <link rel="stylesheet" href="main.css">
+  <script src="Main.js" defer></script>
 </head>
 <body>
-  
   <header class="header-top">
     <div class="logo">
       <h1>Voces del Proceso</h1>
     </div>
     <nav class="main-nav">
-      <div class="menu-button">MENU</div>
+      <div id="menu-button" class="menu-button">MENU</div>
       <div class="search-bar">
         <input type="text" placeholder="Buscar..." />
       </div>
@@ -24,6 +24,17 @@
     </nav>
   </header>
 
+  <div id="sidebar" class="sidebar">
+    <button id="close-button" class="close-button">Cerrar</button>
+    <ul>
+      <li><a href="#">Inicio</a></li>
+      <li><a href="#">Noticias</a></li>
+      <li><a href="#">Contacto</a></li>
+      <li><a href="#">Acerca de</a></li>
+    </ul>
+    <button id="login-button" class="login-button">Login</button>
+  </div>
+
   <section class="banner">
     <img src="img/Ley Silla.jpg">
     <p>Se aprueba la Ley Silla en México</p>
@@ -31,7 +42,7 @@
 
   <main>
     <section class="articles">
-      <article class="card">
+      <article class="card" onclick="window.location.href='publicacion.html';" style="cursor: pointer;">
         <div class="texto">
           <h3>¿Se aprobará la jornada laboral de 40 horas?</h3>
           <div class="semicuerpo">
@@ -42,9 +53,9 @@
         <div class="fotos"><img src="img/Empleos.jpg"></div>
       </article>
 
-      <article class="card">
+      <article class="card" onclick="window.location.href='publicacion.html';" style="cursor: pointer;">
         <div class="texto">
-          <h3>¿Se aprobará la jornada laboral de 40 horas?</h3>
+          <h3>Netflix habré bacantes de trabajo en México</h3>
           <div class="semicuerpo">
             <p><strong>Autor:</strong> Dominic García &nbsp; | &nbsp; 22/05</p>
             <p>Pequeña descripción o resumen de la noticia.</p>
@@ -53,9 +64,9 @@
         <div class="fotos"><img src="img/Netflix.jpg"></div>
       </article>
 
-      <article class="card">
+      <article class="card" onclick="window.location.href='publicacion.html';" style="cursor: pointer;">
         <div class="texto">
-          <h3>¿Se aprobará la jornada laboral de 40 horas?</h3>
+          <h3>Jovenes construyendo el futuro ¿Genera más ninis?</h3>
           <div class="semicuerpo">
             <p><strong>Autor:</strong> Dominic García &nbsp; | &nbsp; 22/05</p>
             <p>Pequeña descripción o resumen de la noticia.</p>
@@ -64,7 +75,7 @@
         <div class="fotos"><img src="img/Jovenes.jpg"></div>
       </article>
 
-      <article class="card">
+      <article class="card" onclick="window.location.href='publicacion.html';" style="cursor: pointer;">
         <div class="texto">
           <h3>¿Se aprobará la jornada laboral de 40 horas?</h3>
           <div class="semicuerpo">
@@ -80,6 +91,5 @@
   <footer>
     <p>&copy; 2025 Voces del Proceso. Todos los derechos reservados.</p>
   </footer>
-
 </body>
 </html>
