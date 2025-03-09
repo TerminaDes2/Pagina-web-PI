@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         // Preparar y ejecutar consulta
-        $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE correo = :correo");
+        $stmt = $pdo->prepare("SELECT * FROM Usuarios WHERE correo = :correo");
         $stmt->bindParam(':correo', $correo);
         $stmt->execute();
 
