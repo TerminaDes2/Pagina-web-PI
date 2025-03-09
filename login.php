@@ -1,89 +1,58 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Práctica PHP + MySQL</title>
-    <link rel="stylesheet" href="hola.css">
-</head>
-<body>
-    <div id="barra_log">
-        <img src="UdeC_2Lizq_Negro80_.png" width="180px">
-    </div>
-    <div id="hola">
-        <div id="register">
-            <form action="principalcopy3.php" method="post">
-            <input type="hidden" name="action" value="register">
-            <img src="UdeC Abajo_Negro.png" width="197"  style="margin-left: 50px;">
-            <h1 align="center">Inicio de Sesi&oacute;n</h1>
-            <?php if (isset($_GET['error'])) { ?>
-                <p class="error"><?php echo $_GET['error']; ?></p>
-            <?php } ?>
-                <input id="nombre" type="text" name="Nombre" tabindex="1" value="" placeholder="Nombre(s)" style="border: 1px solid rgb(255, 255, 255);"><br><br>
-                <input id="apellido" type="text" name="Primer_Apellido" tabindex="1" value="" placeholder="Primer Apelldo" style="border: 1px solid rgb(255, 255, 255);"><br><br>
-                <input id="segundo-app" type="text" name="Segundo_Apellido" tabindex="1" value="" placeholder="Segundo Apellido" style="border: 1px solid rgb(255, 255, 255);"><br><br>
-                <input id="username-cuenta" type="text" name="username" tabindex="1" value="" placeholder="Cuenta o correo" style="border: 1px solid rgb(255, 255, 255);"><br><br>
-                <input id="password-cuenta" type="password" name="password" tabindex="2" value="" placeholder="Contrase&ntilde;a" style="border: 1px solid rgb(255, 255, 255);"><br><br>
-            <button class="btn" type="submit">Crear cuenta</button>
-            <button class="btn" type="button" onclick="window.location.href = 'Loggin.php'">Iniciar sesion</button>
-            </form>
-        </div>
-    </div>
-    </body>
-</html>
-
 <?php
-function validate($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
-}
+session_start();
 
-if (isset($_POST['action']) && $_POST['action'] == 'register') {
-    $nombre = validate($_POST['Nombre']);
-    $primerApellido = validate($_POST['Primer_Apellido']);
-    $segundoApellido = validate($_POST['Segundo_Apellido']);
-    $username = validate($_POST['username']);
-    $pass = validate($_POST['password']);
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Recoger datos del formulario
+    $correo = filter_input(INPUT_POST, 'correo', FILTER_SANITIZE_EMAIL);
+    $contra = $_POST['contra'];
 
-    if (empty($nombre) || empty($primerApellido) || empty($segundoApellido) || empty($username) || empty($pass)) {
-        header("Location: Loggin.php?error=Todos los campos son obligatorios");
-        exit();
+    // Validar que se hayan enviado ambos campos
+    if (empty($correo) || empty($contra)) {
+        echo "Por favor, ingresa tanto el correo como la contraseña.";
+        exit;
     }
 
-    // PASO 1: CREAR CONEXIÓN
-    $conexion = mysqli_connect("localhost", "root", "administrador", "login");
+    // Configuración de la conexión a la base de datos
+    $host = 'localhost';
+    $dbname = 'economia_blog';
+    $dbuser = 'root';
+    $dbpass = 'administrador';
 
-    if (!$conexion) {
-        die("Error en la conexión: " . mysqli_connect_error());
+    try {
+        // Crear conexión PDO
+        $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $dbuser, $dbpass);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        // Preparar y ejecutar consulta
+        $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE correo = :correo");
+        $stmt->bindParam(':correo', $correo);
+        $stmt->execute();
+
+        $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($usuario) {
+            // Verificar la contraseña (se asume que está hasheada)
+            if (password_verify($contra, $usuario['contra'])) {
+                // Credenciales correctas, se inicia la sesión
+                $_SESSION['usuario'] = [
+                    'nombre'          => $usuario['nombre'],
+                    'primer_apellido' => $usuario['primer_apellido'],
+                    'segundo_apellido'=> $usuario['segundo_apellido'],
+                    'correo'          => $usuario['correo']
+                ];
+                // Redirigir a una página protegida o dashboard
+                header("Location: dashboard.php");
+                exit;
+            } else {
+                echo "Contraseña incorrecta.";
+            }
+        } else {
+            echo "Usuario no encontrado.";
+        }
+    } catch (PDOException $e) {
+        echo "Error en la conexión: " . $e->getMessage();
     }
-
-    // PASO 2: CREAR CONSULTA PARA INSERTAR
-    $insert = "INSERT INTO profesor (nombre, primer_apellido, segundo_apellido, correo, contra) VALUES (?, ?, ?, ?, ?)";
-    $stmt = mysqli_prepare($conexion, $insert);
-
-    if (!$stmt) {
-        die("Error en la consulta preparada: " . mysqli_error($conexion));
-    }
-
-    mysqli_stmt_bind_param($stmt, "sssss", $nombre, $primerApellido, $segundoApellido, $username, $pass);
-
-    // PASO 3: EJECUTAR LA CONSULTA
-    $resultado = mysqli_stmt_execute($stmt);
-
-    if ($resultado) {
-        // Registro exitoso
-        // Aquí puedes redirigir al usuario a una página de confirmación o realizar otras acciones
-        header('Location: principalcopy3.php');
-        exit();
-    } else {
-        // Error en el registro
-        header("Location: Loggin.php?error=Error al crear la cuenta");
-        exit();
-    }
-
-    mysqli_stmt_close($stmt);
-    mysqli_close($conexion);
+} else {
+    echo "Acceso no autorizado.";
 }
 ?>
