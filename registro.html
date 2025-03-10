@@ -6,8 +6,8 @@
   <title>Voces del Proceso</title>
   <link rel="stylesheet" href="estilos/registro.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-  <link rel="icon" href="SIGECUC.svg">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="loggin_scripts.js" defer></script>
   <script src="Main.js" defer></script>
@@ -18,7 +18,10 @@
       <h1><a href="Main.html">Voces del Proceso</a></h1>
     </div>
     <nav class="main-nav">
-      <div id="menu-button" class="menu-button">MENU</div>
+      <div id="menu-button" class="menu-button">
+        <img src="img/menu.svg">
+        <span class="ocultar-texto">MENU</span>
+      </div>
       <div class="search-bar">
         <input type="text" placeholder="Buscar..." />
       </div>
@@ -40,7 +43,7 @@
     <button id="login-button" class="login-button">Login</button>
   </div>
 
-  <main>
+  <main class="main">
     <div class="card" id="datos">
       <form id="form-right" action="registro.php" method="POST">
           <input type="hidden" name="action" value="login">
@@ -51,10 +54,10 @@
           <button type="submit" class="btn">Iniciar Sesión</button>
           <button class="btin" type="button" onclick="mostrarFormulario2()">Crear una cuenta nueva</button>
       </form>
-  </div>
+    </div>
 
-  <div class="card" id="register">
-      <form id="form-left" action="registro.php" method="POST2">
+    <div class="card" id="register">
+      <form id="form-left" action="registro.php" method="POST">
           <input type="hidden" name="action" value="register">
           <h1>Registro de Cuenta</h1>
           <input type="text" id="nombre" name="nombre" tabindex="1" value="" placeholder="Nombre(s)" required>
@@ -65,7 +68,7 @@
           <button class="btn" type="submit">Registrar</button>
           <button class="btin" type="button" onclick="mostrarFormulario()">Iniciar sesion</button>
       </form>
-  </div>
+    </div>
   </main>
 
   <footer>
