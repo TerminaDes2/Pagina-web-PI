@@ -148,6 +148,10 @@
     height: auto;
     margin: 10%;
   }
+  
+  main h1 {
+    justify-content: center;
+  }
 
   main {
     padding: 20px;
