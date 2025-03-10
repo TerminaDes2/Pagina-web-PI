@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Voces del Proceso</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="estilos/main.css">
+  <script src="Main.js" defer></script>
+</head>
+<body>
+  <header class="header-top">
+    <div class="logo">
+      <h1><a href="Main.html">Voces del Proceso</a></h1>
+    </div>
+    <nav class="main-nav">
+      <div id="menu-button" class="menu-button">
+        <img src="img/menu.svg">
+        <span class="ocultar-texto">MENU</span>
+      </div>
+      <div class="search-bar">
+        <input type="text" placeholder="Buscar..." />
+      </div>
+      <div class="social-icons">
+        <a href="#"><img src="img/facebook.svg" alt="Facebook"></a>
+        <a href="#"><img src="img/instagram.svg" alt="Instagram"></a>
+      </div>
+    </nav>
+  </header>
+
+  <div id="sidebar" class="sidebar">
+    <button id="close-button" class="close-button">Cerrar</button>
+    <ul>
+      <li><a href="Main.html">Inicio</a></li>
+      <li><a href="#">Noticias</a></li>
+      <li><a href="#">Contacto</a></li>
+      <li><a href="#">Acerca de</a></li>
+    </ul>
+    <button id="login-button" class="login-button">Login</button>
+  </div>
+
+  <section class="banner" onclick="window.location.href='publicacion.html';" style="cursor: pointer;">
+    <img src="img/Ley Silla.jpg">
+    <h1>Se aprueba la Ley Silla en México</h1>
+  </section>
+
+  <main>
+    <section class="articles">
+      <article class="card" onclick="window.location.href='publicacion.html';" style="cursor: pointer;">
+        <div class="texto">
+          <h3>¿Se aprobará la jornada laboral de 40 horas?</h3>
+          <div class="semicuerpo">
+            <p><strong>Autor:</strong> Dominic García &nbsp; | &nbsp; 22/05</p>
+            <p>Otra vez se atraza la reforma laboral...</p>
+          </div>
+        </div>
+        <div class="fotos"><img src="img/Empleos.jpg"></div>
+      </article>
+
+      <article class="card" onclick="window.location.href='publicacion.html';" style="cursor: pointer;">
+        <div class="texto">
+          <h3>Netflix habré bacantes de trabajo en México</h3>
+          <div class="semicuerpo">
+            <p><strong>Autor:</strong> Dominic García&nbsp;|&nbsp;22/05</p>
+            <p>Netflix ha abierto una nueva convocatoria...</p>
+          </div>
+        </div>
+        <div class="fotos"><img src="img/Netflix.jpg"></div>
+      </article>
+
+      <article class="card" onclick="window.location.href='publicacion.html';" style="cursor: pointer;">
+        <div class="texto">
+          <h3>Jovenes construyendo el futuro ¿Genera más ninis?</h3>
+          <div class="semicuerpo">
+            <p><strong>Autor:</strong> Dominic García &nbsp; | &nbsp; 22/05</p>
+            <p>Muchi se dice ha hablado sobre el polemico...</p>
+          </div>
+        </div>
+        <div class="fotos"><img src="img/Jovenes.jpg"></div>
+      </article>
+
+      <article class="card" onclick="window.location.href='publicacion.html';" style="cursor: pointer;">
+        <div class="texto">
+          <h3>Netflix habré bacantes de trabajo en México</h3>
+          <div class="semicuerpo">
+            <p><strong>Autor:</strong> Dominic García &nbsp; | &nbsp; 22/05</p>
+            <p>Netflix ha abierto una nueva convocatoria...</p>
+          </div>
+        </div>
+        <div class="fotos"><img src="img/Netflix.jpg"></div>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Voces del Proceso. Todos los derechos reservados.</p>
+  </footer>
+</body>
+</html>

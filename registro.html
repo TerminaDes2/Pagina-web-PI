@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Voces del Proceso</title>
+  <link rel="stylesheet" href="estilos/registro.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="loggin_scripts.js" defer></script>
+  <script src="Main.js" defer></script>
+</head>
+<body>
+  <header class="header-top">
+    <div class="logo">
+      <h1><a href="Main.html">Voces del Proceso</a></h1>
+    </div>
+    <nav class="main-nav">
+      <div id="menu-button" class="menu-button">
+        <img src="img/menu.svg">
+        <span class="ocultar-texto">MENU</span>
+      </div>
+      <div class="search-bar">
+        <input type="text" placeholder="Buscar..." />
+      </div>
+      <div class="social-icons">
+        <a href="#"><img src="img/facebook.svg" alt="Facebook"></a>
+        <a href="#"><img src="img/instagram.svg" alt="Instagram"></a>
+      </div>
+    </nav>
+  </header>
+
+  <div id="sidebar" class="sidebar">
+    <button id="close-button" class="close-button">Cerrar</button>
+    <ul>
+      <li><a href="Main.html">Inicio</a></li>
+      <li><a href="#">Noticias</a></li>
+      <li><a href="#">Contacto</a></li>
+      <li><a href="#">Acerca de</a></li>
+    </ul>
+    <button id="login-button" class="login-button">Login</button>
+  </div>
+
+  <main class="main">
+    <div class="card" id="datos">
+      <form id="form-right" action="registro.php" method="POST">
+          <input type="hidden" name="action" value="login">
+          <h1>Inicio de Sesión</h1>
+          <p>Bienvenido de vuelta! Inicia sesión en tu cuenta para registrar las asistencias de tu club.</p>
+          <input type="text" id="correo" name="correo" tabindex="1" value="" placeholder="Cuenta o correo" required>
+          <input type="password" id="contra" name="contra" abindex="2" value="" placeholder="Contraseña" required>
+          <button type="submit" class="btn">Iniciar Sesión</button>
+          <button class="btin" type="button" onclick="mostrarFormulario2()">Crear una cuenta nueva</button>
+      </form>
+    </div>
+
+    <div class="card" id="register">
+      <form id="form-left" action="registro.php" method="POST">
+          <input type="hidden" name="action" value="register">
+          <h1>Registro de Cuenta</h1>
+          <input type="text" id="nombre" name="nombre" tabindex="1" value="" placeholder="Nombre(s)" required>
+          <input type="text" id="primer_apellido" name="primer_apellido" tabindex="1" value="" placeholder="Primer Apelldo" required>
+          <input type="text" id="segundo_apellido" name="segundo_apellido" tabindex="1" value="" placeholder="Segundo Apellido" required>
+          <input type="text" id="correo" name="correo" tabindex="1" value="" placeholder="Cuenta o correo" required>
+          <input type="password" id="contra" name="contra" tabindex="2" value="" placeholder="Contrase&ntilde;a" required>
+          <button class="btn" type="submit">Registrar</button>
+          <button class="btin" type="button" onclick="mostrarFormulario()">Iniciar sesion</button>
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Voces del Proceso. Todos los derechos reservados.</p>
+  </footer>
+</body>
+</html>
