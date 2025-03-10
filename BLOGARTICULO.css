@@ -1,0 +1,97 @@
+body {
+    font-family: 'Georgia', serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+}
+
+.titulo-blog {
+    background-color: #106dca;
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+}
+
+.titulo-blog h1 {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 2.5em;
+    margin: 0;
+}
+
+.barra-servicios {
+    background-color: #2acd37;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.informacion-redes a {
+    color: #333;
+    margin: 0 5px;
+}
+
+.contenedor {
+    display: flex;
+    width: 80%;
+    margin: 20px auto;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.indice {
+    width: 20%;
+    background-color: #f9f9f9;
+    padding: 20px;
+}
+
+.indice h2 {
+    margin-top: 0;
+}
+
+.indice ul {
+    list-style: none;
+    padding: 0;
+}
+
+.indice li {
+    margin-bottom: 10px;
+}
+
+.indice a {
+    color: #333;
+    text-decoration: none;
+}
+
+.indice a:hover {
+    color: #106dca;
+}
+
+.contenido {
+    width: 60%;
+    padding: 20px;
+}
+
+.articulo-principal img {
+    width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+.anuncios {
+    width: 20%;
+    background-color: #f9f9f9;
+    padding: 20px;
+}
+
+.anuncios img {
+    width: 100%;
+    height: auto;
+    margin-top: 20px;
+}
+
+.footer {
+    text-align: center;
+    padding: 10px;
+    background-color: rgb(67, 229, 67);
+}

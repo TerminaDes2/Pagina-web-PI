@@ -1,0 +1,128 @@
+body {
+    font-family: 'Georgia', serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+}
+
+.titulo-blog {
+    background-color: #106dca;
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+}
+
+.titulo-blog h1 {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 2.5em;
+    margin: 0;
+}
+
+.barra-servicios {
+    background-color: #2acd37;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.informacion-redes a {
+    color: #333;
+    margin: 0 5px;
+}
+
+.contenedor {
+    width: 75%;
+    margin: 20px auto;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.contenido {
+    padding: 20px;
+}
+
+.articulo-principal {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.articulo-principal img {
+    width: 100%;
+    height: auto;
+}
+
+.articulos-secundarios h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.noticias-lista {
+    list-style: none;
+    padding: 0;
+}
+
+.noticia-lista-item {
+    display: flex;
+    align-items: flex-start; /* Alinea los elementos al inicio */
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+}
+
+.noticia-lista-item img {
+    width: 150px;
+    height: auto;
+    margin-right: 20px;
+}
+
+.noticia-texto {
+    flex-grow: 1; /* Permite que el texto ocupe el espacio restante */
+}
+
+.noticia-lista-item h3 {
+    margin-top: 0; /* Elimina el margen superior del título */
+}
+
+.footer {
+    text-align: center;
+    padding: 10px;
+    background-color: rgb(67, 229, 67);
+}
+
+/* Estilos para el menú desplegable */
+.menu-desplegable {
+    position: relative;
+    display: inline-block;
+}
+
+.menu-btn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.menu-contenido {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.menu-contenido a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.menu-contenido a:hover {
+    background-color: #f1f1f1;
+}
+
+.menu-desplegable:hover .menu-contenido {
+    display: block;
+}
