@@ -1,0 +1,91 @@
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #1b3b24; /* Verde oscuro sofisticado */
+    color: white;
+}
+
+/* Barra de servicios */
+.barra-servicios {
+    background-color: #154360; /* Azul oscuro sofisticado */
+    color: white;
+    text-align: center;
+    padding: 10px;
+}
+
+/* Contenedor principal de login */
+.contenedor-login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* 100% de la altura de la ventana */
+    background-color: #1f5130; /* Verde oscuro */
+}
+
+h1 {
+    color: white;
+    margin-bottom: 20px;
+}
+
+/* Estilo del formulario de login */
+.form-login {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-login label {
+    font-weight: bold;
+    color: #333;
+}
+
+.form-login input {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+.form-login button {
+    background-color: #154360; /* Azul oscuro */
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.form-login button:hover {
+    background-color: #1abc9c; /* Verde agua */
+}
+
+/* Enlace de recuperar contraseña */
+.recuperar {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.recuperar a {
+    color: #1abc9c; /* Verde agua */
+    text-decoration: none;
+}
+
+.recuperar a:hover {
+    text-decoration: underline;
+}
+
+/* Footer */
+.footer {
+    background-color: #1f5130;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    margin-top: 20px;
+}
