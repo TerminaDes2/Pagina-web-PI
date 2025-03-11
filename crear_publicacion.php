@@ -1,8 +1,7 @@
 <?php
-// Inicia la sesión para, por ejemplo, obtener el id del usuario logueado
 session_start();
 
-// Configuración de la conexión a la base de datos (ajusta los datos de conexión según tu entorno)
+// Configuración de la conexión a la base de datos (ajusta según tu entorno)
 $host       = "localhost";
 $usuario    = "root";
 $contrasena = "administrador";
@@ -14,46 +13,42 @@ $conn = new mysqli($host, $usuario, $contrasena, $bd);
 if ($conn->connect_error) {
     die("Error en la conexión: " . $conn->connect_error);
 }
+// Configurar la conexión para usar UTF-8
+$conn->set_charset("utf8");
 
-// Si se envía el formulario se procesa la información
+// Procesa el formulario al enviarlo
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Recoger y sanitizar datos
     $titulo    = trim($_POST['titulo']);
     $categoria = trim($_POST['categoria']);
-    $contenido = trim($_POST['contenido']);
+    $contenido = trim($_POST['contenido']); // Se guarda el contenido tal cual (incluyendo saltos de línea o HTML)
+    // Convertir el contenido a UTF-8
+    $contenido = mb_convert_encoding($contenido, 'UTF-8', 'auto');
     $fecha     = date("Y-m-d"); // Fecha actual
-    // Para este ejemplo, usamos un id_usuario fijo (en producción, se obtiene de la sesión)
+    // Para este ejemplo usamos un id_usuario fijo (en producción se obtiene de la sesión)
     $id_usuario = isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] : 1;
     
-    // Insertar la publicación en la tabla entradas (sin id_imagen aún)
+    // Inserta la publicación en la tabla entradas (sin id_imagen aún)
     $stmt = $conn->prepare("INSERT INTO entradas (titulo, categoria, contenido, fecha, id_usuario) VALUES (?, ?, ?, ?, ?)");
     $stmt->bind_param("ssssi", $titulo, $categoria, $contenido, $fecha, $id_usuario);
     if ($stmt->execute()) {
-        // Obtener el id de la entrada recién creada
         $id_entrada = $stmt->insert_id;
         
-        // Si se subió una imagen, procesarla
+        // Procesa la imagen si se sube alguna
         if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
-            // Define la carpeta de destino (asegúrate de que exista y tenga permisos de escritura)
             $destino = "uploads/";
             if (!is_dir($destino)) {
                 mkdir($destino, 0777, true);
             }
             
-            // Renombrar la imagen para evitar conflictos (opcional)
             $nombreArchivo = time() . "_" . basename($_FILES['imagen']['name']);
             $rutaDestino   = $destino . $nombreArchivo;
             
-            // Mover el archivo a la carpeta destino
             if (move_uploaded_file($_FILES['imagen']['tmp_name'], $rutaDestino)) {
-                // Insertar la ruta de la imagen en la tabla imagenes
                 $stmtImg = $conn->prepare("INSERT INTO imagenes (imagen, id_entrada) VALUES (?, ?)");
                 $stmtImg->bind_param("si", $rutaDestino, $id_entrada);
                 if ($stmtImg->execute()) {
-                    // Obtener el id de la imagen insertada
                     $id_imagen = $stmtImg->insert_id;
-                    
-                    // Actualizar la entrada para relacionarla con la imagen
                     $stmtUpdate = $conn->prepare("UPDATE entradas SET id_imagen = ? WHERE id_entrada = ?");
                     $stmtUpdate->bind_param("ii", $id_imagen, $id_entrada);
                     $stmtUpdate->execute();
@@ -61,12 +56,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 $stmtImg->close();
             } else {
-                // Si hay error con la imagen, redirigimos con mensaje de error
                 header("Location: crear_publicacion.php?msg=" . urlencode("Error al subir la imagen.") . "&msgType=error");
                 exit();
             }
         }
-        // Redirigir para evitar reenvío del formulario (patrón PRG)
         header("Location: crear_publicacion.php?msg=" . urlencode("Publicación creada exitosamente.") . "&msgType=success");
         exit();
     } else {
@@ -77,7 +70,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $conn->close();
 }
 
-// Si hay parámetros de mensaje en la URL, se almacenan en variables (para el popup)
 $message = "";
 $messageType = "";
 if(isset($_GET['msg'])){
@@ -106,7 +98,7 @@ if(isset($_GET['msg'])){
 <body>
   <header class="header-top">
     <div class="logo">
-      <h1><a href="Main.html">Voces del Proceso</a></h1>
+      <h1><a href="Main.php">Voces del Proceso</a></h1>
     </div>
     <nav class="main-nav">
       <div id="menu-button" class="menu-button">
@@ -126,7 +118,7 @@ if(isset($_GET['msg'])){
   <div id="sidebar" class="sidebar">
     <button id="close-button" class="close-button">Cerrar</button>
     <ul>
-      <li><a href="Main.html">Inicio</a></li>
+      <li><a href="Main.php">Inicio</a></li>
       <li><a href="#">Noticias</a></li>
       <li><a href="#">Contacto</a></li>
       <li><a href="#">Acerca de</a></li>

@@ -53,6 +53,10 @@
     margin-left: 10px;
   }
   
+  .noticia ul {
+    padding-left: 5%; /* O el valor que prefieras */
+}
+
   .main-nav {
     background-color: #2E7D32;
     color: #fff;
