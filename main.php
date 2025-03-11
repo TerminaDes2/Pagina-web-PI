@@ -1,4 +1,8 @@
 <?php
+session_start();
+$lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'es';
+include "lang_{$lang}.php";
+
 // Conexión a la base de datos
 $host       = "localhost";
 $usuario    = "root";
@@ -10,7 +14,6 @@ if ($conn->connect_error) {
     die("Error en la conexión: " . $conn->connect_error);
 }
 
-// Consulta para obtener la publicación más reciente (banner) usando id_entrada DESC
 $sqlBanner = "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, i.imagen 
               FROM entradas e 
               LEFT JOIN imagenes i ON e.id_imagen = i.id_imagen 
@@ -19,7 +22,6 @@ $sqlBanner = "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, i.imagen
 $resultBanner = $conn->query($sqlBanner);
 $banner = ($resultBanner->num_rows > 0) ? $resultBanner->fetch_assoc() : null;
 
-// Consulta para obtener las demás publicaciones, excluyendo la del banner, ordenadas de la más reciente a la más antigua
 if ($banner) {
     $sqlPosts = "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, i.imagen 
                  FROM entradas e 
@@ -34,12 +36,13 @@ if ($banner) {
 }
 $resultPosts = $conn->query($sqlPosts);
 ?>
+
 <!DOCTYPE html>
-<html lang="es">
+<html lang="<?php echo $lang; ?>">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Voces del Proceso</title>
+  <title><?php echo $idioma['voces_proceso']; ?></title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
@@ -49,32 +52,37 @@ $resultPosts = $conn->query($sqlPosts);
 <body>
   <header class="header-top">
     <div class="logo">
-      <h1><a href="Main.php">Voces del Proceso</a></h1>
+      <h1><a href="Main.php"><?php echo $idioma['voces_proceso']; ?></a></h1>
     </div>
     <nav class="main-nav">
       <div id="menu-button" class="menu-button">
         <img src="img/menu.svg">
-        <span class="ocultar-texto">MENU</span>
+        <span class="ocultar-texto"><?php echo $idioma['menu']; ?></span>
       </div>
       <div class="search-bar">
-        <input type="text" placeholder="Buscar..." />
+        <input type="text" placeholder=<?php echo $idioma['buscar']; ?> />
       </div>
       <div class="social-icons">
         <a href="#"><img src="img/facebook.svg" alt="Facebook"></a>
         <a href="#"><img src="img/instagram.svg" alt="Instagram"></a>
       </div>
+      <!-- Selector de idioma -->
+      <div class="lang-selector">
+        <a href="set_lang.php?lang=es">Español</a> | 
+        <a href="set_lang.php?lang=en">English</a>
+      </div>
     </nav>
   </header>
 
   <div id="sidebar" class="sidebar">
-    <button id="close-button" class="close-button">Cerrar</button>
+    <button id="close-button" class="close-button"><?php echo $idioma['cerrar']; ?></button>
     <ul>
-      <li><a href="Main.php">Inicio</a></li>
-      <li><a href="#">Noticias</a></li>
-      <li><a href="#">Contacto</a></li>
-      <li><a href="#">Acerca de</a></li>
+      <li><a href="Main.php"><?php echo $idioma['inicio']; ?></a></li>
+      <li><a href="#"><?php echo $idioma['noticias']; ?></a></li>
+      <li><a href="#"><?php echo $idioma['contacto']; ?></a></li>
+      <li><a href="#"><?php echo $idioma['acerca_de']; ?></a></li>
     </ul>
-    <button id="login-button" class="login-button">Login</button>
+    <button id="login-button" class="login-button"><?php echo $idioma['login']; ?></button>
   </div>
 
   <?php if ($banner): ?>
@@ -116,7 +124,7 @@ $resultPosts = $conn->query($sqlPosts);
   </main>
 
   <footer>
-    <p>&copy; 2025 Voces del Proceso. Todos los derechos reservados.</p>
+    <p><?php echo $idioma['footer_text']; ?></p>
   </footer>
 </body>
 </html>

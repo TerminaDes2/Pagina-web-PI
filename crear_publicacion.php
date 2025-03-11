@@ -1,5 +1,7 @@
 <?php
 session_start();
+$lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'es';
+include "lang_{$lang}.php";
 
 // Configuración de la conexión a la base de datos (ajusta según tu entorno)
 $host       = "localhost";
@@ -21,11 +23,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Recoger y sanitizar datos
     $titulo    = trim($_POST['titulo']);
     $categoria = trim($_POST['categoria']);
-    $contenido = trim($_POST['contenido']); // Se guarda el contenido tal cual (incluyendo saltos de línea o HTML)
+    $contenido = trim($_POST['contenido']);
     // Convertir el contenido a UTF-8
     $contenido = mb_convert_encoding($contenido, 'UTF-8', 'auto');
-    $fecha     = date("Y-m-d"); // Fecha actual
-    // Para este ejemplo usamos un id_usuario fijo (en producción se obtiene de la sesión)
+    $fecha     = date("Y-m-d");
     $id_usuario = isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] : 1;
     
     // Inserta la publicación en la tabla entradas (sin id_imagen aún)
@@ -56,14 +57,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 $stmtImg->close();
             } else {
-                header("Location: crear_publicacion.php?msg=" . urlencode("Error al subir la imagen.") . "&msgType=error");
+                header("Location: crear_publicacion.php?msg=" . urlencode($idioma['error_subir_imagen']) . "&msgType=error");
                 exit();
             }
         }
-        header("Location: crear_publicacion.php?msg=" . urlencode("Publicación creada exitosamente.") . "&msgType=success");
+        header("Location: crear_publicacion.php?msg=" . urlencode($idioma['publicacion_success']) . "&msgType=success");
         exit();
     } else {
-        header("Location: crear_publicacion.php?msg=" . urlencode("Error al crear la publicación: " . $stmt->error) . "&msgType=error");
+        header("Location: crear_publicacion.php?msg=" . urlencode($idioma['publicacion_error'] . " " . $stmt->error) . "&msgType=error");
         exit();
     }
     $stmt->close();
@@ -79,11 +80,11 @@ if(isset($_GET['msg'])){
 ?>
 
 <!DOCTYPE html>
-<html lang="es">
+<html lang="<?php echo $lang; ?>">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Voces del Proceso</title>
+  <title><?php echo $idioma['voces_proceso']; ?></title>
   <link rel="stylesheet" href="estilos/publicar.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -98,55 +99,60 @@ if(isset($_GET['msg'])){
 <body>
   <header class="header-top">
     <div class="logo">
-      <h1><a href="Main.php">Voces del Proceso</a></h1>
+      <h1><a href="Main.php"><?php echo $idioma['voces_proceso']; ?></a></h1>
     </div>
     <nav class="main-nav">
       <div id="menu-button" class="menu-button">
         <img src="img/menu.svg">
-        <span class="ocultar-texto">MENU</span>
+        <span class="ocultar-texto"><?php echo $idioma['menu']; ?></span>
       </div>
       <div class="search-bar">
-        <input type="text" placeholder="Buscar..." />
+        <input type="text" placeholder=<?php echo $idioma['buscar']; ?> />
       </div>
       <div class="social-icons">
         <a href="#"><img src="img/facebook.svg" alt="Facebook"></a>
         <a href="#"><img src="img/instagram.svg" alt="Instagram"></a>
       </div>
+      <!-- Enlaces para cambiar idioma -->
+      <div class="lang-selector">
+        <a href="set_lang.php?lang=es">Español</a> | 
+        <a href="set_lang.php?lang=en">English</a>
+      </div>
     </nav>
   </header>
 
   <div id="sidebar" class="sidebar">
-    <button id="close-button" class="close-button">Cerrar</button>
+    <button id="close-button" class="close-button"><?php echo $idioma['cerrar']; ?></button>
     <ul>
-      <li><a href="Main.php">Inicio</a></li>
-      <li><a href="#">Noticias</a></li>
-      <li><a href="#">Contacto</a></li>
-      <li><a href="#">Acerca de</a></li>
+      <li><a href="Main.php"><?php echo $idioma['inicio']; ?></a></li>
+      <li><a href="#"><?php echo $idioma['noticias']; ?></a></li>
+      <li><a href="#"><?php echo $idioma['contacto']; ?></a></li>
+      <li><a href="#"><?php echo $idioma['acerca_de']; ?></a></li>
     </ul>
-    <button id="login-button" class="login-button">Login</button>
+    <button id="login-button" class="login-button"><?php echo $idioma['login']; ?></button>
   </div>
 
   <main class="main">
-    <h1>Crear Nueva Publicación</h1>
+    <h1><?php echo $idioma['crear_publicacion_title']; ?></h1>
     <form action="crear_publicacion.php" method="POST" enctype="multipart/form-data">
-      <label for="titulo">Título:</label>
+      <label for="titulo"><?php echo $idioma['titulo_label']; ?></label>
       <input type="text" name="titulo" id="titulo" required>
 
-      <label for="categoria">Categoría:</label>
+      <label for="categoria"><?php echo $idioma['categoria_label']; ?></label>
       <input type="text" name="categoria" id="categoria" required>
 
-      <label for="contenido">Contenido:</label>
+      <label for="contenido"><?php echo $idioma['contenido_label']; ?></label>
       <textarea name="contenido" id="contenido" rows="10" required></textarea>
 
-      <label for="imagen">Imagen / Banner:</label>
+      <label for="imagen"><?php echo $idioma['imagen_label']; ?></label>
       <input type="file" name="imagen" id="imagen" accept="image/*">
 
-      <button type="submit">Crear Publicación</button>
+      <button type="submit"><?php echo $idioma['crear_button']; ?></button>
     </form>
   </main>
 
   <footer>
-    <p>&copy; 2025 Voces del Proceso. Todos los derechos reservados.</p>
+    <p><?php echo $idioma['footer_text']; ?></p>
   </footer>
 
   <!-- Popup de notificación con SweetAlert2 -->

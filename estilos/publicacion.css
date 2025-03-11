@@ -192,6 +192,11 @@
     margin-left: 7%;
   }
 
+  .indice li a {
+    color: black; 
+    text-decoration: none;
+  }
+
   .noticia {
     display: flex;
     flex-direction: column;

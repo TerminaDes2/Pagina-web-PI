@@ -1,4 +1,8 @@
 <?php
+session_start();
+$lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'es';
+include "lang_{$lang}.php";
+
 // Conexión a la base de datos
 $host       = "localhost";
 $usuario    = "root";
@@ -45,39 +49,31 @@ $resultAds = $conn->query($sqlAds);
  * Se fuerza la codificación a UTF-8 para evitar warnings en setAttribute.
  */
 function generarIndice($html) {
-    // Crear un DOMDocument indicando la versión y codificación UTF-8
     $dom = new DOMDocument('1.0', 'UTF-8');
-    // Se añade la directiva XML para asegurar la codificación UTF-8
     @$dom->loadHTML('<?xml encoding="utf-8" ?>' . $html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
     
     $headers = $dom->getElementsByTagName('h2');
     $indice = '<ul>';
     foreach ($headers as $header) {
-        // Obtener el texto del encabezado y detectar su codificación
         $rawText = $header->nodeValue;
         $encoding = mb_detect_encoding($rawText, mb_detect_order(), true);
         if ($encoding !== 'UTF-8') {
             $rawText = mb_convert_encoding($rawText, 'UTF-8', $encoding);
         }
-        // Generar el id: pasar a minúsculas, quitar espacios y reemplazar por guiones
         $id = strtolower(trim($rawText));
         $id = preg_replace('/\s+/', '-', $id);
-        // Verificar y convertir el id a UTF-8 si fuera necesario
         if (!mb_check_encoding($id, 'UTF-8')) {
             $id = mb_convert_encoding($id, 'UTF-8', 'auto');
         }
-        // Asignar el atributo id al encabezado
         $header->setAttribute('id', $id);
         $indice .= "<li><a href='#{$id}'>{$rawText}</a></li>";
     }
     $indice .= '</ul>';
     
-    // Guardar y retornar el HTML modificado con los atributos id en cada encabezado
     $nuevoHtml = $dom->saveHTML();
     return ['indice' => $indice, 'contenido' => $nuevoHtml];
 }
 
-// Procesa el contenido: aplica nl2br para conservar saltos de línea y genera el índice a partir de etiquetas <h2>
 $htmlContenido = nl2br($entrada['contenido']);
 $resultado = generarIndice($htmlContenido);
 $indiceGenerado = $resultado['indice'];
@@ -85,7 +81,7 @@ $contenidoConAnchors = $resultado['contenido'];
 ?>
 
 <!DOCTYPE html>
-<html lang="es">
+<html lang="<?php echo $lang; ?>">
 <head>
   <meta charset="UTF-8">
   <title><?php echo $entrada['titulo']; ?></title>
@@ -99,32 +95,37 @@ $contenidoConAnchors = $resultado['contenido'];
 <body>
   <header class="header-top">
     <div class="logo">
-      <h1><a href="Main.php">Voces del Proceso</a></h1>
+      <h1><a href="Main.php"><?php echo $idioma['voces_proceso']; ?></a></h1>
     </div>
     <nav class="main-nav">
       <div id="menu-button" class="menu-button">
         <img src="img/menu.svg">
-        <span class="ocultar-texto">MENU</span>
+        <span class="ocultar-texto"><?php echo $idioma['menu']; ?></span>
       </div>
       <div class="search-bar">
-        <input type="text" placeholder="Buscar..." />
+        <input type="text" placeholder=<?php echo $idioma['buscar']; ?> />
       </div>
       <div class="social-icons">
         <a href="#"><img src="img/facebook.svg" alt="Facebook"></a>
         <a href="#"><img src="img/instagram.svg" alt="Instagram"></a>
       </div>
+      <!-- Selector de idioma -->
+      <div class="lang-selector">
+        <a href="set_lang.php?lang=es">Español</a> | 
+        <a href="set_lang.php?lang=en">English</a>
+      </div>
     </nav>
   </header>
 
   <div id="sidebar" class="sidebar">
-    <button id="close-button" class="close-button">Cerrar</button>
+    <button id="close-button" class="close-button"><?php echo $idioma['cerrar']; ?></button>
     <ul>
-      <li><a href="Main.php">Inicio</a></li>
-      <li><a href="#">Noticias</a></li>
-      <li><a href="#">Contacto</a></li>
-      <li><a href="#">Acerca de</a></li>
+      <li><a href="Main.php"><?php echo $idioma['inicio']; ?></a></li>
+      <li><a href="#"><?php echo $idioma['noticias']; ?></a></li>
+      <li><a href="#"><?php echo $idioma['contacto']; ?></a></li>
+      <li><a href="#"><?php echo $idioma['acerca_de']; ?></a></li>
     </ul>
-    <button id="login-button" class="login-button">Login</button>
+    <button id="login-button" class="login-button"><?php echo $idioma['login']; ?></button>
   </div>
 
   <div class="titulo">
@@ -173,7 +174,7 @@ $contenidoConAnchors = $resultado['contenido'];
   </main>
 
   <footer>
-    <p>&copy; 2025 Voces del Proceso. Todos los derechos reservados.</p>
+    <p><?php echo $idioma['footer_text']; ?></p>
   </footer>
 </body>
 </html>
