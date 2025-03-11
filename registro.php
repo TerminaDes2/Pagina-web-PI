@@ -51,7 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bindParam(':contra', $hashed_password);
         $stmt->execute();
 
-        header("Location: Main.html?success=Registro+exitoso");
+        header("Location: crear_publicacion.php?success=Registro+exitoso");
         exit();
     } elseif (isset($_POST['action']) && $_POST['action'] === 'login') {
         
@@ -79,7 +79,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     'segundo_apellido'=> $usuario['segundo_apellido'],
                     'correo'          => $usuario['correo']
                 ];
-                header("Location: Main.html?success=Bienvenido");
+                header("Location: crear_publicacion.php?success=Bienvenido");
                 exit();
             } else {
                 echo "Contraseña incorrecta.";

@@ -177,6 +177,13 @@
     flex-direction: row;
   }
 
+  .fotos img {
+    width: 100%;
+    height: 150px; /* Ajusta la altura según tu diseño */
+    object-fit: cover; /* Hace que la imagen se recorte y se adapte al contenedor */
+    display: block;
+  }
+
   .fotos {
     align-content: center;
     justify-self: center;
@@ -212,6 +219,11 @@
   
   @media (max-width: 768px) {
     .main-nav ul {
+      flex-direction: column;
+    }
+
+    .social-icons {
+      display: flex;
       flex-direction: column;
     }
 
