@@ -44,7 +44,7 @@
   .search-bar input {
     padding: 6px;
     border: none;
-    border-radius: 3px;
+    border-radius: 30px;
   }
   
   .social-icons a img {
@@ -53,6 +53,10 @@
     margin-left: 10px;
   }
   
+  .noticia ul {
+    padding-left: 5%; /* O el valor que prefieras */
+}
+
   .main-nav {
     background-color: #2E7D32;
     color: #fff;
@@ -188,6 +192,11 @@
     margin-left: 7%;
   }
 
+  .indice li a {
+    color: black; 
+    text-decoration: none;
+  }
+
   .noticia {
     display: flex;
     flex-direction: column;
@@ -196,6 +205,11 @@
     width: 60%;
     height: auto;
     /*background-color: #007BFF;*/
+  }
+
+  .publicidad h3 a {
+    color: black; 
+    text-decoration: none;
   }
 
   .publicidad {
@@ -248,6 +262,11 @@
     }
 
     main {
+      flex-direction: column;
+    }
+
+    .social-icons {
+      display: flex;
       flex-direction: column;
     }
     
