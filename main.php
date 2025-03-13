@@ -62,10 +62,6 @@ $resultPosts = $conn->query($sqlPosts);
       <div class="search-bar">
         <input type="text" placeholder=<?php echo $idioma['buscar']; ?> />
       </div>
-      <div class="social-icons">
-        <a href="#"><img src="img/facebook.svg" alt="Facebook"></a>
-        <a href="#"><img src="img/instagram.svg" alt="Instagram"></a>
-      </div>
       <!-- Selector de idioma -->
       <div class="lang-selector">
         <a href="set_lang.php?lang=es">Español</a> | 

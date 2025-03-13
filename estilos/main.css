@@ -177,6 +177,12 @@
     flex-direction: row;
   }
 
+  .lang-selector a {
+    color: #fff;
+    text-decoration: none;
+    padding: 5px;
+  }
+
   .fotos img {
     width: 100%;
     height: 150px; /* Ajusta la altura según tu diseño */
