@@ -225,12 +225,7 @@
     transition: all 0.3s linear;
     color: #000;
     font-weight: 400;
-  }
 
-  .lang-selector a {
-    color: #fff;
-    text-decoration: none;
-    padding: 5px;
   }
 
   button:hover{
