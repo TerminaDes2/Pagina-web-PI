@@ -7,7 +7,7 @@ include "lang_{$lang}.php";
 $host       = "localhost";
 $usuario    = "root";
 $contrasena = "administrador";
-$bd         = "blog";
+$bd         = "economia_blog";
 
 date_default_timezone_set('America/Mexico_City');
 

@@ -7,7 +7,7 @@ include "lang_{$lang}.php";
 $host       = "localhost";
 $usuario    = "root";
 $contrasena = "administrador";
-$bd         = "blog";
+$bd         = "economia_blog";
 
 $conn = new mysqli($host, $usuario, $contrasena, $bd);
 if ($conn->connect_error) {
