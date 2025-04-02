@@ -247,7 +247,6 @@ main h1 {
   align-items: center;
   border: 2px solid #ccc;
 }
-
 .imagenes img {
   display: block;
   margin-bottom: 0;
@@ -276,7 +275,6 @@ footer {
   text-align: center;
   padding: 15px;
 }
-
 /* Responsive */
 @media (max-width: 768px) {
   .main-nav ul {
