@@ -164,43 +164,39 @@ main {
     flex: 1;
 }
 
+/* Ajustar el diseño de las cartas */
 .articles {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 75px;
-  }
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Ajustar el tamaño mínimo de las cartas */
+    gap: 20px; /* Espaciado entre las cartas */
+    padding: 20px; /* Espaciado interno para la sección */
+    justify-content: center; /* Centrar las cartas */
+}
 
 .card {
     display: flex;
-    background-color: #e0c49a;
-    border-radius: 5px;
-    padding: 25px;
-    flex-direction: row;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
+    flex-direction: column; /* Cambiar a columna para que el contenido esté alineado verticalmente */
+    background-color: #ffffff;
+    border-radius: 10px; /* Bordes redondeados */
+    overflow: hidden; /* Asegurar que las imágenes no sobresalgan */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para dar profundidad */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transiciones suaves */
 }
 
 .card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-.lang-selector a {
-    color: #fff;
-    text-decoration: none;
-    padding: 5px;
+    transform: translateY(-10px); /* Elevar la carta al pasar el cursor */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Aumentar la sombra */
 }
 
 .fotos img {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.3s;
+    width: 100%; /* Asegurar que la imagen ocupe todo el ancho de la carta */
+    height: 200px; /* Altura fija para las imágenes */
+    object-fit: cover; /* Recortar la imagen para que se ajuste al contenedor */
+    transition: transform 0.3s ease; /* Efecto suave al pasar el cursor */
 }
 
 .fotos img:hover {
-    transform: scale(1.05);
+    transform: scale(1.1); /* Ampliar ligeramente la imagen al pasar el cursor */
 }
 
 .fotos {
@@ -209,8 +205,27 @@ main {
     padding: 5px;
 }
 
-.semicuerpo p {
-    font-size: 70%;
+.texto {
+    padding: 15px; /* Espaciado interno para el texto */
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Espaciado entre los elementos del texto */
+}
+
+.texto h3 {
+    font-size: 1.5rem; /* Tamaño del título */
+    color: #333; /* Color del texto */
+    margin: 0;
+}
+
+.texto .semicuerpo p {
+    font-size: 0.9rem; /* Tamaño del texto del contenido */
+    color: #666; /* Color más claro para el contenido */
+    margin: 0;
+}
+
+.texto .semicuerpo p strong {
+    color: #333; /* Color más oscuro para el texto destacado */
 }
 
 .card h3 {
@@ -237,7 +252,17 @@ footer {
     flex-direction: column;
 }
 
+/* Ajustar el diseño para pantallas pequeñas */
 @media (max-width: 768px) {
+    .articles {
+        grid-template-columns: 1fr; /* Una sola columna en pantallas pequeñas */
+        gap: 15px;
+    }
+
+    .card {
+        flex-direction: column;
+    }
+
     .main-nav ul {
         flex-direction: column;
     }
