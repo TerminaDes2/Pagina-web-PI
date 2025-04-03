@@ -11,75 +11,75 @@
     font-size: 21px;
   }
 
-  .header-top {
-    background-color: #003366; 
+.header-top {
+    background-color: #003366;
     color: #fff;
-  }
-  
-  .top-bar {
+}
+
+.top-bar {
     display: flex;
     align-items: center;
-  }
+}
 
-  .logo h1 a {
+.logo h1 a {
     color: #fff;
     text-decoration: none;
-  }
-  
-  .logo h1 {
+}
+
+.logo h1 {
     font-family: "Parisienne", cursive;
     font-weight: 400;
     font-style: normal;
     font-size: 1.5rem;
     text-align: center;
     width: 100%;
-  }
-  
-  .logo{
+}
+
+.logo {
     align-items: center;
     justify-content: space-between;
     width: 100%;
     padding: 10px 20px;
-  }
+}
 
-  .search-bar input {
+.search-bar input {
     padding: 6px;
     border: none;
     border-radius: 30px;
-  }
-  
-  .social-icons a img {
+}
+
+.social-icons a img {
     width: 24px;
     height: 24px;
     margin-left: 10px;
-  }
-  
-  .main-nav {
+}
+
+.main-nav {
     background-color: #2E7D32;
     color: #fff;
     padding: 10px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-  }
+}
 
-  .menu-button {
+.menu-button {
     cursor: pointer;
     color: #fff;
     display: inline-block;
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-  }
+}
 
-  .menu-button img {
+.menu-button img {
     vertical-align: middle;
-  }  
+}
 
-  .sidebar {
+.sidebar {
     position: fixed;
     top: 0;
-    left: -250px; 
+    left: -250px;
     width: 250px;
     height: 100%;
     background-color: #333;
@@ -89,38 +89,38 @@
     padding: 20px;
     display: flex;
     flex-direction: column;
-  }
+}
 
-  .sidebar.active {
+.sidebar.active {
     left: 0;
-  }
+}
 
-  .close-button {
+.close-button {
     background-color: #444;
     color: #fff;
     border: none;
     padding: 10px 15px;
     cursor: pointer;
     margin-bottom: 20px;
-  }
+}
 
-  .sidebar ul {
+.sidebar ul {
     list-style: none;
     padding: 0;
     margin: 0;
-  }
+}
 
-  .sidebar ul li {
+.sidebar ul li {
     padding: 15px 0;
     border-bottom: 1px solid #444;
-  }
+}
 
-  .sidebar ul li a {
+.sidebar ul li a {
     color: #fff;
     text-decoration: none;
-  }
+}
 
-  .login-button {
+.login-button {
     margin-top: auto;
     background-color: #007BFF;
     color: #fff;
@@ -129,80 +129,114 @@
     cursor: pointer;
     font-size: 1rem;
 }
-  
-  .main-nav ul {
+
+.main-nav ul {
     list-style: none;
     display: flex;
     gap: 15px;
-  }
-  
-  .main-nav li a {
+}
+
+.main-nav li a {
     color: #fff;
     text-decoration: none;
     padding: 5px;
-  }
-  
-  .banner {
+}
+
+.banner {
     background-color: #000000;
     color: #fff;
     text-align: center;
     padding: 20px 20px;
-  }
-  
-  .banner img {
+}
+
+.banner img {
     max-width: 80%;
     height: auto;
-  }
+}
 
-  main img {
+main img {
     max-width: 100%;
     height: auto;
-  }
+}
 
-  main {
+main {
     padding: 20px;
     flex: 1;
-  }
-  
-  .articles {
+}
+
+/* Ajustar el diseño de las cartas */
+.articles {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 75px;
-  }
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Ajustar el tamaño mínimo de las cartas */
+    gap: 20px; /* Espaciado entre las cartas */
+    padding: 20px; /* Espaciado interno para la sección */
+    justify-content: center; /* Centrar las cartas */
+}
 
-  .card {
+.card {
     display: flex;
-    background-color: #e0c49a;
-    border-radius: 5px;
-    padding: 25px;
-    flex-direction: row;
-  }
+    flex-direction: column; /* Cambiar a columna para que el contenido esté alineado verticalmente */
+    background-color: #ffffff;
+    border-radius: 10px; /* Bordes redondeados */
+    overflow: hidden; /* Asegurar que las imágenes no sobresalgan */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para dar profundidad */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transiciones suaves */
+}
 
-  .fotos img {
-    width: 100%;
-    height: 150px; /* Ajusta la altura según tu diseño */
-    object-fit: cover; /* Hace que la imagen se recorte y se adapte al contenedor */
-    display: block;
-  }
+.card:hover {
+    transform: translateY(-10px); /* Elevar la carta al pasar el cursor */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Aumentar la sombra */
+}
 
-  .fotos {
+.fotos img {
+    width: 100%; /* Asegurar que la imagen ocupe todo el ancho de la carta */
+    height: 200px; /* Altura fija para las imágenes */
+    object-fit: cover; /* Recortar la imagen para que se ajuste al contenedor */
+    transition: transform 0.3s ease; /* Efecto suave al pasar el cursor */
+}
+
+.fotos img:hover {
+    transform: scale(1.1); /* Ampliar ligeramente la imagen al pasar el cursor */
+}
+
+.fotos {
     align-content: center;
     justify-self: center;
     padding: 5px;
-  }
+}
 
-  .semicuerpo p {
-    font-size: 70%;
-  }
+.texto {
+    padding: 15px; /* Espaciado interno para el texto */
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Espaciado entre los elementos del texto */
+}
 
-  .card h3 {
+.texto h3 {
+    font-size: 1.5rem; /* Tamaño del título */
+    color: #333; /* Color del texto */
+    margin: 0;
+}
+
+.texto .semicuerpo p {
+    font-size: 0.9rem; /* Tamaño del texto del contenido */
+    color: #666; /* Color más claro para el contenido */
+    margin: 0;
+}
+
+.texto .semicuerpo p strong {
+    color: #333; /* Color más oscuro para el texto destacado */
+}
+
+.card h3 {
     margin-bottom: 10px;
-  }
-  .card p {
+}
+
+.card p {
     margin-bottom: 5px;
-  }
-  
-  footer {
+}
+
+footer {
     background-color: #2E7D32;
     color: #fff;
     text-align: center;
@@ -216,19 +250,29 @@
   body {
     display: flex;
     flex-direction: column;
-  }
-  
-  @media (max-width: 768px) {
+}
+
+/* Ajustar el diseño para pantallas pequeñas */
+@media (max-width: 768px) {
+    .articles {
+        grid-template-columns: 1fr; /* Una sola columna en pantallas pequeñas */
+        gap: 15px;
+    }
+
+    .card {
+        flex-direction: column;
+    }
+
     .main-nav ul {
-      flex-direction: column;
+        flex-direction: column;
     }
 
     .social-icons {
-      display: flex;
-      flex-direction: column;
+        display: flex;
+        flex-direction: column;
     }
 
     .ocultar-texto {
-      display: none;
+        display: none;
     }
-  }
+}

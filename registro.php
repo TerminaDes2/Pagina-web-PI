@@ -4,7 +4,7 @@ session_start();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     $host   = 'localhost';
-    $dbname = 'economia_blog';
+    $dbname = 'blog';
     $dbuser = 'root';
     $dbpass = 'administrador';
 
@@ -71,7 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($usuario) {
-            
+
             if (password_verify($contra, $usuario['contra'])) {
                 $_SESSION['usuario'] = [
                     'nombre'          => $usuario['nombre'],
@@ -121,10 +121,6 @@ include "lang_{$lang}.php";
       </div>
       <div class="search-bar">
         <input type="text" placeholder=<?php echo $idioma['buscar']; ?> />
-      </div>
-      <div class="social-icons">
-        <a href="#"><img src="img/facebook.svg" alt="Facebook"></a>
-        <a href="#"><img src="img/instagram.svg" alt="Instagram"></a>
       </div>
       <!-- Selector de idioma -->
       <div class="lang-selector">

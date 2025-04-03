@@ -133,6 +133,12 @@
     cursor: pointer;
     font-size: 1rem;
   }
+
+  .lang-selector a {
+    color: #fff;
+    text-decoration: none;
+    padding: 5px;
+  }
   
   /* Main Content */
   .main {

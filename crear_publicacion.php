@@ -7,7 +7,7 @@ include "lang_{$lang}.php";
 $host       = "localhost";
 $usuario    = "root";
 $contrasena = "administrador";
-$bd         = "blog";
+$bd         = "economia_blog";
 
 date_default_timezone_set('America/Mexico_City');
 
@@ -89,12 +89,64 @@ if(isset($_GET['msg'])){
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
+  
   <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <!-- SweetAlert2 para popups -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="loggin_scripts.js" defer></script>
   <script src="Main.js" defer></script>
+  
+  <style>
+    /* Estilos simples para la barra de herramientas y el editor */
+    #toolbar {
+      margin-bottom: 10px;
+    }
+    #toolbar button {
+      padding: 5px 10px;
+      margin-right: 5px;
+      cursor: pointer;
+    }
+    #editor {
+      border: 1px solid #ccc;
+      padding: 10px;
+      min-height: 200px;
+    }
+  </style>
+  
+  <script>
+    // Función de formateo con capacidad de toggle para bloques (h2, p)
+    function format(command, value = null) {
+      // Solo aplicamos el toggle para bloques 'h2' y 'p'
+      if (command === 'h2' || command === 'p') {
+        let sel = window.getSelection();
+        if (sel.rangeCount > 0) {
+          // Obtenemos el contenedor del nodo actual
+          let container = sel.anchorNode;
+          if (container.nodeType !== 1) {
+            container = container.parentElement;
+          }
+          // Si el contenedor ya tiene la etiqueta del comando, lo cambiamos a un bloque por defecto ('div')
+          if (container.tagName.toLowerCase() === command) {
+            document.execCommand('formatBlock', false, 'div');
+          } else {
+            document.execCommand('formatBlock', false, command);
+          }
+        }
+      } else {
+        // Para comandos que se togglean de forma nativa (bold, italic, etc.)
+        document.execCommand(command, false, value);
+      }
+    }
+    
+    // Al enviar el formulario, copiamos el HTML del editor al campo oculto
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('publicacionForm').addEventListener('submit', function() {
+        document.getElementById('contenido').value = document.getElementById('editor').innerHTML;
+      });
+    });
+  </script>
+  
 </head>
 <body>
   <header class="header-top">
@@ -107,11 +159,7 @@ if(isset($_GET['msg'])){
         <span class="ocultar-texto"><?php echo $idioma['menu']; ?></span>
       </div>
       <div class="search-bar">
-        <input type="text" placeholder=<?php echo $idioma['buscar']; ?> />
-      </div>
-      <div class="social-icons">
-        <a href="#"><img src="img/facebook.svg" alt="Facebook"></a>
-        <a href="#"><img src="img/instagram.svg" alt="Instagram"></a>
+        <input type="text" placeholder="<?php echo $idioma['buscar']; ?>" />
       </div>
       <!-- Enlaces para cambiar idioma -->
       <div class="lang-selector">
@@ -134,7 +182,7 @@ if(isset($_GET['msg'])){
 
   <main class="main">
     <h1><?php echo $idioma['crear_publicacion_title']; ?></h1>
-    <form action="crear_publicacion.php" method="POST" enctype="multipart/form-data">
+    <form id="publicacionForm" action="crear_publicacion.php" method="POST" enctype="multipart/form-data">
       <label for="titulo"><?php echo $idioma['titulo_label']; ?></label>
       <input type="text" name="titulo" id="titulo" required>
 
@@ -142,7 +190,21 @@ if(isset($_GET['msg'])){
       <input type="text" name="categoria" id="categoria" required>
 
       <label for="contenido"><?php echo $idioma['contenido_label']; ?></label>
-      <textarea name="contenido" id="contenido" rows="10" required></textarea>
+      
+      <!-- Barra de herramientas para formateo -->
+      <div id="toolbar">
+        <button type="button" onclick="format('h2')">Subtítulo</button>
+        <button type="button" onclick="format('p')">Texto Cuerpo</button>
+        <button type="button" onclick="format('bold')">Negrita</button>
+        <button type="button" onclick="format('italic')">Cursiva</button>
+        <button type="button" onclick="format('underline')">Subrayado</button>
+      </div>
+      
+      <!-- Editor de texto editable -->
+      <div id="editor" contenteditable="true"></div>
+      
+      <!-- Campo oculto para enviar el contenido formateado -->
+      <textarea name="contenido" id="contenido" style="display:none;"></textarea>
 
       <label for="imagen"><?php echo $idioma['imagen_label']; ?></label>
       <input type="file" name="imagen" id="imagen" accept="image/*">

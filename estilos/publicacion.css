@@ -194,6 +194,7 @@ main h1 {
   align-items: center;
   padding: 7px;
   width: 20%;
+  height: 100%;
   overflow-wrap: break-word;
   background-color: #D9D9D9;
   border: 6px solid #ccc;
@@ -262,6 +263,12 @@ main h1 {
   margin-bottom: 1em;
 }
 
+.lang-selector a {
+  color: #fff;
+  text-decoration: none;
+  padding: 5px;
+}
+
 /* Pie de página */
 footer {
   background-color: #2E7D32;
@@ -269,7 +276,6 @@ footer {
   text-align: center;
   padding: 15px;
 }
-
 /* Responsive */
 @media (max-width: 768px) {
   .main-nav ul {

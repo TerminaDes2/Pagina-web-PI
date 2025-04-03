@@ -7,7 +7,7 @@ include "lang_{$lang}.php";
 $host       = "localhost";
 $usuario    = "root";
 $contrasena = "administrador";
-$bd         = "blog";
+$bd         = "economia_blog";
 
 $conn = new mysqli($host, $usuario, $contrasena, $bd);
 if ($conn->connect_error) {
@@ -104,10 +104,6 @@ $contenidoConAnchors = $resultado['contenido'];
       </div>
       <div class="search-bar">
         <input type="text" placeholder=<?php echo $idioma['buscar']; ?> />
-      </div>
-      <div class="social-icons">
-        <a href="#"><img src="img/facebook.svg" alt="Facebook"></a>
-        <a href="#"><img src="img/instagram.svg" alt="Instagram"></a>
       </div>
       <!-- Selector de idioma -->
       <div class="lang-selector">
