@@ -1,21 +1,53 @@
-// Seleccionamos el botón de menú y el menú lateral
-const menuButton = document.getElementById('menu-button');
-const sidebar = document.getElementById('sidebar');
+// Carrusel
+const carouselTrack = document.querySelector('.carousel-track');
+const carouselItems = document.querySelectorAll('.carousel-item');
+const carouselPrev = document.querySelector('.carousel-prev');
+const carouselNext = document.querySelector('.carousel-next');
+const carouselContainer = document.querySelector('.carousel-container');
 
-// Seleccionamos el botón para cerrar el menú
-const closeButton = document.getElementById('close-button');
+let currentIndex = 0;
+const itemWidth = carouselItems[0].offsetWidth;
+const trackWidth = itemWidth * carouselItems.length;
 
-// Al hacer clic en el botón de menú, se despliega el sidebar
-menuButton.addEventListener('click', function() {
-  sidebar.classList.toggle('active');
+carouselTrack.style.width = `${trackWidth}px`;
+
+function moveCarousel() {
+    let offset = 0;
+    if (currentIndex === carouselItems.length - 1) {
+        offset = 50;
+    }
+    carouselTrack.style.transform = `translateX(-${currentIndex * itemWidth - offset}px)`;
+}
+
+function nextSlide() {
+    currentIndex = (currentIndex + 1) % carouselItems.length;
+    if (currentIndex === 0) {
+        moveCarousel();
+    } else if (currentIndex === carouselItems.length - 1) {
+        moveCarousel(-100);
+        setTimeout(() => {
+            moveCarousel();
+        }, 500);
+        } else {
+            moveCarousel();
+        }
+    }
+
+function prevSlide() {
+    currentIndex = (currentIndex - 1 + carouselItems.length) % carouselItems.length;
+    moveCarousel();
+}
+
+carouselNext.addEventListener('click', nextSlide);
+carouselPrev.addEventListener('click', prevSlide);
+
+// Automatic slide change (optional)
+let carouselInterval = setInterval(nextSlide, 5000);
+
+carouselContainer.addEventListener('mouseenter', () => {
+    clearInterval(carouselInterval);
 });
 
-// Al hacer clic en el botón de cerrar, se remueve la clase "active"
-closeButton.addEventListener('click', function() {
-  sidebar.classList.remove('active');
-});
-
-const loginButton = document.getElementById('login-button');
-loginButton.addEventListener('click', function() {
-  window.location.href = 'registro.html';
+carouselContainer.addEventListener('mouseleave', () => {
+    carouselInterval = setInterval(nextSlide, 5000);
 });
