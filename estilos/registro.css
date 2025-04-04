@@ -1,15 +1,21 @@
-*{
+/* Reset global */
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* Estilos generales */
 body {
   font-family: Arial, sans-serif;
   background-color: #f4f4f4;
   color: #333;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
+/* Header superior */
 .header-top {
   background: linear-gradient(to right, #0077FF, #003399);
   color: #fff;
@@ -20,11 +26,13 @@ body {
   align-items: center;
 }
 
-.logo h1 a {
-  color: #fff;
-  text-decoration: none;
+/* Logo */
+.logo {
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 20px;
 }
-
 .logo h1 {
   font-family: "Parisienne", cursive;
   font-weight: 400;
@@ -33,30 +41,29 @@ body {
   text-align: center;
   width: 100%;
 }
-
-.logo {
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  padding: 10px 20px;
+.logo h1 a {
+  color: #fff;
+  text-decoration: none;
 }
 
+/* Barra de búsqueda */
 .search-bar input {
   padding: 6px;
   border: none;
   border-radius: 30px;
 }
 
+/* Iconos sociales */
 .social-icons a img {
   width: 24px;
   height: 24px;
   margin-left: 10px;
 }
-
 .social-icons {
   margin-right: 29px;
 }
 
+/* Menú principal */
 .main-nav {
   background: #2E7D32;
   color: #fff;
@@ -65,20 +72,30 @@ body {
   justify-content: space-between;
   padding: 10px 20px;
 }
+.main-nav ul {
+  list-style: none;
+  display: flex;
+  gap: 15px;
+}
+.main-nav li a {
+  color: #fff;
+  text-decoration: none;
+  padding: 5px;
+}
 
+/* Botón de menú */
 .menu-button {
   cursor: pointer;
   width: 7%;
   color: #fff;
-  display: inline-block;
   display: flex;
   align-items: center;
 }
-
 .menu-button img {
   vertical-align: middle;
 }
 
+/* Sidebar */
 .sidebar {
   position: fixed;
   top: 0;
@@ -93,11 +110,9 @@ body {
   display: flex;
   flex-direction: column;
 }
-
 .sidebar.active {
   left: 0;
 }
-
 .close-button {
   background-color: #444;
   color: #fff;
@@ -106,23 +121,21 @@ body {
   cursor: pointer;
   margin-bottom: 20px;
 }
-
 .sidebar ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
-
 .sidebar ul li {
   padding: 15px 0;
   border-bottom: 1px solid #444;
 }
-
 .sidebar ul li a {
   color: #fff;
   text-decoration: none;
 }
 
+/* Botón de login */
 .login-button {
   margin-top: auto;
   background-color: #007BFF;
@@ -133,24 +146,7 @@ body {
   font-size: 1rem;
 }
 
-.main-nav ul {
-  list-style: none;
-  display: flex;
-  gap: 15px;
-}
-
-.main-nav li a {
-  color: #fff;
-  text-decoration: none;
-  padding: 5px;
-}
-
-main img {
-  max-width: 80%;
-  height: auto;
-  margin: 10%;
-}
-
+/* Imágenes y contenido principal */
 main {
   padding: 20px;
   flex: 1;
@@ -158,34 +154,13 @@ main {
   justify-content: center;
   display: flex;
 }
-
-form div {
-  margin-bottom: 15px;
+main img {
+  max-width: 80%;
+  height: auto;
+  margin: 10%;
 }
 
-form label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-.alert {
-  margin-bottom: 20px;
-}
-
-#register {
-  display: none;
-}
-
-.card {
-  display: flex;
-  flex-direction: row;
-  place-self: center;
-  background: #ffffff;
-  border-radius: 4px;
-  box-shadow: 0px 2px 6px -1px rgba(0, 0, 0, 0.12);
-}
-
+/* Formularios y tarjetas */
 form {
   padding: 40px 30px;
   background: #fefefe;
@@ -195,12 +170,18 @@ form {
   align-items: flex-start;
   padding-bottom: 20px;
 }
-
+form div {
+  margin-bottom: 15px;
+}
+form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
 form h1 {
   margin-bottom: 20px;
   color: rgb(0, 0, 0);
 }
-
 form p {
   line-height: 155%;
   margin-bottom: 5px;
@@ -211,7 +192,22 @@ form p {
   max-width: 200px;
   margin-bottom: 40px;
 }
+.alert {
+  margin-bottom: 20px;
+}
+#register {
+  display: none;
+}
+.card {
+  display: flex;
+  flex-direction: row;
+  place-self: center;
+  background: #ffffff;
+  border-radius: 4px;
+  box-shadow: 0px 2px 6px -1px rgba(0, 0, 0, 0.12);
+}
 
+/* Inputs dentro de main */
 .main input {
   font-size: 16px;
   padding: 20px 20px;
@@ -226,18 +222,20 @@ form p {
   font-weight: 400;
 }
 
+/* Hover en botones */
 button:hover {
   cursor: pointer;
   box-shadow: #424242b9 0 2px 2px;
 }
 
+/* Botón principal */
 .btn {
   width: auto;
-  min-width: 300px;
+  min-width: 100px;
   border-radius: 24px;
-  text-align: left;
+  text-align: center;
   padding: 15px 40px;
-  margin-top: px;
+  margin-top: 20px;
   background-color: #719743;
   color: #fff;
   font-size: 14px;
@@ -249,16 +247,17 @@ button:hover {
   outline: 0;
 }
 
-.btn {
+/* Botón alternativo */
+.btin {
   width: auto;
-  min-width: px;
-  border-radius:109px;
-text-align: center;
+  min-width: 100px;
+  border-radius: 24px;
+  text-align: center;
   padding: 15px 40px;
-  margin-top: 23px;
-  background-color: #639a1f;
-  color: #eef2ea;
-  font-size: 16px;
+  margin-top: 5px;
+  background-color: #b2bba7;
+  color: #41502f;
+  font-size: 14px;
   margin-left: auto;
   font-weight: 500;
   box-shadow: 0px 2px 6px -1px rgba(0, 0, 0, 0.13);
@@ -266,19 +265,8 @@ text-align: center;
   transition: all 0.3s ease;
   outline: 0;
 }
-.btin{
-  background-color: transparent; 
-  border: none; 
-  box-shadow: none;
-  padding: 0; 
-  margin-top: 23px;
-  min-width: auto; 
-  color: #2c490f; 
-  font-size: 15px; 
-  font-weight: 900;
-  transition: none; 
-  outline: none; 
-}
+
+/* Mostrar/Ocultar contraseña */
 .mostrarcontra {
   display: flex;
   align-items: center;
@@ -292,7 +280,6 @@ text-align: center;
   -ms-user-select: none;
   user-select: none;
 }
-
 .mostrarcontra input {
   position: absolute;
   opacity: 0;
@@ -300,7 +287,6 @@ text-align: center;
   height: 0;
   width: 0;
 }
-
 .checkmark {
   position: absolute;
   top: 0;
@@ -309,25 +295,20 @@ text-align: center;
   width: 25px;
   background-color: #eee;
 }
-
 .mostrarcontra:hover input ~ .checkmark {
   background-color: #ccc;
 }
-
 .mostrarcontra input:checked ~ .checkmark {
   background-color: #2196F3;
 }
-
 .checkmark:after {
   content: "";
   position: absolute;
   display: none;
 }
-
 .mostrarcontra input:checked ~ .checkmark:after {
   display: block;
 }
-
 .mostrarcontra .checkmark:after {
   left: 9px;
   top: 5px;
@@ -340,6 +321,7 @@ text-align: center;
   transform: rotate(45deg);
 }
 
+/* Elementos del footer */
 footer {
   background-color: #2E7D32;
   color: #fff;
@@ -347,34 +329,31 @@ footer {
   padding: 15px;
 }
 
+/* Establecer altura completa para html y body */
 html,
 body {
   height: 100%;
 }
 
-body {
-  display: flex;
-  flex-direction: column;
-}
-
+/* Responsive */
 @media (max-width: 768px) {
   .social-icons {
-      display: flex;
-      flex-direction: column;
+    display: flex;
+    flex-direction: column;
   }
-
   input {
-      min-width: auto;
-      width: 100%;
+    min-width: auto;
+    width: 100%;
   }
-
   main img {
-      margin: 5%;
+    margin: 5%;
   }
-
   .ocultar-texto {
-      display: none;
+    display: none;
   }
 }
-.password-toggle{
-  border:none;}
+
+/* Adicional: Toggle para password */
+.password-toggle {
+  border: none;
+}

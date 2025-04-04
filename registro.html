@@ -15,7 +15,7 @@
 <body>
   <header class="header-top">
     <div class="logo">
-      <h1><a href="Main.html">Voces del Proceso</a></h1>
+      <h1><a href="Main.php">Voces del Proceso</a></h1>
     </div>
     <nav class="main-nav">
       <div id="menu-button" class="menu-button">
@@ -35,7 +35,7 @@
   <div id="sidebar" class="sidebar">
     <button id="close-button" class="close-button">Cerrar</button>
     <ul>
-      <li><a href="Main.html">Inicio</a></li>
+      <li><a href="Main.php">Inicio</a></li>
       <li><a href="#">Noticias</a></li>
       <li><a href="#">Contacto</a></li>
       <li><a href="#">Acerca de</a></li>
@@ -43,13 +43,11 @@
     <button id="login-button" class="login-button">Login</button>
   </div>
 
-
   <main class="main">
     <div class="card" id="datos">
       <form id="form-right" action="registro.php" method="POST">
           <input type="hidden" name="action" value="login">
-          <h1>Inicio de Sesión</h1>
-        
+          <h1>Inicio de Sesión</h1>      
           <input type="text" id="correo" name="correo" tabindex="1" value="" placeholder="Cuenta o correo" required>
           <input type="password" id="contra" name="contra" abindex="2" value="" placeholder="Contraseña" required>
           <label class="mostrarcontra">
@@ -58,12 +56,8 @@
             <span class="checkmark"></span>
         </label>
           <button type="submit" class="btn">Iniciar Sesión</button>
-          <button type="button" class="btin">¿Olvidaste tu contraseña?</button>
-
-        
+          <button type="button" class="btin">¿Olvidaste tu contraseña?</button>        
           </div>
-      
-
 
     <div class="card" id="register">
       <form id="form-left" action="registro.php" method="POST">

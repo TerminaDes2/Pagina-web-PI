@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Voces del Proceso</title>
+  <link rel="stylesheet" href="estilos/publicar.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="loggin_scripts.js" defer></script>
+  <script src="Main.js" defer></script>
+</head>
+<body>
+  <header class="header-top">
+    <div class="logo">
+      <h1><a href="Main.html">Voces del Proceso</a></h1>
+    </div>
+    <nav class="main-nav">
+      <div id="menu-button" class="menu-button">
+        <img src="img/menu.svg">
+        <span class="ocultar-texto">MENU</span>
+      </div>
+      <div class="search-bar">
+        <input type="text" placeholder="Buscar..." />
+      </div>
+      <div class="social-icons">
+        <a href="#"><img src="img/facebook.svg" alt="Facebook"></a>
+        <a href="#"><img src="img/instagram.svg" alt="Instagram"></a>
+      </div>
+    </nav>
+  </header>
+
+  <div id="sidebar" class="sidebar">
+    <button id="close-button" class="close-button">Cerrar</button>
+    <ul>
+      <li><a href="Main.html">Inicio</a></li>
+      <li><a href="#">Noticias</a></li>
+      <li><a href="#">Contacto</a></li>
+      <li><a href="#">Acerca de</a></li>
+    </ul>
+    <button id="login-button" class="login-button">Login</button>
+  </div>
+
+  <main class="main">
+    <h1>Crear Nueva Publicación</h1>
+    <form action="crear_publicacion.php" method="POST" enctype="multipart/form-data">
+      <label for="titulo">Título:</label>
+      <input type="text" name="titulo" id="titulo" required>
+
+      <label for="categoria">Categoría:</label>
+      <input type="text" name="categoria" id="categoria" required>
+
+      <label for="contenido">Contenido:</label>
+      <textarea name="contenido" id="contenido" rows="10" required></textarea>
+
+      <label for="imagen">Imagen / Banner:</label>
+      <input type="file" name="imagen" id="imagen" accept="image/*">
+
+      <button type="submit">Crear Publicación</button>
+    </form>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Voces del Proceso. Todos los derechos reservados.</p>
+  </footer>
+</body>
+</html>
