@@ -11,7 +11,7 @@ body {
 }
 
 .header-top {
-  background-color: #003366;
+  background: linear-gradient(to right, #0077FF, #003399);
   color: #fff;
 }
 
@@ -58,7 +58,7 @@ body {
 }
 
 .main-nav {
-  background-color: #2E7D32;
+  background: #2E7D32;
   color: #fff;
   display: flex;
   align-items: center;

@@ -1,4 +1,4 @@
-// Carrusel
+// Carrusellll
 const carouselTrack = document.querySelector('.carousel-track');
 const carouselItems = document.querySelectorAll('.carousel-item');
 const carouselPrev = document.querySelector('.carousel-prev');

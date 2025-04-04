@@ -6,13 +6,13 @@
 
 body {
   font-family: 'Georgia', serif;
-  background-color: #f4f4f4;
-  color: #333;
+  background: linear-gradient(to left, #FFFFFF, #ade1f9);
+  color: #131313;
   line-height: 1.5; /* Espaciado entre líneas más sutil */
 }
 
 .header-top {
-  background-color: #003366;
+  background: linear-gradient(to right, #0077FF, #003399);
   color: #fff;
 }
 
@@ -28,7 +28,7 @@ body {
 
 .logo h1 {
   font-family: "Parisienne", cursive;
-  font-weight: 400;
+  font-weight: 100;
   font-style: normal;
   font-size: 1.5rem;
   text-align: center;
@@ -55,7 +55,7 @@ body {
 }
 
 .main-nav {
-  background-color: #2E7D32;
+  background: #2E7D32;
   color: #fff;
   padding: 10px 20px;
   display: flex;
@@ -134,10 +134,11 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
+  padding: 5px;
   width: 100%;
   height: auto;
   text-align: justify;
+  
 }
 
 .main-nav ul {
@@ -167,7 +168,7 @@ main h1 {
   margin-left: 20%;
   margin-right: 20%;
   text-align: justify;
-  font-size: 2.2em;
+  font-size: 2.1em;
   margin-bottom: 0.8em; 
 }
 
@@ -185,14 +186,15 @@ main {
   padding: 20px;
   width: 20%;
   overflow-wrap: break-word;
-  background-color: #3fc45b8b;
-  border: 7px solid #aaa9a9;
-  font-size: 1.2em;
-  color: #110114d9;
+  background: #2E7D32;
+  font-size: 1.25em;
+  color: #00001b;
+  border-radius: 0px;
+  height: px;
 }
 
 .indice li {
-  margin-left: 15%;
+  margin-left: 13%;
 }
 
 .noticia {
@@ -211,17 +213,17 @@ main {
   padding: 7px;
   width: 20%;
   height: 100%;
-  background-color: #3fc45b8b;
-  border: 6px solid  #aaa9a9;
+  background: #2E7D32;
   font-size: 0.99em;
-  color: #000000d9;
+  color: #00001b;
+  border-radius: 30px;
 }
 
 .imagenes {
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 2px solid #ccc;
+
 }
 
 .imagenes img {
@@ -235,7 +237,7 @@ main {
 }
 
 footer {
-  background-color: #2E7D32;
+  background-color:#2E7D32;
   color: #fff;
   text-align: center;
   padding: 15px;
@@ -281,11 +283,12 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Georgia', cursive;
+  font-family: 'Times New Roman', cursive;
   text-align: left;
   border-bottom: 2px solid #ccc;
     padding-bottom: 5px;
     margin-bottom: 10px;
+    font-weight: 899;
 }
 
 p {
