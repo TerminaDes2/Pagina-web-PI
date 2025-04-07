@@ -4,9 +4,9 @@ session_start();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     $host   = 'localhost';
-    $dbname = 'economia_blog';
+    $dbname = 'test';
     $dbuser = 'root';
-    $dbpass = 'administrador';
+    $dbpass = '';
 
     try {
         $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $dbuser, $dbpass);

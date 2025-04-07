@@ -7,6 +7,7 @@ $idioma = [
   "contenido_label"         => "Content:",
   "imagen_label"            => "Image / Banner:",
   "crear_button"            => "Create Post",
+
   // Mensajes
   "publicacion_success"     => "Post created successfully.",
   "publicacion_error"       => "Error creating post:",
@@ -22,6 +23,7 @@ $idioma = [
   "acerca_de"               => "About",
   "login"                   => "Login",
   "footer_text"             => "&copy; 2025 Voices of the Process. All rights reserved.",
+  "cerrar_sesion"           => "Logout",
   // Main
   "main_banner_title"       => "Latest Post Banner",
   "leer_mas"                => "Read more",

@@ -4,12 +4,13 @@ $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'es';
 include "lang_{$lang}.php";
 
 // Conexión a la base de datos
-$host       = "localhost";
-$usuario    = "root";
-$contrasena = "administrador";
-$bd         = "blog";
+$host   = 'localhost';
+$dbname = 'test';
+$dbuser = 'root';
+$dbpass = '';
 
-$conn = new mysqli($host, $usuario, $contrasena, $bd);
+
+$conn = new mysqli($host, $dbuser, $dbpass, $dbname);
 if ($conn->connect_error) {
     die("Error en la conexión: " . $conn->connect_error);
 }
@@ -50,29 +51,39 @@ $resultPosts = $conn->query($sqlPosts);
   <script src="Main.js" defer></script>
 </head>
 <body>
-  <header class="header-top">
-    <div class="logo">
-      <h1><a href="Main.php"><?php echo $idioma['voces_proceso']; ?></a></h1>
+<header class="header-top">
+  <div class="logo">
+    <h1><a href="Main.php"><?php echo $idioma['voces_proceso']; ?></a></h1>
+  </div>
+  <nav class="main-nav">
+    <div id="menu-button" class="menu-button">
+      <img src="img/menu.svg">
+      <span class="ocultar-texto"><?php echo $idioma['menu']; ?></span>
     </div>
-    <nav class="main-nav">
-      <div id="menu-button" class="menu-button">
-        <img src="img/menu.svg">
-        <span class="ocultar-texto"><?php echo $idioma['menu']; ?></span>
-      </div>
-      <div class="search-bar">
-        <input type="text" placeholder=<?php echo $idioma['buscar']; ?> />
-      </div>
-      <div class="social-icons">
-        <a href="#"><img src="img/facebook.svg" alt="Facebook"></a>
-        <a href="#"><img src="img/instagram.svg" alt="Instagram"></a>
-      </div>
-      <!-- Selector de idioma -->
-      <div class="lang-selector">
-        <a href="set_lang.php?lang=es">Español</a> | 
-        <a href="set_lang.php?lang=en">English</a>
-      </div>
-    </nav>
-  </header>
+    <div class="search-bar">
+      <input type="text" placeholder=<?php echo $idioma['buscar']; ?> />
+    </div>
+    <div class="social-icons">
+      <a href="#"><img src="img/facebook.svg" alt="Facebook"></a>
+      <a href="#"><img src="img/instagram.svg" alt="Instagram"></a>
+    </div>
+    <!-- Indicador de sesión -->
+    <div class="session-indicator">
+      <?php if (isset($_SESSION['username'])): ?>
+        <span><?php echo $idioma['bienvenido']; ?>, <?php echo $_SESSION['username']; ?></span>
+        <a href="logout.php"><?php echo $idioma['cerrar_sesion']; ?></a>
+      <?php else: ?>
+       
+      <?php endif; ?>
+    </div>
+    <!-- Selector de idioma -->
+    <div class="lang-selector">
+      <a href="set_lang.php?lang=es">Español</a> | 
+      <a href="set_lang.php?lang=en">English</a>
+    </div>
+  </nav>
+</header>
+</header>
 
   <div id="sidebar" class="sidebar">
     <button id="close-button" class="close-button"><?php echo $idioma['cerrar']; ?></button>
@@ -82,7 +93,15 @@ $resultPosts = $conn->query($sqlPosts);
       <li><a href="#"><?php echo $idioma['contacto']; ?></a></li>
       <li><a href="#"><?php echo $idioma['acerca_de']; ?></a></li>
     </ul>
-    <button id="login-button" class="login-button"><?php echo $idioma['login']; ?></button>
+    <?php if (isset($_SESSION['username'])): ?>
+      <button id="cerrar-sesion" class="cerrarsesion">
+        <a href="cerrarsesion.php"><?php echo $idioma['cerrar_sesion']; ?></a>
+      </button>
+    <?php else: ?>
+      <button id="login-button" class="login-button">
+        <a href="registro.php"><?php echo $idioma['iniciar_sesion']; ?></a>
+      </button>
+    <?php endif; ?>
   </div>
 
   <?php if ($banner): ?>
