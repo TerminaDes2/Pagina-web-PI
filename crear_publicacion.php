@@ -66,9 +66,9 @@ include "lang_{$lang}.php";
 
 // Configuración de la conexión a la base de datos (ajusta según tu entorno)
 $host   = 'localhost';
-$dbname = 'test';
+$dbname = 'blog';
 $dbuser = 'root';
-$dbpass = '';
+$dbpass = 'administrador';
 
 date_default_timezone_set('America/Mexico_City');
 

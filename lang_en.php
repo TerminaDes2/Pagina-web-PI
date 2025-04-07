@@ -7,7 +7,6 @@ $idioma = [
   "contenido_label"         => "Content:",
   "imagen_label"            => "Image / Banner:",
   "crear_button"            => "Create Post",
-
   // Mensajes
   "publicacion_success"     => "Post created successfully.",
   "publicacion_error"       => "Error creating post:",

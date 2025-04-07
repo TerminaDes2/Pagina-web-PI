@@ -5,9 +5,9 @@ include "lang_{$lang}.php";
 
 // Conexión a la base de datos
 $host   = 'localhost';
-$dbname = 'test';
+$dbname = 'blog';
 $dbuser = 'root';
-$dbpass = '';
+$dbpass = 'administrador';
 
 
 $conn = new mysqli($host, $dbuser, $dbpass, $dbname);
