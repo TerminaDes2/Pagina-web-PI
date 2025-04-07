@@ -22,6 +22,7 @@ $idioma = [
   "acerca_de"               => "Acerca de",
   "login"                   => "Login",
   "footer_text"             => "&copy; 2025 Voces del Proceso. Todos los derechos reservados.",
+  "cerrar_sesion"           => "Cerrar Sesión",
   // Main
   "main_banner_title"       => "Banner de la Última Publicación",
   "leer_mas"                => "Leer más",

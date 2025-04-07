@@ -4,12 +4,13 @@ $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'es';
 include "lang_{$lang}.php";
 
 // Conexión a la base de datos
-$host       = "localhost";
-$usuario    = "root";
-$contrasena = "administrador";
-$bd         = "blog";
+$host   = 'localhost';
+$dbname = 'test';
+$dbuser = 'root';
+$dbpass = '';
 
-$conn = new mysqli($host, $usuario, $contrasena, $bd);
+
+$conn = new mysqli($host, $dbuser, $dbpass, $dbname);
 if ($conn->connect_error) {
     die("Error en la conexión: " . $conn->connect_error);
 }
