@@ -1,7 +1,7 @@
 <?php
 session_start();
 $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'es';
-include "lang_{$lang}.php";
+include "../includes/lang_{$lang}.php";
 
 // Conexión a la base de datos
 $host   = 'localhost';
@@ -49,11 +49,11 @@ $resultPosts = $conn->query($sqlPosts);
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Se incluyen las fuentes y los estilos -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="estilos/main.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
         integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="Main.js" defer></script>
+    <script src="../assets/js/Main.js" defer></script>
 </head>
 <body>
     <!-- Cabecera principal -->
@@ -61,7 +61,7 @@ $resultPosts = $conn->query($sqlPosts);
         <div class="header-container">
             <div class="logo-container">
                 <div class="logo">
-                    <a href="index.php">
+                    <a href="../php/index.php">
                         <h1><?php echo $idioma['voces_proceso']; ?></h1>
                     </a>
                 </div>

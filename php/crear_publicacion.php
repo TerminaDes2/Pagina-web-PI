@@ -53,7 +53,7 @@ if ($varsesion == null || $varsesion == '') {
       <div class="message-container">
         <h1>Acceso Denegado</h1>
         <p>Usted no tiene autorización para ingresar a esta página web.</p>
-        <a href="Main.php">Regresar al Inicio</a>
+        <a href="index.php">Regresar al Inicio</a>
       </div>
       </body>
       </html>';
@@ -62,7 +62,7 @@ if ($varsesion == null || $varsesion == '') {
 
 
 $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'es';
-include "lang_{$lang}.php";
+include "../includes/lang_{$lang}.php";
 
 // Configuración de la conexión a la base de datos (ajusta según tu entorno)
 $host   = 'localhost';
@@ -146,7 +146,7 @@ if(isset($_GET['msg'])){
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title><?php echo $idioma['voces_proceso']; ?></title>
-  <link rel="stylesheet" href="estilos/publicar.css">
+  <link rel="stylesheet" href="../assets/css/publicar.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
@@ -155,8 +155,8 @@ if(isset($_GET['msg'])){
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <!-- SweetAlert2 para popups -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="loggin_scripts.js" defer></script>
-  <script src="Main.js" defer></script>
+  <script src="../assets/js/loggin_scripts.js" defer></script>
+  <script src="../assets/js/Main.js" defer></script>
   
   <style>
     /* Estilos simples para la barra de herramientas y el editor */
@@ -212,11 +212,11 @@ if(isset($_GET['msg'])){
 <body>
   <header class="header-top">
     <div class="logo">
-      <h1><a href="Main.php"><?php echo $idioma['voces_proceso']; ?></a></h1>
+      <h1><a href="../php/index.php"><?php echo $idioma['voces_proceso']; ?></a></h1>
     </div>
     <nav class="main-nav">
       <div id="menu-button" class="menu-button">
-        <img src="img/menu.svg">
+        <img src="../assets/img/menu.svg">
         <span class="ocultar-texto"><?php echo $idioma['menu']; ?></span>
       </div>
       <div class="search-bar">
@@ -233,7 +233,7 @@ if(isset($_GET['msg'])){
   <div id="sidebar" class="sidebar">
     <button id="close-button" class="close-button"><?php echo $idioma['cerrar']; ?></button>
     <ul>
-      <li><a href="Main.php"><?php echo $idioma['inicio']; ?></a></li>
+      <li><a href="index.php"><?php echo $idioma['inicio']; ?></a></li>
       <li><a href="#"><?php echo $idioma['noticias']; ?></a></li>
       <li><a href="#"><?php echo $idioma['contacto']; ?></a></li>
       <li><a href="#"><?php echo $idioma['acerca_de']; ?></a></li>
@@ -276,6 +276,10 @@ if(isset($_GET['msg'])){
 
   <footer>
     <p><?php echo $idioma['footer_text']; ?></p>
+    <div class="social-icons">
+      <img src="../assets/img/facebook.svg" alt="Facebook">
+      <img src="../assets/img/instagram.svg" alt="Instagram">
+    </div>
   </footer>
 
   <!-- Popup de notificación con SweetAlert2 -->
