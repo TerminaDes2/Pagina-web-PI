@@ -7,7 +7,7 @@ include "lang_{$lang}.php";
 $host       = "localhost";
 $usuario    = "root";
 $contrasena = "administrador";
-$bd         = "economia_blog";
+$bd         = "blog";
 
 $conn = new mysqli($host, $usuario, $contrasena, $bd);
 if ($conn->connect_error) {
@@ -62,6 +62,10 @@ $resultPosts = $conn->query($sqlPosts);
       <div class="search-bar">
         <input type="text" placeholder=<?php echo $idioma['buscar']; ?> />
       </div>
+      <div class="social-icons">
+        <a href="#"><img src="img/facebook.svg" alt="Facebook"></a>
+        <a href="#"><img src="img/instagram.svg" alt="Instagram"></a>
+      </div>
       <!-- Selector de idioma -->
       <div class="lang-selector">
         <a href="set_lang.php?lang=es">Español</a> | 
@@ -97,6 +101,12 @@ $resultPosts = $conn->query($sqlPosts);
           while ($row = $resultPosts->fetch_assoc()) {
               echo '<article class="card" onclick="window.location.href=\'publicacion.php?id=' . $row['id_entrada'] . '\'" style="cursor: pointer;">';
               
+              echo '<div class="fotos">';
+              if (!empty($row['imagen'])) {
+                  echo '<img src="' . $row['imagen'] . '" alt="' . $row['titulo'] . '">';
+              }
+              echo '</div>';
+              
               echo '<div class="texto">';
               echo '<h3>' . $row['titulo'] . '</h3>';
               echo '<div class="semicuerpo">';
@@ -104,10 +114,6 @@ $resultPosts = $conn->query($sqlPosts);
               echo '<p>' . substr($row['contenido'], 0, 100) . '...</p>';
               echo '</div>';
               echo '</div>';
-              
-              if (!empty($row['imagen'])) {
-                  echo '<div class="fotos"><img src="' . $row['imagen'] . '" alt="' . $row['titulo'] . '"></div>';
-              }
               
               echo '</article>';
           }
