@@ -22,9 +22,12 @@ $idioma = [
   "acerca_de"               => "About",
   "login"                   => "Login",
   "footer_text"             => "&copy; 2025 Voices of the Process. All rights reserved.",
+  "todos_derechos_reservados" => "All rights reserved.",
   // Main
   "main_banner_title"       => "Latest Post Banner",
   "leer_mas"                => "Read more",
+  "articulos_destacados"    => "Featured Articles",
+  "informacion_relevante"   => "Relevant Information",
   // Registro
   "login_title"             => "Login",
   "login_subtitle"          => "Welcome back! Log in to your account to record your club's attendance.",

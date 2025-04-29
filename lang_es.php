@@ -22,9 +22,12 @@ $idioma = [
   "acerca_de"               => "Acerca de",
   "login"                   => "Login",
   "footer_text"             => "&copy; 2025 Voces del Proceso. Todos los derechos reservados.",
+  "todos_derechos_reservados" => "Todos los derechos reservados.",
   // Main
   "main_banner_title"       => "Banner de la Última Publicación",
   "leer_mas"                => "Leer más",
+  "articulos_destacados"    => "Artículos Destacados",
+  "informacion_relevante"   => "Información Relevante",
   // Registro
   "login_title"             => "Inicio de Sesión",
   "login_subtitle"          => "Bienvenido de vuelta! Inicia sesión en tu cuenta para registrar las asistencias de tu club.",
