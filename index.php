@@ -1,18 +1,22 @@
 <?php
 session_start();
+
+// Forzar la cabecera HTTP para UTF-8
+header('Content-Type: text/html; charset=utf-8');
+
 $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'es';
 include "includes/lang_{$lang}.php";
 
 // Conexión a la base de datos
-$host   = 'localhost';
-$dbname = 'blog';
-$dbuser = 'root';
-$dbpass = 'administrador';
+include "includes/db_config.php";
 
-$conn = new mysqli($host, $dbuser, $dbpass, $dbname);
+$conn = new mysqli(host, dbuser, dbpass, dbname);
 if ($conn->connect_error) {
     die("Error en la conexión: " . $conn->connect_error);
 }
+
+// Configurar la conexión para usar UTF-8
+$conn->set_charset("utf8");
 
 // Consulta para obtener el banner (última entrada)
 $sqlBanner = "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, i.imagen 
@@ -101,7 +105,7 @@ $resultPosts = $conn->query($sqlPosts);
         </div>
         <div class="hero-image">
             <?php if (!empty($banner['imagen'])): ?>
-            <img src="<?php echo $banner['imagen']; ?>" alt="<?php echo $banner['titulo']; ?>">
+            <img src="php/<?php echo $banner['imagen']; ?>" alt="<?php echo $banner['titulo']; ?>">
             <?php endif; ?>
         </div>
     </section>
@@ -113,7 +117,7 @@ $resultPosts = $conn->query($sqlPosts);
                 <?php while ($row = $resultPosts->fetch_assoc()): ?>
                 <article class="carousel-item" onclick="window.location.href='php/publicacion.php?id=<?php echo $row['id_entrada']; ?>';" style="cursor:pointer;">
                     <?php if (!empty($row['imagen'])): ?>
-                    <img src="<?php echo $row['imagen']; ?>" alt="<?php echo $row['titulo']; ?>">
+                    <img src="php/<?php echo $row['imagen']; ?>" alt="<?php echo $row['titulo']; ?>">
                     <?php endif; ?>
                     <h3><?php echo $row['titulo']; ?></h3>
                     <p><?php echo substr($row['contenido'], 0, 100); ?>...</p>

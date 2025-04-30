@@ -3,13 +3,10 @@ session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
-    $host   = 'localhost';
-    $dbname = 'blog';
-    $dbuser = 'root';
-    $dbpass = 'administrador';
+    include "../includes/db_config.php";
 
     try {
-        $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $dbuser, $dbpass);
+        $pdo = new PDO("mysql:host=" . host . ";dbname=" . dbname . ";charset=utf8", dbuser, dbpass);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     } catch (PDOException $e) {
         die("Error en la conexión: " . $e->getMessage());
@@ -111,7 +108,7 @@ include "../includes/lang_{$lang}.php";?>
 <body>
   <header class="header-top">
     <div class="logo">
-      <h1><a href="../php/index.php"><?php echo $idioma['voces_proceso']; ?></a></h1>
+      <h1><a href="../index.php"><?php echo $idioma['voces_proceso']; ?></a></h1>
     </div>
     <nav class="main-nav">
       <div id="menu-button" class="menu-button">

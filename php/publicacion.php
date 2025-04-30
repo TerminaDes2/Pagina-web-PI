@@ -4,13 +4,9 @@ $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'es';
 include "../includes/lang_{$lang}.php";
 
 // Conexión a la base de datos
-$host   = 'localhost';
-$dbname = 'blog';
-$dbuser = 'root';
-$dbpass = 'administrador';
+include "../includes/db_config.php";
 
-
-$conn = new mysqli($host, $dbuser, $dbpass, $dbname);
+$conn = new mysqli(host, dbuser, dbpass, dbname);
 if ($conn->connect_error) {
     die("Error en la conexión: " . $conn->connect_error);
 }
@@ -96,7 +92,7 @@ $contenidoConAnchors = $resultado['contenido'];
 <body>
   <header class="header-top">
     <div class="logo">
-      <h1><a href="../php/index.php"><?php echo $idioma['voces_proceso']; ?></a></h1>
+      <h1><a href="../index.php"><?php echo $idioma['voces_proceso']; ?></a></h1>
     </div>
     <nav class="main-nav">
       <div id="menu-button" class="menu-button">

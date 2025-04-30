@@ -1,0 +1,21 @@
+body{
+    background-color: black;
+    color: white;
+    font-family: 'Helvetica', arial,;
+    text-align: center;
+    padding: 20vh;
+}
+h1{
+    font-size: 72px;
+}
+h3{
+    margin: 40px 0;
+}
+.btn{
+    background-color:chocolate;
+    color: white;
+    padding: 15px 30px;
+    border-radius: 20px;
+    text-decoration: none;
+    
+}
