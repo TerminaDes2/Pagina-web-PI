@@ -1,5 +1,9 @@
 <?php
 session_start();
+
+// Forzar la cabecera HTTP para UTF-8
+header('Content-Type: text/html; charset=utf-8');
+
 $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'es';
 include "includes/lang_{$lang}.php";
 
@@ -10,6 +14,9 @@ $conn = new mysqli(host, dbuser, dbpass, dbname);
 if ($conn->connect_error) {
     die("Error en la conexión: " . $conn->connect_error);
 }
+
+// Configurar la conexión para usar UTF-8
+$conn->set_charset("utf8");
 
 // Consulta para obtener el banner (última entrada)
 $sqlBanner = "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, i.imagen 

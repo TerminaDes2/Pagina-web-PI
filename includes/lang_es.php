@@ -26,6 +26,9 @@ $idioma = [
   // Main
   "main_banner_title"       => "Banner de la Última Publicación",
   "leer_mas"                => "Leer más",
+  "informacion_relevante"   => "Información relevante",
+  "articulos_destacados"    => "Articulos destacados",
+  "todos_derechos_reservados" => "Todos los derechos reservados",
   // Registro
   "login_title"             => "Inicio de Sesión",
   "login_subtitle"          => "Bienvenido de vuelta! Inicia sesión en tu cuenta para registrar las asistencias de tu club.",
