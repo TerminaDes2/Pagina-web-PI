@@ -1,65 +1,6 @@
 <?php
-// Seguridad de sesión
 session_start();
-$varsesion = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : null;
-if ($varsesion == null || $varsesion == '') {
-  echo '<!DOCTYPE html>
-      <html lang="es">
-      <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Acceso Denegado</title>
-      <style>
-        body {
-        font-family: Arial, sans-serif;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-        background-color: rgb(157, 201, 149);
-        color: rgb(1, 6, 2);
-        text-align: center;
-        }
-        .message-container {
-        border: 1px solid rgb(165, 211, 166);
-        padding: 20px;
-        background-color: rgb(130, 159, 136);
-        border-radius: 5px;
-        }
-        .message-container h1 {
-        font-size: 24px;
-        margin-bottom: 10px;
-        }
-        .message-container p {
-        font-size: 18px;
-        }
-        .message-container a {
-        display: inline-block;
-        margin-top: 15px;
-        padding: 10px 20px;
-        background-color: rgb(1, 6, 2);
-        color: white;
-        text-decoration: none;
-        border-radius: 5px;
-        font-size: 16px;
-        }
-        .message-container a:hover {
-        background-color: rgb(0, 50, 0);
-        }
-      </style>
-      </head>
-      <body>
-      <div class="message-container">
-        <h1>Acceso Denegado</h1>
-        <p>Usted no tiene autorización para ingresar a esta página web.</p>
-        <a href="index.php">Regresar al Inicio</a>
-      </div>
-      </body>
-      </html>';
-  exit();
-}
-
+include "../includes/db_config.php";
 
 $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'es';
 include "../includes/lang_{$lang}.php";
@@ -72,7 +13,7 @@ $dbpass = 'administrador';
 
 date_default_timezone_set('America/Mexico_City');
 
-$conn = new mysqli($host, $dbuser, $dbpass, $dbname);
+$conn = new mysqli(host, dbuser, dbpass, dbname);
 if ($conn->connect_error) {
     die("Error en la conexión: " . $conn->connect_error);
 }
@@ -212,7 +153,7 @@ if(isset($_GET['msg'])){
 <body>
   <header class="header-top">
     <div class="logo">
-      <h1><a href="../php/index.php"><?php echo $idioma['voces_proceso']; ?></a></h1>
+      <h1><a href="../index.php"><?php echo $idioma['voces_proceso']; ?></a></h1>
     </div>
     <nav class="main-nav">
       <div id="menu-button" class="menu-button">
