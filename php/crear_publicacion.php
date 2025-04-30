@@ -1,15 +1,14 @@
 <?php
 session_start();
+if (!isset($_SESSION['usuario'])) {
+    header("Location: registro.php?error=Debe+iniciar+sesión");
+    exit();
+}
+
 include "../includes/db_config.php";
 
 $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'es';
 include "../includes/lang_{$lang}.php";
-
-// Configuración de la conexión a la base de datos (ajusta según tu entorno)
-$host   = 'localhost';
-$dbname = 'blog';
-$dbuser = 'root';
-$dbpass = 'administrador';
 
 date_default_timezone_set('America/Mexico_City');
 
@@ -29,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Convertir el contenido a UTF-8
     $contenido = mb_convert_encoding($contenido, 'UTF-8', 'auto');
     $fecha     = date("Y-m-d");
-    $id_usuario = isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] : 1;
+    $id_usuario = $_SESSION['usuario']['id_usuario'];
     
     // Inserta la publicación en la tabla entradas (sin id_imagen aún)
     $stmt = $conn->prepare("INSERT INTO entradas (titulo, categoria, contenido, fecha, id_usuario) VALUES (?, ?, ?, ?, ?)");
@@ -117,18 +116,16 @@ if(isset($_GET['msg'])){
   </style>
   
   <script>
-    // Función de formateo con capacidad de toggle para bloques (h2, p)
+    // Función de formateo con capacidad de toggle para bloques (h2, p, listas)
     function format(command, value = null) {
-      // Solo aplicamos el toggle para bloques 'h2' y 'p'
+      // Solo aplicamos el toggle para bloques 'h2', 'p', 'insertOrderedList', 'insertUnorderedList'
       if (command === 'h2' || command === 'p') {
         let sel = window.getSelection();
         if (sel.rangeCount > 0) {
-          // Obtenemos el contenedor del nodo actual
           let container = sel.anchorNode;
           if (container.nodeType !== 1) {
             container = container.parentElement;
           }
-          // Si el contenedor ya tiene la etiqueta del comando, lo cambiamos a un bloque por defecto ('div')
           if (container.tagName.toLowerCase() === command) {
             document.execCommand('formatBlock', false, 'div');
           } else {
@@ -136,7 +133,7 @@ if(isset($_GET['msg'])){
           }
         }
       } else {
-        // Para comandos que se togglean de forma nativa (bold, italic, etc.)
+        // Para comandos como listas ordenadas/no ordenadas y otros
         document.execCommand(command, false, value);
       }
     }
@@ -200,6 +197,8 @@ if(isset($_GET['msg'])){
         <button type="button" onclick="format('bold')">Negrita</button>
         <button type="button" onclick="format('italic')">Cursiva</button>
         <button type="button" onclick="format('underline')">Subrayado</button>
+        <button type="button" onclick="format('insertOrderedList')">Lista Ordenada</button>
+        <button type="button" onclick="format('insertUnorderedList')">Lista No Ordenada</button>
       </div>
       
       <!-- Editor de texto editable -->
