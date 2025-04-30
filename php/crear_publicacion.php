@@ -53,7 +53,7 @@ if ($varsesion == null || $varsesion == '') {
       <div class="message-container">
         <h1>Acceso Denegado</h1>
         <p>Usted no tiene autorización para ingresar a esta página web.</p>
-        <a href="Main.php">Regresar al Inicio</a>
+        <a href="index.php">Regresar al Inicio</a>
       </div>
       </body>
       </html>';
@@ -62,7 +62,7 @@ if ($varsesion == null || $varsesion == '') {
 
 
 $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'es';
-include "lang_{$lang}.php";
+include "../includes/lang_{$lang}.php";
 
 // Configuración de la conexión a la base de datos (ajusta según tu entorno)
 $host   = 'localhost';
@@ -146,33 +146,81 @@ if(isset($_GET['msg'])){
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title><?php echo $idioma['voces_proceso']; ?></title>
-  <link rel="stylesheet" href="estilos/publicar.css">
+  <link rel="stylesheet" href="../assets/css/publicar.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
+  
   <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <!-- SweetAlert2 para popups -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="loggin_scripts.js" defer></script>
-  <script src="Main.js" defer></script>
+  <script src="../assets/js/loggin_scripts.js" defer></script>
+  <script src="../assets/js/Main.js" defer></script>
+  
+  <style>
+    /* Estilos simples para la barra de herramientas y el editor */
+    #toolbar {
+      margin-bottom: 10px;
+    }
+    #toolbar button {
+      padding: 5px 10px;
+      margin-right: 5px;
+      cursor: pointer;
+    }
+    #editor {
+      border: 1px solid #ccc;
+      padding: 10px;
+      min-height: 200px;
+    }
+  </style>
+  
+  <script>
+    // Función de formateo con capacidad de toggle para bloques (h2, p)
+    function format(command, value = null) {
+      // Solo aplicamos el toggle para bloques 'h2' y 'p'
+      if (command === 'h2' || command === 'p') {
+        let sel = window.getSelection();
+        if (sel.rangeCount > 0) {
+          // Obtenemos el contenedor del nodo actual
+          let container = sel.anchorNode;
+          if (container.nodeType !== 1) {
+            container = container.parentElement;
+          }
+          // Si el contenedor ya tiene la etiqueta del comando, lo cambiamos a un bloque por defecto ('div')
+          if (container.tagName.toLowerCase() === command) {
+            document.execCommand('formatBlock', false, 'div');
+          } else {
+            document.execCommand('formatBlock', false, command);
+          }
+        }
+      } else {
+        // Para comandos que se togglean de forma nativa (bold, italic, etc.)
+        document.execCommand(command, false, value);
+      }
+    }
+    
+    // Al enviar el formulario, copiamos el HTML del editor al campo oculto
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('publicacionForm').addEventListener('submit', function() {
+        document.getElementById('contenido').value = document.getElementById('editor').innerHTML;
+      });
+    });
+  </script>
+  
 </head>
 <body>
   <header class="header-top">
     <div class="logo">
-      <h1><a href="Main.php"><?php echo $idioma['voces_proceso']; ?></a></h1>
+      <h1><a href="../php/index.php"><?php echo $idioma['voces_proceso']; ?></a></h1>
     </div>
     <nav class="main-nav">
       <div id="menu-button" class="menu-button">
-        <img src="img/menu.svg">
+        <img src="../assets/img/menu.svg">
         <span class="ocultar-texto"><?php echo $idioma['menu']; ?></span>
       </div>
       <div class="search-bar">
-        <input type="text" placeholder=<?php echo $idioma['buscar']; ?> />
-      </div>
-      <div class="social-icons">
-        <a href="#"><img src="img/facebook.svg" alt="Facebook"></a>
-        <a href="#"><img src="img/instagram.svg" alt="Instagram"></a>
+        <input type="text" placeholder="<?php echo $idioma['buscar']; ?>" />
       </div>
       <!-- Enlaces para cambiar idioma -->
       <div class="lang-selector">
@@ -185,25 +233,17 @@ if(isset($_GET['msg'])){
   <div id="sidebar" class="sidebar">
     <button id="close-button" class="close-button"><?php echo $idioma['cerrar']; ?></button>
     <ul>
-      <li><a href="Main.php"><?php echo $idioma['inicio']; ?></a></li>
+      <li><a href="index.php"><?php echo $idioma['inicio']; ?></a></li>
       <li><a href="#"><?php echo $idioma['noticias']; ?></a></li>
       <li><a href="#"><?php echo $idioma['contacto']; ?></a></li>
       <li><a href="#"><?php echo $idioma['acerca_de']; ?></a></li>
     </ul>
-    <?php if (isset($_SESSION['usuario'])): ?>
-      <button id="cerrar-sesion" class="cerrarsesion">
-        <a href="cerrarsesion.php"><?php echo $idioma['cerrar_sesion']; ?></a>
-      </button>
-    <?php else: ?>
-      <button id="login-button" class="login-button">
-        <a href="login.php"><?php echo $idioma['iniciar_sesion']; ?></a>
-      </button>
-    <?php endif; ?>
+    <button id="login-button" class="login-button"><?php echo $idioma['login']; ?></button>
   </div>
 
   <main class="main">
     <h1><?php echo $idioma['crear_publicacion_title']; ?></h1>
-    <form action="crear_publicacion.php" method="POST" enctype="multipart/form-data">
+    <form id="publicacionForm" action="crear_publicacion.php" method="POST" enctype="multipart/form-data">
       <label for="titulo"><?php echo $idioma['titulo_label']; ?></label>
       <input type="text" name="titulo" id="titulo" required>
 
@@ -211,7 +251,21 @@ if(isset($_GET['msg'])){
       <input type="text" name="categoria" id="categoria" required>
 
       <label for="contenido"><?php echo $idioma['contenido_label']; ?></label>
-      <textarea name="contenido" id="contenido" rows="10" required></textarea>
+      
+      <!-- Barra de herramientas para formateo -->
+      <div id="toolbar">
+        <button type="button" onclick="format('h2')">Subtítulo</button>
+        <button type="button" onclick="format('p')">Texto Cuerpo</button>
+        <button type="button" onclick="format('bold')">Negrita</button>
+        <button type="button" onclick="format('italic')">Cursiva</button>
+        <button type="button" onclick="format('underline')">Subrayado</button>
+      </div>
+      
+      <!-- Editor de texto editable -->
+      <div id="editor" contenteditable="true"></div>
+      
+      <!-- Campo oculto para enviar el contenido formateado -->
+      <textarea name="contenido" id="contenido" style="display:none;"></textarea>
 
       <label for="imagen"><?php echo $idioma['imagen_label']; ?></label>
       <input type="file" name="imagen" id="imagen" accept="image/*">
@@ -222,6 +276,10 @@ if(isset($_GET['msg'])){
 
   <footer>
     <p><?php echo $idioma['footer_text']; ?></p>
+    <div class="social-icons">
+      <img src="../assets/img/facebook.svg" alt="Facebook">
+      <img src="../assets/img/instagram.svg" alt="Instagram">
+    </div>
   </footer>
 
   <!-- Popup de notificación con SweetAlert2 -->

@@ -8,5 +8,5 @@ session_unset();
 session_destroy();
 
 // Redirigir al usuario a la página principal con un mensaje
-header("Location: main.php?msg=" . urlencode("Sesión cerrada correctamente.") . "&msgType=success");
+header("Location: ../templates/Main.html?msg=" . urlencode("Sesión cerrada correctamente.") . "&msgType=success");
 exit();

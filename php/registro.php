@@ -93,38 +93,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'es';
-include "lang_{$lang}.php";
-?>
+include "../includes/lang_{$lang}.php";?>
 <!DOCTYPE html>
 <html lang="<?php echo $lang; ?>">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title><?php echo $idioma['voces_proceso']; ?></title>
-  <link rel="stylesheet" href="estilos/registro.css">
+  <link rel="stylesheet" href="../assets/css/registro.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="loggin_scripts.js" defer></script>
-  <script src="Main.js" defer></script>
+  <script src="../assets/js/loggin_scripts.js" defer></script>
+  <script src="../assets/js/Main.js" defer></script>
 </head>
 <body>
   <header class="header-top">
     <div class="logo">
-      <h1><a href="Main.php"><?php echo $idioma['voces_proceso']; ?></a></h1>
+      <h1><a href="../php/index.php"><?php echo $idioma['voces_proceso']; ?></a></h1>
     </div>
     <nav class="main-nav">
       <div id="menu-button" class="menu-button">
-        <img src="img/menu.svg">
+        <img src="../assets/img/menu.svg">
         <span class="ocultar-texto"><?php echo $idioma['menu']; ?></span>
       </div>
       <div class="search-bar">
         <input type="text" placeholder=<?php echo $idioma['buscar']; ?> />
       </div>
       <div class="social-icons">
-        <a href="#"><img src="img/facebook.svg" alt="Facebook"></a>
-        <a href="#"><img src="img/instagram.svg" alt="Instagram"></a>
+        <a href="#"><img src="../assets/img/facebook.svg" alt="Facebook"></a>
+        <a href="#"><img src="../assets/img/instagram.svg" alt="Instagram"></a>
       </div>
       <!-- Selector de idioma -->
       <div class="lang-selector">
@@ -137,7 +136,7 @@ include "lang_{$lang}.php";
   <div id="sidebar" class="sidebar">
     <button id="close-button" class="close-button"><?php echo $idioma['cerrar']; ?></button>
     <ul>
-      <li><a href="Main.php"><?php echo $idioma['inicio']; ?></a></li>
+      <li><a href="index.php"><?php echo $idioma['inicio']; ?></a></li>
       <li><a href="#"><?php echo $idioma['noticias']; ?></a></li>
       <li><a href="#"><?php echo $idioma['contacto']; ?></a></li>
       <li><a href="#"><?php echo $idioma['acerca_de']; ?></a></li>

@@ -1,7 +1,7 @@
 <?php
 session_start();
 $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'es';
-include "lang_{$lang}.php";
+include "includes/lang_{$lang}.php";
 
 // Conexión a la base de datos
 $host   = 'localhost';
@@ -38,7 +38,6 @@ if ($banner) {
 }
 $resultPosts = $conn->query($sqlPosts);
 ?>
-
 <!DOCTYPE html>
 <html lang="<?php echo $lang; ?>">
 <head>
@@ -47,16 +46,12 @@ $resultPosts = $conn->query($sqlPosts);
     <title><?php echo $idioma['voces_proceso']; ?> - Trabajo Decente y Crecimiento Económico</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- Se incluyen las fuentes y los estilos -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="estilos/main.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="Main.js" defer></script>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="assets/js/Main.js" defer></script>
 </head>
 <body>
-    <!-- Cabecera principal -->
     <header class="main-header">
         <div class="header-container">
             <div class="logo-container">
@@ -76,11 +71,11 @@ $resultPosts = $conn->query($sqlPosts);
                         </div>
                     </li>
                     <li class="menu-desplegable">
-                        <a href="contacto.php"><?php echo $idioma['contacto']; ?></a>
+                        <a href="templates/Contacto.html"><?php echo $idioma['contacto']; ?></a>
                         <div class="contenido-desplegable"></div>
                     </li>
                     <li class="menu-desplegable">
-                        <a href="acerca-de.php"><?php echo $idioma['acerca_de']; ?></a>
+                        <a href="templates/Acerca-de-nosotros.html"><?php echo $idioma['acerca_de']; ?></a>
                         <div class="contenido-desplegable"></div>
                     </li>
                 </ul>
@@ -98,10 +93,8 @@ $resultPosts = $conn->query($sqlPosts);
             </div>
         </div>
     </header>
-
-    <!-- Sección Hero con el banner -->
     <?php if ($banner): ?>
-    <section class="hero-section" onclick="window.location.href='publicacion.php?id=<?php echo $banner['id_entrada']; ?>';" style="cursor:pointer;">
+    <section class="hero-section" onclick="window.location.href='php/publicacion.php?id=<?php echo $banner['id_entrada']; ?>';" style="cursor:pointer;">
         <div class="hero-content">
             <h1><?php echo $banner['titulo']; ?></h1>
             <p><?php echo substr($banner['contenido'], 0, 150); ?>...</p>
@@ -113,20 +106,18 @@ $resultPosts = $conn->query($sqlPosts);
         </div>
     </section>
     <?php endif; ?>
-
-    <!-- Sección de artículos destacados en formato carrusel -->
     <section class="featured-articles" id="featured-articles">
         <h2><?php echo $idioma['articulos_destacados']; ?></h2>
         <div class="carousel-container">
             <div class="carousel-track">
                 <?php while ($row = $resultPosts->fetch_assoc()): ?>
-                <article class="carousel-item" onclick="window.location.href='publicacion.php?id=<?php echo $row['id_entrada']; ?>';" style="cursor:pointer;">
+                <article class="carousel-item" onclick="window.location.href='php/publicacion.php?id=<?php echo $row['id_entrada']; ?>';" style="cursor:pointer;">
                     <?php if (!empty($row['imagen'])): ?>
                     <img src="<?php echo $row['imagen']; ?>" alt="<?php echo $row['titulo']; ?>">
                     <?php endif; ?>
                     <h3><?php echo $row['titulo']; ?></h3>
                     <p><?php echo substr($row['contenido'], 0, 100); ?>...</p>
-                    <a href="publicacion.php?id=<?php echo $row['id_entrada']; ?>" class="btn btn-secondary"><?php echo $idioma['leer_mas']; ?></a>
+                    <a href="php/publicacion.php?id=<?php echo $row['id_entrada']; ?>" class="btn btn-secondary"><?php echo $idioma['leer_mas']; ?></a>
                 </article>
                 <?php endwhile; ?>
             </div>
@@ -136,51 +127,43 @@ $resultPosts = $conn->query($sqlPosts);
             <button class="carousel-next"><i class="fas fa-chevron-right"></i></button>
         </div>
     </section>
-
-    <!-- Sección de información relevante -->
     <section class="info-title-section">
         <h2><?php echo $idioma['informacion_relevante']; ?></h2>
     </section>
-
     <section class="info-blocks">
-            <div class="info-grid">
-                <div class="info-block">
-                    <i class="fas fa-chart-line"></i>
-                    <h3>Indicadores Económicos</h3>
-                    <p>Datos y estadísticas sobre el crecimiento económico y el empleo.</p>
-                    <a href="#" class="btn btn-tertiary">Ver más</a>
-                </div>
-                <div class="info-block">
-                    <i class="fas fa-briefcase"></i>
-                    <h3>Derechos Laborales</h3>
-                    <p>Información sobre los derechos y las responsabilidades de los trabajadores.</p>
-                    <a href="#" class="btn btn-tertiary">Ver más</a>
-                </div>
-                <div class="info-block">
-                    <i class="fas fa-users"></i>
-                    <h3>Inclusión Laboral</h3>
-                    <p>Estrategias para promover la diversidad y la inclusión en el trabajo.</p>
-                    <a href="#" class="btn btn-tertiary">Ver más</a>
-                </div>
-                <div class="info-block">
-                    <i class="fas fa-globe"></i>
-                    <h3>Trabajo Global</h3>
-                    <p>Análisis de las tendencias y los desafíos del mercado laboral a nivel mundial.</p>
-                    <a href="#" class="btn btn-tertiary">Ver más</a>
-                </div>
+        <div class="info-grid">
+            <div class="info-block">
+                <i class="fas fa-chart-line"></i>
+                <h3>Indicadores Económicos</h3>
+                <p>Datos y estadísticas sobre el crecimiento económico y el empleo.</p>
+                <a href="#" class="btn btn-tertiary">Ver más</a>
             </div>
-        </section>
-
-    <!-- Pie de página -->
+            <div class="info-block">
+                <i class="fas fa-briefcase"></i>
+                <h3>Derechos Laborales</h3>
+                <p>Información sobre los derechos y las responsabilidades de los trabajadores.</p>
+                <a href="#" class="btn btn-tertiary">Ver más</a>
+            </div>
+            <div class="info-block">
+                <i class="fas fa-users"></i>
+                <h3>Inclusión Laboral</h3>
+                <p>Estrategias para promover la diversidad y la inclusión en el trabajo.</p>
+                <a href="#" class="btn btn-tertiary">Ver más</a>
+            </div>
+            <div class="info-block">
+                <i class="fas fa-globe"></i>
+                <h3>Trabajo Global</h3>
+                <p>Análisis de las tendencias y los desafíos del mercado laboral a nivel mundial.</p>
+                <a href="#" class="btn btn-tertiary">Ver más</a>
+            </div>
+        </div>
+    </section>
     <footer class="main-footer">
         <div class="footer-container">
             <div class="footer-logo">
                 <a href="index.php">
                     <h1><?php echo $idioma['voces_proceso']; ?></h1>
                 </a>
-            </div>
-            <div class="footer-nav">
-                <!-- Opcional: enlaces adicionales -->
             </div>
             <div class="footer-social">
                 <a href="#"><i class="fab fa-facebook-f"></i></a>
@@ -194,7 +177,6 @@ $resultPosts = $conn->query($sqlPosts);
     </footer>
 </body>
 </html>
-
 <?php
 $conn->close();
 ?>

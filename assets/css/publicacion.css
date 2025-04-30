@@ -7,22 +7,15 @@
 
 /* Estilos generales para el body y tipografía */
 body {
-<<<<<<< HEAD
   font-family: 'Georgia', serif;
-  background: linear-gradient(to left, #FFFFFF, #ade1f9);
-  color: #131313;
-  line-height: 1.5; /* Espaciado entre líneas más sutil */
-=======
   /* Se elige Arial para el texto principal, mientras que los encabezados usarán Georgia */
-  font-family: Arial, sans-serif;
   background-color: #f4f4f4;
   color: #333;
   line-height: 1.5; /* Espaciado entre líneas sutil */
   display: flex;
   flex-direction: column;
-  height: 100%;
->>>>>>> ac672140f0d3a28634611d1fbf2531a5bba1579e
-}
+    height: 100%;
+  }
 
 /* Encabezados: se utiliza una tipografía serif para dar contraste */
 h1, h2, h3, h4, h5, h6 {
@@ -167,13 +160,6 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   flex-direction: column;
   align-items: center;
-<<<<<<< HEAD
-  padding: 5px;
-  width: 100%;
-  height: auto;
-  text-align: justify;
-  
-=======
   padding: 7px;
   width: 100%;
   height: auto;
@@ -183,7 +169,6 @@ h1, h2, h3, h4, h5, h6 {
   margin-left: 20%;
   margin-right: 20%;
   text-align: center;
->>>>>>> ac672140f0d3a28634611d1fbf2531a5bba1579e
 }
 
 /* Área principal de contenido */
@@ -199,7 +184,6 @@ main img {
   margin: 10%;
 }
 main h1 {
-<<<<<<< HEAD
   justify-content: justify;
 }
 
@@ -216,9 +200,7 @@ main {
   flex: 1;
   flex-direction: row;
   display: flex;
-=======
   justify-content: center;
->>>>>>> ac672140f0d3a28634611d1fbf2531a5bba1579e
 }
 
 /* Índice lateral */
@@ -229,29 +211,18 @@ main {
   padding: 7px;
   width: 20%;
   overflow-wrap: break-word;
-<<<<<<< HEAD
-  background: #2E7D32;
-  font-size: 1.25em;
-  color: #00001b;
-  border-radius: 0px;
-  height: px;
-=======
   background-color: #D9D9D9;
   border: 6px solid #ccc;
   font-size: 1.2em;
   color: #110114d9;
->>>>>>> ac672140f0d3a28634611d1fbf2531a5bba1579e
 }
 .indice li {
-<<<<<<< HEAD
-  margin-left: 13%;
-=======
+
   margin-left: 7%;
 }
 .indice li a {
   color: black;
   text-decoration: none;
->>>>>>> ac672140f0d3a28634611d1fbf2531a5bba1579e
 }
 
 /* Sección de noticias */
@@ -275,12 +246,8 @@ main {
   padding: 7px;
   width: 20%;
   height: 100%;
-<<<<<<< HEAD
-  background: #2E7D32;
-=======
   background-color: #D9D9D9;
   border: 6px solid #ccc;
->>>>>>> ac672140f0d3a28634611d1fbf2531a5bba1579e
   font-size: 0.99em;
   color: #00001b;
   border-radius: 30px;
@@ -343,7 +310,6 @@ footer {
     display: none;
   }
 }
-<<<<<<< HEAD
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Times New Roman', cursive;
@@ -353,10 +319,7 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: 10px;
     font-weight: 899;
 }
-
 p {
   text-align: justify;
   margin-bottom: 1.0em; /* Espacio entre parrafos mas sutil */
 }
-=======
->>>>>>> ac672140f0d3a28634611d1fbf2531a5bba1579e
