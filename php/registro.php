@@ -84,15 +84,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "Acción no reconocida.";
     }
 }
-
-$lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'es';
-include "../includes/lang_{$lang}.php";?>
+?>
 <!DOCTYPE html>
-<html lang="<?php echo $lang; ?>">
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title><?php echo $idioma['voces_proceso']; ?></title>
+  <title>Voces del Proceso</title>
   <link rel="stylesheet" href="../assets/css/registro.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -104,69 +102,49 @@ include "../includes/lang_{$lang}.php";?>
 <body>
   <header class="header-top">
     <div class="logo">
-      <h1><a href="../index.php"><?php echo $idioma['voces_proceso']; ?></a></h1>
+      <h1><a href="../index.php">Voces del Proceso</a></h1>
     </div>
     <nav class="main-nav">
       <div id="menu-button" class="menu-button">
         <img src="../assets/img/menu.svg">
-        <span class="ocultar-texto"><?php echo $idioma['menu']; ?></span>
+        <span class="ocultar-texto">MENU</span>
       </div>
       <div class="search-bar">
-        <input type="text" placeholder=<?php echo $idioma['buscar']; ?> />
-      </div>
-      <div class="social-icons">
-        <a href="#"><img src="../assets/img/facebook.svg" alt="Facebook"></a>
-        <a href="#"><img src="../assets/img/instagram.svg" alt="Instagram"></a>
-      </div>
-      <!-- Selector de idioma -->
-      <div class="lang-selector">
-        <a href="set_lang.php?lang=es">Español</a> | 
-        <a href="set_lang.php?lang=en">English</a>
+        <input type="text" placeholder="Buscar..." />
       </div>
     </nav>
   </header>
-
-  <div id="sidebar" class="sidebar">
-    <button id="close-button" class="close-button"><?php echo $idioma['cerrar']; ?></button>
-    <ul>
-      <li><a href="index.php"><?php echo $idioma['inicio']; ?></a></li>
-      <li><a href="#"><?php echo $idioma['noticias']; ?></a></li>
-      <li><a href="#"><?php echo $idioma['contacto']; ?></a></li>
-      <li><a href="#"><?php echo $idioma['acerca_de']; ?></a></li>
-    </ul>
-    <button id="login-button" class="login-button"><?php echo $idioma['login']; ?></button>
-  </div>
 
   <main class="main">
     <div class="card" id="datos">
       <form id="form-right" action="registro.php" method="POST">
           <input type="hidden" name="action" value="login">
-          <h1><?php echo $idioma['login_title']; ?></h1>
-          <p><?php echo $idioma['login_subtitle']; ?></p>
-          <input type="text" id="correo" name="correo" placeholder="<?php echo $idioma['login_placeholder']; ?>" required>
-          <input type="password" id="contra" name="contra" placeholder="<?php echo $idioma['login_password_placeholder']; ?>" required>
-          <button type="submit" class="btn"><?php echo $idioma['login_button']; ?></button>
-          <button class="btin" type="button" onclick="mostrarFormulario2()"><?php echo $idioma['crear_cuenta']; ?></button>
+          <h1>Inicio de Sesión</h1>
+          <p>Bienvenido de vuelta! Inicia sesión en tu cuenta para registrar las asistencias de tu club.</p>
+          <input type="text" id="correo" name="correo" placeholder="Cuenta o correo" required>
+          <input type="password" id="contra" name="contra" placeholder="Contraseña" required>
+          <button type="submit" class="btn">Iniciar Sesión</button>
+          <button class="btin" type="button" onclick="mostrarFormulario2()">Crear una cuenta nueva</button>
       </form>
     </div>
 
     <div class="card" id="register">
       <form id="form-left" action="registro.php" method="POST">
           <input type="hidden" name="action" value="register">
-          <h1><?php echo $idioma['registro_title']; ?></h1>
-          <input type="text" id="nombre" name="nombre" placeholder="<?php echo $idioma['nombre_placeholder']; ?>" required>
-          <input type="text" id="primer_apellido" name="primer_apellido" placeholder="<?php echo $idioma['primer_apellido_placeholder']; ?>" required>
-          <input type="text" id="segundo_apellido" name="segundo_apellido" placeholder="<?php echo $idioma['segundo_apellido_placeholder']; ?>" required>
-          <input type="text" id="correo" name="correo" placeholder="<?php echo $idioma['registro_correo_placeholder']; ?>" required>
-          <input type="password" id="contra" name="contra" placeholder="<?php echo $idioma['registro_password_placeholder']; ?>" required>
-          <button class="btn" type="submit"><?php echo $idioma['registrar_button']; ?></button>
-          <button class="btin" type="button" onclick="mostrarFormulario()"><?php echo $idioma['iniciar_sesion']; ?></button>
+          <h1>Registro de Cuenta</h1>
+          <input type="text" id="nombre" name="nombre" placeholder="Nombre(s)" required>
+          <input type="text" id="primer_apellido" name="primer_apellido" placeholder="Primer Apellido" required>
+          <input type="text" id="segundo_apellido" name="segundo_apellido" placeholder="Segundo Apellido" required>
+          <input type="text" id="correo" name="correo" placeholder="Cuenta o correo" required>
+          <input type="password" id="contra" name="contra" placeholder="Contraseña" required>
+          <button class="btn" type="submit">Registrar</button>
+          <button class="btin" type="button" onclick="mostrarFormulario()">Iniciar sesión</button>
       </form>
     </div>
   </main>
 
   <footer>
-    <p><?php echo $idioma['footer_text']; ?></p>
+    <p>&copy; 2025 Voces del Proceso. Todos los derechos reservados.</p>
   </footer>
 </body>
 </html>
