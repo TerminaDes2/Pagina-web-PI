@@ -4,10 +4,10 @@ $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'es';
 include "lang_{$lang}.php";
 
 // Conexión a la base de datos
-$host       = "localhost";
-$usuario    = "root";
-$contrasena = "administrador";
-$bd         = "blog";
+$host       = 'localhost';
+$bd         = 'blog';
+$usuario    = 'root';
+$contrasena = '';
 
 $conn = new mysqli($host, $usuario, $contrasena, $bd);
 if ($conn->connect_error) {
@@ -19,9 +19,9 @@ $conn->set_charset("utf8");
 // Verificar que se haya pasado el id de la publicación por GET
 if (isset($_GET['id'])) {
     $id_entrada = intval($_GET['id']);
-    $sql = "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, i.imagen 
+    $sql = "SELECT e.id_entrada, e.titulo, e.contenido, e.cita, e.fecha, i.imagen 
             FROM entradas e 
-            LEFT JOIN imagenes i ON e.id_imagen = i.id_imagen 
+            LEFT JOIN imagenes i ON e.id_entrada = i.id_entrada 
             WHERE e.id_entrada = $id_entrada";
     $result = $conn->query($sql);
     if ($result->num_rows > 0) {
@@ -38,11 +38,39 @@ if (isset($_GET['id'])) {
 // Consulta para obtener otras publicaciones (para la sección de publicidad)
 $sqlAds = "SELECT e.id_entrada, e.titulo, e.fecha, i.imagen 
            FROM entradas e 
-           LEFT JOIN imagenes i ON e.id_imagen = i.id_imagen 
+           LEFT JOIN imagenes i ON e.id_entrada = i.id_entrada 
            WHERE e.id_entrada <> $id_entrada 
            ORDER BY e.fecha DESC 
            LIMIT 2";
 $resultAds = $conn->query($sqlAds);
+
+/*Ingresar comentarios*/
+if (isset($_SESSION['registro'])) {
+  $datos = $_SESSION['registro'];
+} else {
+  echo "Hola";
+}
+
+if(isset($_POST['publicar']) && isset($datos['id_usuario']) && isset($_GET['id'])) {
+  $descripcion = trim($_POST['descripcion']);
+  $id_usuario = 1; //intval($datos['id_usuario']);
+  $id_entrada = intval($_GET['id']);
+
+  if(!empty($descripcion)) {
+    $stmt = $conn->prepare("INSERT INTO comentarios (descripcion, id_entrada, id_usuario) VALUES (?, ?, ?)");
+    $stmt->bind_param("sii", $descripcion, $id_entrada, $id_usuario);
+
+    if($stmt->execute()) {
+      echo "<p>Comentario publicado correctamente.</p>";
+    } else {
+      echo "<p>Error al publicar el comentario: " . $stmt->error . "</p>";
+    }
+
+    $stmt->close();
+  } else {
+    echo "<p>El comentario no puede estar vacío.</p>";
+  }
+}
 
 /**
  * Función para generar un índice a partir de los encabezados <h2> en el contenido.
@@ -73,6 +101,102 @@ function generarIndice($html) {
     $nuevoHtml = $dom->saveHTML();
     return ['indice' => $indice, 'contenido' => $nuevoHtml];
 }
+
+function obtenerMetadatos($url) {
+  $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    $html = curl_exec($ch);
+    curl_close($ch);
+
+    if (!$html) {
+        return false;
+    }
+
+    $dom = new DOMDocument();
+    @$dom->loadHTML($html);
+
+    $xpath = new DOMXPath($dom);
+
+    $tituloNode = $xpath->query('//meta[@property="og:title"]/@content')->item(0);
+    if ($tituloNode) {
+        $titulo = $tituloNode->nodeValue;
+    } else {
+        $tituloNode = $xpath->query('//title')->item(0);
+        $titulo = $tituloNode ? $tituloNode->nodeValue : "Título desconocido";
+    }
+
+    $autorNode = $xpath->query('//meta[@name="author"]/@content')->item(0);
+    $autor = $autorNode ? $autorNode->nodeValue : 'Autor desconocido';
+
+    $fechaNode = $xpath->query('//meta[@name="date"]/@content')->item(0);
+    if (!$fechaNode) {
+        $fechaNode = $xpath->query('//meta[@property="article:published_time"]/@content')->item(0);
+    }
+    $fecha = $fechaNode ? $fechaNode->nodeValue : 's.f.';
+
+    return [
+        'titulo' => $titulo,
+        'autor' => $autor,
+        'fecha' => $fecha,
+    ];
+}
+
+function generarCitaAPA($url) {
+  $metadatos = obtenerMetadatos($url);
+
+  if (!$metadatos) {
+      return "No se pudieron obtener los metadatos de la página.";
+  }
+
+  $fecha_acceso = date('Y');
+  $cita_apa = "{$metadatos['autor']}. ({$metadatos['fecha']}). {$metadatos['titulo']}. Recuperado el {$fecha_acceso} de {$url}";
+
+  return $cita_apa;
+}
+
+/*function obtenerMetadatos($url) {
+  $html = @file_get_contents($url);
+  if(!$html) {
+    return "No se pudo acceder a la URL";
+  }
+
+  $doc = new DOMDocument();
+  @$doc->loadHTML($html);
+
+  $xpath = new DOMXPath($doc);
+
+  $tags = [
+    "title" => "//title",
+    "author" => "//meta[@name='author']/@content",
+    "date" => "//meta[@name='date']/@content | //meta[@property='article:published_time']/@content",
+    "publisher" => "//meta[@name='publisher']/@content | //meta[@property='og:site_name']/@content"
+  ];
+
+  $metadatos = [];
+  foreach ($tags as $key => $query) {
+    $nodeList = $xpath->query($query);
+    $metadatos[$key] = ($nodeList && $nodeList->length > 0) ? $nodeList->item(0)->nodeValue : "";
+  }
+
+    return $metadatos;
+}
+
+function generarCitaAPA($url) {
+  $datos = obtenerMetadatos($url);
+  if (is_string($datos)) {
+    return $datos;
+  }
+
+  $autor = $datos['author'] ?: "Autor desconocido";
+  $titulo = $datos['title'] ?: "Título desconocido";
+  $fecha = $datos['date'] ?: date("Y");  
+  $sitio = $datos['publisher'] ?: parse_url($url, PHP_URL_HOST);
+
+  return "$autor. ($fecha). *$titulo*. $sitio. Disponible en: $url";
+}*/
+$url = $entrada['cita'];
+$cita = generarCitaAPA($url);
 
 $htmlContenido = nl2br($entrada['contenido']);
 $resultado = generarIndice($htmlContenido);
@@ -147,9 +271,10 @@ $contenidoConAnchors = $resultado['contenido'];
             echo '<img src="' . $entrada['imagen'] . '" alt="' . $entrada['titulo'] . '">';
         }
         ?>
-        <p><strong>Fecha:</strong> <?php echo $entrada['fecha']; ?></p>
+        <p><strong>Fecha:</strong><?php echo $entrada['fecha']; ?></p>
         <div>
           <?php echo $contenidoConAnchors; ?>
+          <?php echo $cita ?>
         </div>
       </article>
     </div>
@@ -171,10 +296,26 @@ $contenidoConAnchors = $resultado['contenido'];
       }
       ?>
     </aside>
+
+    <!-- Comentarios -->
+    <div>
+      <button class="btn_comen">Comentar</button>
+      <form action="publicacion.php?id=<?= $id_entrada ?>" method="POST" class="modal">
+        <div class="modal_container">
+          <label class="modal_title">Mario Alberto Ballato Román</label><br>
+          <label class="modal_comen">Comentario:</label><br>
+          <input type="text" class="modal_paragraph" id="descripcion" name="descripcion"><br>
+          <button type="submit" id="publicar" name="publicar" class="modal_publi">Publicar</button>
+          <button type="button" class="modal_close">Cancelar</button>
+        </div>
+      </form>
+    </div>
   </main>
 
   <footer>
     <p><?php echo $idioma['footer_text']; ?></p>
   </footer>
+  
+  <script src="comentarios.js"></script>
 </body>
 </html>

@@ -4,10 +4,10 @@ $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'es';
 include "lang_{$lang}.php";
 
 // Conexión a la base de datos
-$host       = "localhost";
-$usuario    = "root";
-$contrasena = "administrador";
-$bd         = "blog";
+$host       = 'localhost';
+$bd         = 'blog';
+$usuario    = 'root';
+$contrasena = '';
 
 $conn = new mysqli($host, $usuario, $contrasena, $bd);
 if ($conn->connect_error) {
@@ -16,7 +16,7 @@ if ($conn->connect_error) {
 
 $sqlBanner = "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, i.imagen 
               FROM entradas e 
-              LEFT JOIN imagenes i ON e.id_imagen = i.id_imagen 
+              LEFT JOIN imagenes i ON e.id_entrada = i.id_entrada
               ORDER BY e.id_entrada DESC 
               LIMIT 1";
 $resultBanner = $conn->query($sqlBanner);
@@ -25,13 +25,13 @@ $banner = ($resultBanner->num_rows > 0) ? $resultBanner->fetch_assoc() : null;
 if ($banner) {
     $sqlPosts = "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, i.imagen 
                  FROM entradas e 
-                 LEFT JOIN imagenes i ON e.id_imagen = i.id_imagen 
+                 LEFT JOIN imagenes i ON e.id_entrada = i.id_entrada 
                  WHERE e.id_entrada <> " . $banner['id_entrada'] . " 
                  ORDER BY e.id_entrada DESC";
 } else {
     $sqlPosts = "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, i.imagen 
                  FROM entradas e 
-                 LEFT JOIN imagenes i ON e.id_imagen = i.id_imagen 
+                 LEFT JOIN imagenes i ON e.id_entrada = i.id_entrada 
                  ORDER BY e.id_imagen DESC";
 }
 $resultPosts = $conn->query($sqlPosts);

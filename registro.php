@@ -1,4 +1,14 @@
 <?php
+// Libreria PHPMailer para poder mandar correo de verificación
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+// Incluye los archivos necesarios de PHPMailer
+require 'PHPMailer-master/src/PHPMailer.php';
+require 'PHPMailer-master/src/SMTP.php';
+require 'PHPMailer-master/src/Exception.php';
+
 session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -16,13 +26,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     
-    if (isset($_POST['action']) && $_POST['action'] === 'register') {
-        
+    if (isset($_POST['action']) && $_POST['action'] === 'register') {    
+
         $nombre           = trim($_POST['nombre']);
         $primer_apellido  = trim($_POST['primer_apellido']);
         $segundo_apellido = trim($_POST['segundo_apellido']);
         $correo           = filter_input(INPUT_POST, 'correo', FILTER_SANITIZE_EMAIL);
         $contra           = $_POST['contra'];
+        $codigo           = rand(100000, 999999); // Codigo que se mandara como verificacion al correo (Codigo de 6 digitos)
 
         
         if (empty($nombre) || empty($primer_apellido) || empty($correo) || empty($contra)) {
@@ -40,10 +51,57 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit;
         }
 
-        
         $hashed_password = password_hash($contra, PASSWORD_DEFAULT);
 
-        $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, primer_apellido, segundo_apellido, correo, contra) VALUES (:nombre, :primer_apellido, :segundo_apellido, :correo, :contra)");
+        // SESION para guardar los datos de registro.
+        $_SESSION['registro'] = [
+          'nombre'            => $nombre,
+          'primer_apellido'   => $primer_apellido,
+          'segundo_apellido'  => $segundo_apellido,
+          'correo'            => $correo,
+          'contra'            => $contra,
+          'codigo'            => $codigo
+        ];
+
+        // Enviar correo
+        $mail = new PHPMailer(true);
+
+        try {
+          $mail-> isSMTP();
+          $mail->Host = 'smtp.gmail.com';
+          $mail->SMTPAuth = true;
+          $mail->Username = 'ballatomario1105@gmail.com';
+          $mail->Password = 'sbeu lcaj evzk bysk';
+          $mail->SMTPSecure = 'tls';
+          $mail->Port = 587;
+
+          $mail->CharSet = 'UTF-8';
+          $mail->Encoding = 'base64';
+
+          $mail->setFrom('ballatomario1105@gmail.com', 'Registro');
+          $mail->addAddress($correo, "$nombre" . "$primer_apellido");
+
+          $mail->isHTML(true);
+          $mail->Subject = 'Verificación de tu cuenta';
+          $mail->Body =
+          "<h2>¡Bienvenido!</h2>
+           <p>Hola {$nombre} {$primer_apellido} {$segundo_apellido}</p>
+           <p>Gracias por registrarte en nuestro sitio web.</p>
+           <p>Para completar tu registro, por favor utiliza el siguiente código de verificación:</p>
+           <h3>Código de verificación: </h3><h3 style = 'color: red;'>{$codigo}</h3>
+           <p>Ingresa este código en el formulario de verificación para activar tu cuenta.</p>
+           <p>Si nos has solicitado este registro, puedes ignorar este mensaje.</p>
+           <p>¡Bienvenido a nuestra comunidad!</p>
+           <p>El equipo de [Nombre de tu pagina]</p>
+           <a href='localhost/pagina-web-pi/verificar.html'>Verifica aquí</a>";
+
+          $mail->send();
+          echo "Código enviado al correo. <a href='verificar.html'>Verifica aquí</a>";
+        } catch (Exception $e) {
+          echo "Error al enviar el correo: {$mail->ErrorInfo}";
+        }
+
+        /*$stmt = $pdo->prepare("INSERT INTO usuarios (nombre, primer_apellido, segundo_apellido, correo, contra) VALUES (:nombre, :primer_apellido, :segundo_apellido, :correo, :contra)");
         $stmt->bindParam(':nombre', $nombre);
         $stmt->bindParam(':primer_apellido', $primer_apellido);
         $stmt->bindParam(':segundo_apellido', $segundo_apellido);
@@ -52,7 +110,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->execute();
 
         header("Location: crear_publicacion.php?success=Registro+exitoso");
-        exit();
+        exit();*/
     } elseif (isset($_POST['action']) && $_POST['action'] === 'login') {
         
         $correo = filter_input(INPUT_POST, 'correo', FILTER_SANITIZE_EMAIL);
