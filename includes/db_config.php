@@ -4,4 +4,5 @@ define('host', 'localhost');
 define('dbname', 'blog');
 define('dbuser', 'root');
 define('dbpass', 'administrador');
+
 ?>

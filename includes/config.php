@@ -16,4 +16,5 @@ return [
         'location' => 'southcentralus'
     ]
 ];
+
 ?>
