@@ -1,7 +1,7 @@
 <?php
     session_start();
     $codigoIngresado = $_POST['codigo'];
-
+    include "../includes/db_config.php";
     if (!isset($_SESSION['registro'])) {
         die("No hay datos para verificar.");
     }
@@ -10,7 +10,7 @@
 
     if ($codigoIngresado == $datos['codigo']) {
         // Conectar con base de datos
-        $conn = new mysqli('localhost', 'root', '', 'blog');
+        $conn = new mysqli(host, dbuser, dbpass, dbname);
         if ($conn->connect_error) {
             die("Error de conexión: " . $conn->connect_error);
         }

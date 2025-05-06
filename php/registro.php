@@ -1,17 +1,112 @@
 <?php
+// Libreria PHPMailer para poder mandar correo de verificación
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+// Incluye los archivos necesarios de PHPMailer
+require '../PHPMailer-master/src/PHPMailer.php';
+require '../PHPMailer-master/src/SMTP.php';
+require '../PHPMailer-master/src/Exception.php';
+
 session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     include "../includes/db_config.php";
-
+    
     try {
-        $pdo = new PDO("mysql:host=" . host . ";dbname=" . dbname . ";charset=utf8", dbuser, dbpass);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+      $pdo = new PDO("mysql:host=" . host . ";dbname=" . dbname . ";charset=utf8", dbuser, dbpass);
+      $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     } catch (PDOException $e) {
         die("Error en la conexión: " . $e->getMessage());
     }
+    
+    if (isset($_POST['action']) && $_POST['action'] === 'register') {    
 
-    if (isset($_POST['action']) && $_POST['action'] === 'login') {
+        $nombre           = trim($_POST['nombre']);
+        $primer_apellido  = trim($_POST['primer_apellido']);
+        $segundo_apellido = trim($_POST['segundo_apellido']);
+        $correo           = filter_input(INPUT_POST, 'correo', FILTER_SANITIZE_EMAIL);
+        $contra           = $_POST['contra'];
+        $codigo           = rand(100000, 999999); // Codigo que se mandara como verificacion al correo (Codigo de 6 digitos)
+
+        
+        if (empty($nombre) || empty($primer_apellido) || empty($correo) || empty($contra)) {
+            echo "Por favor, completa todos los campos requeridos.";
+            exit;
+        }
+
+        
+        $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE correo = :correo");
+        $stmt->bindParam(':correo', $correo);
+        $stmt->execute();
+
+        if ($stmt->rowCount() > 0) {
+            echo "El correo ya está registrado. <a href='login.php'>Inicia sesión</a>.";
+            exit;
+        }
+
+        $hashed_password = password_hash($contra, PASSWORD_DEFAULT);
+
+        // SESION para guardar los datos de registro.
+        $_SESSION['registro'] = [
+          'nombre'            => $nombre,
+          'primer_apellido'   => $primer_apellido,
+          'segundo_apellido'  => $segundo_apellido,
+          'correo'            => $correo,
+          'contra'            => $contra,
+          'codigo'            => $codigo
+        ];
+
+        // Enviar correo
+        $mail = new PHPMailer(true);
+
+        try {
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'ballatomario1105@gmail.com';
+            $mail->Password = 'sbeu lcaj evzk bysk';
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Cambiar a constante recomendada
+            $mail->Port = 587;
+
+            $mail->SMTPOptions = [
+                'ssl' => [
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                    'allow_self_signed' => true,
+                ],
+            ];
+
+            $mail->CharSet = 'UTF-8';
+            $mail->Encoding = 'base64';
+
+            $mail->setFrom('ballatomario1105@gmail.com', 'Registro');
+            $mail->addAddress($correo, "$nombre $primer_apellido");
+
+            $mail->isHTML(true);
+            $mail->Subject = 'Verificación de tu cuenta';
+            $mail->Body =
+                "<h2>¡Bienvenido!</h2>
+                 <p>Hola {$nombre} {$primer_apellido} {$segundo_apellido}</p>
+                 <p>Gracias por registrarte en nuestro sitio web.</p>
+                 <p>Para completar tu registro, por favor utiliza el siguiente código de verificación:</p>
+                 <h3>Código de verificación: </h3><h3 style='color: red;'>{$codigo}</h3>
+                 <p>Ingresa este código en el formulario de verificación para activar tu cuenta.</p>
+                 <p>Si no has solicitado este registro, puedes ignorar este mensaje.</p>
+                 <p>¡Bienvenido a nuestra comunidad!</p>
+                 <p>El equipo de [Nombre de tu página]</p>
+                 <a href='localhost/pagina-web-pi/templates/verificar.html'>Verifica aquí</a>";
+
+            $mail->send();
+            echo "Código enviado al correo. <a href='../templates/verificar.html'>Verifica aquí</a>";
+        } catch (Exception $e) {
+            error_log("Error al enviar el correo: {$mail->ErrorInfo}"); // Registrar el error en el log
+            echo "Hubo un problema al enviar el correo. Por favor, intenta más tarde.";
+        }
+
+    } elseif (isset($_POST['action']) && $_POST['action'] === 'login') {
+        
         $correo = filter_input(INPUT_POST, 'correo', FILTER_SANITIZE_EMAIL);
         $contra = $_POST['contra'];
 
@@ -19,7 +114,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "Por favor, ingresa tanto el correo como la contraseña.";
             exit;
         }
-
+       
         $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE correo = :correo");
         $stmt->bindParam(':correo', $correo);
         $stmt->execute();
@@ -27,8 +122,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($usuario) {
+            
             if (password_verify($contra, $usuario['contra'])) {
-                // Almacena los datos del usuario en la sesión
                 $_SESSION['usuario'] = [
                     'id_usuario'      => $usuario['id_usuario'],
                     'nombre'          => $usuario['nombre'],
@@ -44,42 +139,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             echo "Usuario no encontrado.";
         }
-    } elseif (isset($_POST['action']) && $_POST['action'] === 'register') {
-        $nombre = trim($_POST['nombre']);
-        $primer_apellido = trim($_POST['primer_apellido']);
-        $segundo_apellido = trim($_POST['segundo_apellido']);
-        $correo = filter_input(INPUT_POST, 'correo', FILTER_SANITIZE_EMAIL);
-        $contra = $_POST['contra'];
-
-        if (empty($nombre) || empty($primer_apellido) || empty($correo) || empty($contra)) {
-            echo "Por favor, completa todos los campos requeridos.";
-            exit;
-        }
-
-        // Verifica si el correo ya está registrado
-        $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE correo = :correo");
-        $stmt->bindParam(':correo', $correo);
-        $stmt->execute();
-
-        if ($stmt->rowCount() > 0) {
-            echo "El correo ya está registrado. <a href='registro.php'>Inicia sesión</a>.";
-            exit;
-        }
-
-        // Hashea la contraseña
-        $hashed_password = password_hash($contra, PASSWORD_DEFAULT);
-
-        // Inserta el nuevo usuario en la base de datos
-        $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, primer_apellido, segundo_apellido, correo, contra) VALUES (:nombre, :primer_apellido, :segundo_apellido, :correo, :contra)");
-        $stmt->bindParam(':nombre', $nombre);
-        $stmt->bindParam(':primer_apellido', $primer_apellido);
-        $stmt->bindParam(':segundo_apellido', $segundo_apellido);
-        $stmt->bindParam(':correo', $correo);
-        $stmt->bindParam(':contra', $hashed_password);
-        $stmt->execute();
-
-        echo "Registro exitoso. <a href='registro.php'>Inicia sesión</a>.";
-        exit;
     } else {
         echo "Acción no reconocida.";
     }
