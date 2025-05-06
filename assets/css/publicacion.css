@@ -234,8 +234,8 @@ main {
   width: 60%;
   height: auto;
 }
-.noticia ul {
-  padding-left: 5%;
+.noticia ul, .noticia ol {
+  margin-left: 20px;
 }
 
 /* Publicidad */

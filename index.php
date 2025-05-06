@@ -4,9 +4,6 @@ session_start();
 // Forzar la cabecera HTTP para UTF-8
 header('Content-Type: text/html; charset=utf-8');
 
-$lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'es';
-include "includes/lang_{$lang}.php";
-
 // Conexión a la base de datos
 include "includes/db_config.php";
 
@@ -43,11 +40,11 @@ if ($banner) {
 $resultPosts = $conn->query($sqlPosts);
 ?>
 <!DOCTYPE html>
-<html lang="<?php echo $lang; ?>">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo $idioma['voces_proceso']; ?> - Trabajo Decente y Crecimiento Económico</title>
+    <title>Voces del Proceso - Trabajo Decente y Crecimiento Económico</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
@@ -61,32 +58,32 @@ $resultPosts = $conn->query($sqlPosts);
             <div class="logo-container">
                 <div class="logo">
                     <a href="index.php">
-                        <h1><?php echo $idioma['voces_proceso']; ?></h1>
+                        <h1>Voces del Proceso</h1>
                     </a>
                 </div>
             </div>
             <nav class="main-nav">
                 <ul>
-                    <li><a href="index.php"><?php echo $idioma['inicio']; ?></a></li>
+                    <li><a href="index.php">Inicio</a></li>
                     <li class="menu-desplegable">
-                        <a href="#"><?php echo $idioma['noticias']; ?></a>
+                        <a href="#">Noticias</a>
                         <div class="contenido-desplegable">
                             <!-- Submenú (opcional) -->
                         </div>
                     </li>
                     <li class="menu-desplegable">
-                        <a href="templates/Contacto.html"><?php echo $idioma['contacto']; ?></a>
+                        <a href="templates/Contacto.html">Contacto</a>
                         <div class="contenido-desplegable"></div>
                     </li>
                     <li class="menu-desplegable">
-                        <a href="templates/Acerca-de-nosotros.html"><?php echo $idioma['acerca_de']; ?></a>
+                        <a href="templates/Acerca-de-nosotros.html">Acerca de</a>
                         <div class="contenido-desplegable"></div>
                     </li>
                 </ul>
             </nav>
             <div class="header-actions">
                 <div class="search-box">
-                    <input type="text" placeholder="<?php echo $idioma['buscar']; ?>">
+                    <input type="text" placeholder="Buscar...">
                     <button><i class="fas fa-search"></i></button>
                 </div>
                 <div class="social-icons">
@@ -111,7 +108,7 @@ $resultPosts = $conn->query($sqlPosts);
     </section>
     <?php endif; ?>
     <section class="featured-articles" id="featured-articles">
-        <h2><?php echo $idioma['articulos_destacados']; ?></h2>
+        <h2>Artículos destacados</h2>
         <div class="carousel-container">
             <div class="carousel-track">
                 <?php while ($row = $resultPosts->fetch_assoc()): ?>
@@ -121,7 +118,7 @@ $resultPosts = $conn->query($sqlPosts);
                     <?php endif; ?>
                     <h3><?php echo $row['titulo']; ?></h3>
                     <p><?php echo substr($row['contenido'], 0, 100); ?>...</p>
-                    <a href="php/publicacion.php?id=<?php echo $row['id_entrada']; ?>" class="btn btn-secondary"><?php echo $idioma['leer_mas']; ?></a>
+                    <a href="php/publicacion.php?id=<?php echo $row['id_entrada']; ?>" class="btn btn-secondary">Leer más</a>
                 </article>
                 <?php endwhile; ?>
             </div>
@@ -132,7 +129,7 @@ $resultPosts = $conn->query($sqlPosts);
         </div>
     </section>
     <section class="info-title-section">
-        <h2><?php echo $idioma['informacion_relevante']; ?></h2>
+        <h2>Información relevante</h2>
     </section>
     <section class="info-blocks">
         <div class="info-grid">
@@ -166,7 +163,7 @@ $resultPosts = $conn->query($sqlPosts);
         <div class="footer-container">
             <div class="footer-logo">
                 <a href="index.php">
-                    <h1><?php echo $idioma['voces_proceso']; ?></h1>
+                    <h1>Voces del Proceso</h1>
                 </a>
             </div>
             <div class="footer-social">
@@ -175,7 +172,7 @@ $resultPosts = $conn->query($sqlPosts);
                 <a href="#"><i class="fab fa-instagram"></i></a>
             </div>
             <div class="footer-copyright">
-                <p>&copy; 2025 <?php echo $idioma['voces_proceso']; ?>. <?php echo $idioma['todos_derechos_reservados']; ?></p>
+                <p>&copy; 2025 Voces del Proceso. Todos los derechos reservados.</p>
             </div>
         </div>
     </footer>

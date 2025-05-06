@@ -1,7 +1,5 @@
 <?php
 session_start();
-$lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'es';
-include "../includes/lang_{$lang}.php";
 
 // Conexión a la base de datos
 include "../includes/db_config.php";
@@ -78,7 +76,7 @@ $contenidoConAnchors = $resultado['contenido'];
 ?>
 
 <!DOCTYPE html>
-<html lang="<?php echo $lang; ?>">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <title><?php echo $entrada['titulo']; ?></title>
@@ -92,37 +90,28 @@ $contenidoConAnchors = $resultado['contenido'];
 <body>
   <header class="header-top">
     <div class="logo">
-      <h1><a href="../index.php"><?php echo $idioma['voces_proceso']; ?></a></h1>
+      <h1><a href="../index.php">Voces del Proceso</a></h1>
     </div>
     <nav class="main-nav">
       <div id="menu-button" class="menu-button">
         <img src="./assets/img/menu.svg">
-        <span class="ocultar-texto"><?php echo $idioma['menu']; ?></span>
+        <span class="ocultar-texto">MENU</span>
       </div>
       <div class="search-bar">
-        <input type="text" placeholder=<?php echo $idioma['buscar']; ?> />
-      </div>
-      <div class="social-icons">
-        <a href="#"><img src="fab fa-facebook-f" alt="Facebook"></a>
-        <a href="#"><img src="./assets/img/instagram.svg" alt="Instagram"></a>
-      </div>
-      <!-- Selector de idioma -->
-      <div class="lang-selector">
-        <a href="set_lang.php?lang=es">Español</a> | 
-        <a href="set_lang.php?lang=en">English</a>
+        <input type="text" placeholder="Buscar..." />
       </div>
     </nav>
   </header>
 
   <div id="sidebar" class="sidebar">
-    <button id="close-button" class="close-button"><?php echo $idioma['cerrar']; ?></button>
+    <button id="close-button" class="close-button">Cerrar</button>
     <ul>
-      <li><a href="index.php"><?php echo $idioma['inicio']; ?></a></li>
-      <li><a href="#"><?php echo $idioma['noticias']; ?></a></li>
-      <li><a href="#"><?php echo $idioma['contacto']; ?></a></li>
-      <li><a href="#"><?php echo $idioma['acerca_de']; ?></a></li>
+      <li><a href="index.php">Inicio</a></li>
+      <li><a href="#">Noticias</a></li>
+      <li><a href="#">Contacto</a></li>
+      <li><a href="#">Acerca de</a></li>
     </ul>
-    <button id="login-button" class="login-button"><?php echo $idioma['login']; ?></button>
+    <button id="login-button" class="login-button">Login</button>
   </div>
 
   <div class="titulo">
@@ -171,7 +160,7 @@ $contenidoConAnchors = $resultado['contenido'];
   </main>
 
   <footer>
-    <p><?php echo $idioma['footer_text']; ?></p>
+    <p>&copy; 2025 Voces del Proceso. Todos los derechos reservados.</p>
   </footer>
 </body>
 </html>
