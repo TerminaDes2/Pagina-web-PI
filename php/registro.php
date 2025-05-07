@@ -10,6 +10,33 @@ require '../PHPMailer-master/src/SMTP.php';
 require '../PHPMailer-master/src/Exception.php';
 
 session_start();
+// Verificar si el idioma está configurado en la sesión, si no, establecer un idioma predeterminado
+if (!isset($_SESSION['idioma'])) {
+  $_SESSION['idioma'] = 'es'; // Idioma predeterminado
+}
+
+// Incluir configuración de base de datos
+require_once '../includes/db_config.php';
+
+try {
+    $conn = new mysqli(host, dbuser, dbpass, dbname);
+    if ($conn->connect_error) {
+        throw new Exception("Error en la conexión a la base de datos: " . $conn->connect_error);
+    }
+} catch (Exception $e) {
+    die($e->getMessage());
+}
+
+// Incluir el traductor
+require_once '../includes/traductor.php';
+$translator = new Translator($conn);
+
+// Manejar cambio de idioma
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idioma'])) {
+    $translator->cambiarIdioma($_POST['idioma']);
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     include "../includes/db_config.php";
@@ -32,17 +59,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         
         if (empty($nombre) || empty($primer_apellido) || empty($correo) || empty($contra)) {
-            echo "Por favor, completa todos los campos requeridos.";
+            echo $translator->__("Por favor, completa todos los campos requeridos.");
             exit;
         }
-
         
         $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE correo = :correo");
         $stmt->bindParam(':correo', $correo);
         $stmt->execute();
 
         if ($stmt->rowCount() > 0) {
-            echo "El correo ya está registrado. <a href='login.php'>Inicia sesión</a>.";
+            echo $translator->__("El correo ya está registrado.") . " <a href='login.php'>" . $translator->__("Inicia sesión") . "</a>.";
             exit;
         }
 
@@ -85,24 +111,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mail->addAddress($correo, "$nombre $primer_apellido");
 
             $mail->isHTML(true);
-            $mail->Subject = 'Verificación de tu cuenta';
+            $mail->Subject = $translator->__('Verificación de tu cuenta');
             $mail->Body =
-                "<h2>¡Bienvenido!</h2>
-                 <p>Hola {$nombre} {$primer_apellido} {$segundo_apellido}</p>
-                 <p>Gracias por registrarte en nuestro sitio web.</p>
-                 <p>Para completar tu registro, por favor utiliza el siguiente código de verificación:</p>
-                 <h3>Código de verificación: </h3><h3 style='color: red;'>{$codigo}</h3>
-                 <p>Ingresa este código en el formulario de verificación para activar tu cuenta.</p>
-                 <p>Si no has solicitado este registro, puedes ignorar este mensaje.</p>
-                 <p>¡Bienvenido a nuestra comunidad!</p>
-                 <p>El equipo de [Nombre de tu página]</p>
-                 <a href='localhost/pagina-web-pi/templates/verificar.html'>Verifica aquí</a>";
+                "<h2>" . $translator->__("¡Bienvenido!") . "</h2>
+                 <p>" . $translator->__("Hola") . " {$nombre} {$primer_apellido} {$segundo_apellido}</p>
+                 <p>" . $translator->__("Gracias por registrarte en nuestro sitio web.") . "</p>
+                 <p>" . $translator->__("Para completar tu registro, por favor utiliza el siguiente código de verificación:") . "</p>
+                 <h3>" . $translator->__("Código de verificación:") . " </h3><h3 style='color: red;'>{$codigo}</h3>
+                 <p>" . $translator->__("Ingresa este código en el formulario de verificación para activar tu cuenta.") . "</p>
+                 <p>" . $translator->__("Si no has solicitado este registro, puedes ignorar este mensaje.") . "</p>
+                 <p>" . $translator->__("¡Bienvenido a nuestra comunidad!") . "</p>
+                 <p>" . $translator->__("El equipo de [Nombre de tu página]") . "</p>
+                 <a href='localhost/pagina-web-pi/templates/verificar.html'>" . $translator->__("Verifica aquí") . "</a>";
 
             $mail->send();
-            echo "Código enviado al correo. <a href='../templates/verificar.html'>Verifica aquí</a>";
+            echo $translator->__("Código enviado al correo.") . " <a href='../templates/verificar.html'>" . $translator->__("Verifica aquí") . "</a>";
         } catch (Exception $e) {
             error_log("Error al enviar el correo: {$mail->ErrorInfo}"); // Registrar el error en el log
-            echo "Hubo un problema al enviar el correo. Por favor, intenta más tarde.";
+            echo $translator->__("Hubo un problema al enviar el correo. Por favor, intenta más tarde.");
         }
 
     } elseif (isset($_POST['action']) && $_POST['action'] === 'login') {
@@ -111,7 +137,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $contra = $_POST['contra'];
 
         if (empty($correo) || empty($contra)) {
-            echo "Por favor, ingresa tanto el correo como la contraseña.";
+            echo $translator->__("Por favor, ingresa tanto el correo como la contraseña.");
             exit;
         }
        
@@ -131,16 +157,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     'segundo_apellido'=> $usuario['segundo_apellido'],
                     'correo'          => $usuario['correo']
                 ];
-                header("Location: crear_publicacion.php?success=Bienvenido");
+                header("Location: crear_publicacion.php?success=" . urlencode($translator->__("Bienvenido")));
                 exit();
             } else {
-                echo "Contraseña incorrecta.";
+                echo $translator->__("Contraseña incorrecta.");
             }
         } else {
-            echo "Usuario no encontrado.";
+            echo $translator->__("Usuario no encontrado.");
         }
     } else {
-        echo "Acción no reconocida.";
+        echo $translator->__("Acción no reconocida.");
     }
 }
 ?>
@@ -161,15 +187,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
   <header class="header-top">
     <div class="logo">
-      <h1><a href="../index.php">Voces del Proceso</a></h1>
+      <h1><a href="../index.php">"Voces del Proceso"</a></h1>
     </div>
     <nav class="main-nav">
       <div id="menu-button" class="menu-button">
         <img src="../assets/img/menu.svg">
-        <span class="ocultar-texto">MENU</span>
+        <span class="ocultar-texto"><?= $translator->__("MENU") ?></span>
       </div>
       <div class="search-bar">
-        <input type="text" placeholder="Buscar..." />
+        <input type="text" placeholder="<?= $translator->__("Buscar...") ?>" />
       </div>
     </nav>
   </header>
@@ -178,32 +204,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="card" id="datos">
       <form id="form-right" action="registro.php" method="POST">
           <input type="hidden" name="action" value="login">
-          <h1>Inicio de Sesión</h1>
-          <p>Bienvenido de vuelta! Inicia sesión en tu cuenta para registrar las asistencias de tu club.</p>
+          <h1><?= $translator->__("Inicio de Sesión") ?></h1>
+          <p><?= $translator->__("Bienvenido de vuelta! Inicia sesión en tu cuenta para registrar las asistencias de tu club.") ?></p>
           <input type="text" id="correo" name="correo" placeholder="Cuenta o correo" required>
           <input type="password" id="contra" name="contra" placeholder="Contraseña" required>
-          <button type="submit" class="btn">Iniciar Sesión</button>
-          <button class="btin" type="button" onclick="mostrarFormulario2()">Crear una cuenta nueva</button>
+          <button type="submit" class="btn"><?= $translator->__("Iniciar Sesión") ?></button>
+          <button class="btin" type="button" onclick="mostrarFormulario2()"><?= $translator->__("Crear una cuenta nueva") ?></button>
       </form>
     </div>
 
     <div class="card" id="register">
       <form id="form-left" action="registro.php" method="POST">
           <input type="hidden" name="action" value="register">
-          <h1>Registro de Cuenta</h1>
+          <h1><?= $translator->__("Registro de Cuenta") ?></h1>
           <input type="text" id="nombre" name="nombre" placeholder="Nombre(s)" required>
           <input type="text" id="primer_apellido" name="primer_apellido" placeholder="Primer Apellido" required>
           <input type="text" id="segundo_apellido" name="segundo_apellido" placeholder="Segundo Apellido" required>
           <input type="text" id="correo" name="correo" placeholder="Cuenta o correo" required>
           <input type="password" id="contra" name="contra" placeholder="Contraseña" required>
-          <button class="btn" type="submit">Registrar</button>
+          <button class="btn" type="submit"><?= $translator->__(" Registrar") ?></button>
           <button class="btin" type="button" onclick="mostrarFormulario()">Iniciar sesión</button>
       </form>
     </div>
   </main>
 
   <footer>
-    <p>&copy; 2025 Voces del Proceso. Todos los derechos reservados.</p>
+    <p>&copy; 2025 Voces del Proceso. <?= $translator->__(" Todos los derechos reservados.") ?></p>
   </footer>
+  <?php 
+  if (isset($conn) && $conn !== null) {
+      $conn->close();
+  }
+  ?>
 </body>
 </html>

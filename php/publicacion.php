@@ -1,5 +1,9 @@
 <?php
 session_start();
+// Verificar si el idioma está configurado en la sesión, si no, establecer un idioma predeterminado
+if (!isset($_SESSION['idioma'])) {
+  $_SESSION['idioma'] = 'es'; // Idioma predeterminado
+}
 
 // Conexión a la base de datos
 include "../includes/db_config.php";
@@ -10,6 +14,16 @@ if ($conn->connect_error) {
 }
 // Configurar la conexión para usar UTF-8
 $conn->set_charset("utf8");
+
+require_once '../includes/traductor.php';
+$translator = new Translator($conn);
+
+// Manejar cambio de idioma
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idioma'])) {
+    $translator->cambiarIdioma($_POST['idioma']);
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+}
 
 // Verificar que se haya pasado el id de la publicación por GET
 if (isset($_GET['id'])) {
@@ -30,6 +44,10 @@ if (isset($_GET['id'])) {
     exit;
 }
 
+// Traducir los datos de la publicación principal
+$entrada['titulo'] = $translator->traducirTexto($entrada['titulo']);
+$entrada['contenido'] = $translator->traducirHTML($entrada['contenido']);
+
 // Consulta para obtener otras publicaciones (para la sección de publicidad)
 $sqlAds = "SELECT e.id_entrada, e.titulo, e.fecha, i.imagen 
            FROM entradas e 
@@ -38,6 +56,15 @@ $sqlAds = "SELECT e.id_entrada, e.titulo, e.fecha, i.imagen
            ORDER BY e.fecha DESC 
            LIMIT 2";
 $resultAds = $conn->query($sqlAds);
+
+// Traducir los datos de las publicaciones relacionadas (publicidad)
+$ads = [];
+if ($resultAds->num_rows > 0) {
+    while ($rowAd = $resultAds->fetch_assoc()) {
+        $rowAd['titulo'] = $translator->traducirTexto($rowAd['titulo']);
+        $ads[] = $rowAd;
+    }
+}
 
 /**
  * Función para generar un índice a partir de los encabezados <h2> en el contenido.
@@ -69,10 +96,11 @@ function generarIndice($html) {
     return ['indice' => $indice, 'contenido' => $nuevoHtml];
 }
 
+// Generar índice y traducir contenido con anchors
 $htmlContenido = nl2br($entrada['contenido']);
 $resultado = generarIndice($htmlContenido);
 $indiceGenerado = $resultado['indice'];
-$contenidoConAnchors = $resultado['contenido'];
+$contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
 ?>
 
 <!DOCTYPE html>
@@ -95,23 +123,23 @@ $contenidoConAnchors = $resultado['contenido'];
     <nav class="main-nav">
       <div id="menu-button" class="menu-button">
         <img src="./assets/img/menu.svg">
-        <span class="ocultar-texto">MENU</span>
+        <span class="ocultar-texto"><?= $translator->__("MENU") ?></span>
       </div>
       <div class="search-bar">
-        <input type="text" placeholder="Buscar..." />
+        <input type="text" placeholder="<?= $translator->__("Buscar...") ?>" />
       </div>
     </nav>
   </header>
 
   <div id="sidebar" class="sidebar">
-    <button id="close-button" class="close-button">Cerrar</button>
+    <button id="close-button" class="close-button"><?= $translator->__("Cerrar") ?></button>
     <ul>
-      <li><a href="index.php">Inicio</a></li>
-      <li><a href="#">Noticias</a></li>
-      <li><a href="#">Contacto</a></li>
-      <li><a href="#">Acerca de</a></li>
+      <li><a href="index.php"><?= $translator->__("Inicio") ?></a></li>
+      <li><a href="#"><?= $translator->__("Noticias</a>") ?></li>
+      <li><a href="#"><?= $translator->__("Contacto") ?></a></li>
+      <li><a href="#"><?= $translator->__("Acerca de") ?></a></li>
     </ul>
-    <button id="login-button" class="login-button">Login</button>
+    <button id="login-button" class="login-button"><?= $translator->__("Login") ?></button>
   </div>
 
   <div class="titulo">
@@ -121,7 +149,7 @@ $contenidoConAnchors = $resultado['contenido'];
   <main>
     <!-- Sección Índice -->
     <div class="indice">
-      <h2>Índice</h2>
+      <h2><?= $translator->__("Índice") ?></h2>
       <?php echo $indiceGenerado; ?>
     </div>
 
@@ -130,10 +158,10 @@ $contenidoConAnchors = $resultado['contenido'];
       <article>
         <?php
         if (!empty($entrada['imagen'])) {
-            echo '<img src="' . $entrada['imagen'] . '" alt="' . $entrada['titulo'] . '">';
+            echo '<img src="' . $entrada['imagen'] . '" alt="' . $translator->traducirTexto($entrada['titulo']) . '">';
         }
         ?>
-        <p><strong>Fecha:</strong> <?php echo $entrada['fecha']; ?></p>
+        <p><strong><?= $translator->__("Fecha:") ?></strong> <?php echo $entrada['fecha']; ?></p>
         <div>
           <?php echo $contenidoConAnchors; ?>
         </div>
@@ -143,13 +171,13 @@ $contenidoConAnchors = $resultado['contenido'];
     <!-- Sección Publicidad: Otras publicaciones -->
     <aside class="publicidad">
       <?php
-      if ($resultAds->num_rows > 0) {
-          while ($rowAd = $resultAds->fetch_assoc()) {
+      if (!empty($ads)) {
+          foreach ($ads as $ad) {
               echo '<div class="imagenes">';
-              if (!empty($rowAd['imagen'])) {
-                  echo '<a href="publicacion.php?id=' . $rowAd['id_entrada'] . '"><img src="' . $rowAd['imagen'] . '" alt="' . $rowAd['titulo'] . '"></a>';
+              if (!empty($ad['imagen'])) {
+                  echo '<a href="publicacion.php?id=' . $ad['id_entrada'] . '"><img src="' . $ad['imagen'] . '" alt="' . $ad['titulo'] . '"></a>';
               }
-              echo '<h3><a href="publicacion.php?id=' . $rowAd['id_entrada'] . '">' . $rowAd['titulo'] . '</a></h3>';
+              echo '<h3><a href="publicacion.php?id=' . $ad['id_entrada'] . '">' . $ad['titulo'] . '</a></h3>';
               echo '</div>';
           }
       } else {
@@ -160,7 +188,8 @@ $contenidoConAnchors = $resultado['contenido'];
   </main>
 
   <footer>
-    <p>&copy; 2025 Voces del Proceso. Todos los derechos reservados.</p>
+    <p>&copy; 2025 Voces del Proceso. <?= $translator->__("Todos los derechos reservados.") ?></p>
   </footer>
+  <?php $conn->close(); ?>
 </body>
 </html>

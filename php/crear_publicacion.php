@@ -4,7 +4,11 @@ if (!isset($_SESSION['usuario'])) {
     header("Location: registro.php?error=Debe+iniciar+sesión");
     exit();
 }
-
+// Verificar si el idioma está configurado en la sesión, si no, establecer un idioma predeterminado
+if (!isset($_SESSION['idioma'])) {
+  $_SESSION['idioma'] = 'es'; // Idioma predeterminado
+}
+$idiomaActual = $_SESSION['idioma']; // Guardar el idioma actual
 include "../includes/db_config.php";
 
 date_default_timezone_set('America/Mexico_City');
@@ -15,6 +19,17 @@ if ($conn->connect_error) {
 }
 // Configurar la conexión para usar UTF-8
 $conn->set_charset("utf8");
+
+// Incluir el traductor
+require_once '../includes/traductor.php';
+$translator = new Translator($conn);
+
+// Manejar cambio de idioma
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idioma'])) {
+    $translator->cambiarIdioma($_POST['idioma']);
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+}
 
 // Procesa el formulario al enviarlo
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -78,7 +93,7 @@ if(isset($_GET['msg'])){
 ?>
 
 <!DOCTYPE html>
-<html lang="es">
+<html lang="<?= htmlspecialchars($idiomaActual) ?>">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -152,34 +167,34 @@ if(isset($_GET['msg'])){
     <nav class="main-nav">
       <div id="menu-button" class="menu-button">
         <img src="../assets/img/menu.svg">
-        <span class="ocultar-texto">MENU</span>
+        <span class="ocultar-texto"><?= $translator->__("MENU") ?></span>
       </div>
       <div class="search-bar">
-        <input type="text" placeholder="Buscar..." />
+        <input type="text" placeholder="<?= $translator->__("Buscar...") ?>" />
       </div>
     </nav>
   </header>
 
   <main class="main">
-    <h1>Crear Nueva Publicación</h1>
+    <h1><?= $translator->__("Crear Nueva Publicación") ?></h1>
     <form id="publicacionForm" action="crear_publicacion.php" method="POST" enctype="multipart/form-data">
-      <label for="titulo">Título:</label>
+      <label for="titulo"><?= $translator->__("Título:") ?></label>
       <input type="text" name="titulo" id="titulo" required>
 
-      <label for="categoria">Categoría:</label>
+      <label for="categoria"><?= $translator->__("Categoría:") ?></label>
       <input type="text" name="categoria" id="categoria" required>
 
-      <label for="contenido">Contenido:</label>
+      <label for="contenido"><?= $translator->__("Contenido:") ?></label>
       
       <!-- Barra de herramientas para formateo -->
       <div id="toolbar">
-        <button type="button" onclick="format('h2')">Subtítulo</button>
-        <button type="button" onclick="format('p')">Texto Cuerpo</button>
-        <button type="button" onclick="format('bold')">Negrita</button>
-        <button type="button" onclick="format('italic')">Cursiva</button>
-        <button type="button" onclick="format('underline')">Subrayado</button>
-        <button type="button" onclick="format('insertOrderedList')">Lista Ordenada</button>
-        <button type="button" onclick="format('insertUnorderedList')">Lista No Ordenada</button>
+        <button type="button" onclick="format('h2')"><?= $translator->__("Subtítulo") ?></button>
+        <button type="button" onclick="format('p')"><?= $translator->__("Texto Cuerpo") ?></button>
+        <button type="button" onclick="format('bold')"><?= $translator->__("Negrita") ?></button>
+        <button type="button" onclick="format('italic')"><?= $translator->__("Cursiva") ?></button>
+        <button type="button" onclick="format('underline')"><?= $translator->__("Subrayado") ?></button>
+        <button type="button" onclick="format('insertOrderedList')"><?= $translator->__("Lista Ordenada") ?></button>
+        <button type="button" onclick="format('insertUnorderedList')"><?= $translator->__("Lista No Ordenada") ?></button>
       </div>
       
       <!-- Editor de texto editable -->
@@ -188,15 +203,15 @@ if(isset($_GET['msg'])){
       <!-- Campo oculto para enviar el contenido formateado -->
       <textarea name="contenido" id="contenido" style="display:none;"></textarea>
 
-      <label for="imagen">Imagen / Banner:</label>
+      <label for="imagen"><?= $translator->__("Imagen") ?> / Banner:</label>
       <input type="file" name="imagen" id="imagen" accept="image/*">
 
-      <button type="submit">Crear Publicación</button>
+      <button type="submit"><?= $translator->__("Crear Publicación") ?></button>
     </form>
   </main>
 
   <footer>
-    <p>&copy; 2025 Voces del Proceso. Todos los derechos reservados.</p>
+    <p>&copy; 2025 Voces del Proceso. <?= $translator->__("Todos los derechos reservados.") ?></p>
   </footer>
 
   <!-- Popup de notificación con SweetAlert2 -->
@@ -213,4 +228,5 @@ if(isset($_GET['msg'])){
   </script>
   <?php endif; ?>
 </body>
+<?php $conn->close(); ?>
 </html>
