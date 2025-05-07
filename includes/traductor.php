@@ -6,7 +6,7 @@ class Translator {
     private $conn;
     
     public function __construct($dbConnection) {
-        $config = include(__DIR__ . '/Config.php');
+        $config = include(__DIR__ . '/config.php');
         $this->config = $config['translator'];
         $this->conn = $dbConnection;
         
