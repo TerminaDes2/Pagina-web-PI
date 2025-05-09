@@ -7,12 +7,13 @@
 
 /* Estilos generales */
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
+  font-family: 'Montserrat', sans-serif;
+  background-color: #f8f8f8;
   color: #333;
   display: flex;
   flex-direction: column;
   height: 100%;
+  padding-top: 90px; /* Añadir esto para compensar el header fijo */
 }
 
 /* Menú principal */
@@ -62,28 +63,38 @@ main img {
 }
 
 /* Formularios y tarjetas */
-form {
+main form {
   padding: 40px 30px;
-  background: #fefefe;
+  background: #fff;
+  border-radius: 25px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
   align-items: flex-start;
   padding-bottom: 20px;
+  margin: 0 auto;
+  min-width: 280px;
+  max-width: 400px;
 }
-form div {
+main form div {
   margin-bottom: 15px;
 }
-form label {
+main form label {
   display: block;
   margin-bottom: 5px;
-  font-weight: bold;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  color: #1d231e;
 }
-form h1 {
+main form h1 {
   margin-bottom: 20px;
-  color: rgb(0, 0, 0);
+  color: #1d231e;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 2rem;
 }
-form p {
+main form p {
   line-height: 155%;
   margin-bottom: 5px;
   font-size: 14px;
@@ -103,24 +114,28 @@ form p {
   display: flex;
   flex-direction: row;
   place-self: center;
-  background: #ffffff;
-  border-radius: 4px;
-  box-shadow: 0px 2px 6px -1px rgba(0, 0, 0, 0.12);
+  background: #fff;
+  border-radius: 25px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  padding: 30px 20px;
+  margin-bottom: 30px;
 }
 
 /* Inputs dentro de main */
 .main input {
   font-size: 16px;
-  padding: 20px 20px;
-  height: 56px;
-  border: none;
-  border-bottom: solid 1px rgba(0, 0, 0, 0.1);
+  padding: 15px 15px;
+  height: 48px;
+  border: 1px solid #e2e6ea;
+  border-radius: 8px;
   background: #fff;
-  min-width: 280px;
+  min-width: 220px;
   box-sizing: border-box;
   transition: all 0.3s linear;
-  color: #000;
+  color: #333;
   font-weight: 400;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 
 /* Hover en botones */
@@ -139,10 +154,10 @@ button:hover {
   margin-top: 20px;
   background-color: #719743;
   color: #fff;
-  font-size: 14px;
-  margin-left: auto;
+  font-size: 1rem;
+  font-family: 'Montserrat', sans-serif;
   font-weight: 500;
-  box-shadow: 0px 2px 6px -1px rgba(0, 0, 0, 0.13);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
   border: none;
   transition: all 0.3s ease;
   outline: 0;
@@ -156,12 +171,12 @@ button:hover {
   text-align: center;
   padding: 15px 40px;
   margin-top: 5px;
-  background-color: #b2bba7;
+  background-color: #e2e6ea;
   color: #41502f;
-  font-size: 14px;
-  margin-left: auto;
+  font-size: 1rem;
+  font-family: 'Montserrat', sans-serif;
   font-weight: 500;
-  box-shadow: 0px 2px 6px -1px rgba(0, 0, 0, 0.13);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
   border: none;
   transition: all 0.3s ease;
   outline: 0;
@@ -243,6 +258,16 @@ body {
   }
   .ocultar-texto {
     display: none;
+  }
+  .card, form {
+    padding: 15px 5px;
+    border-radius: 15px;
+    min-width: unset;
+    max-width: 98vw;
+  }
+  .main input {
+    min-width: unset;
+    width: 100%;
   }
 }
 

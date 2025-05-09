@@ -104,7 +104,7 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
 ?>
 
 <!DOCTYPE html>
-<html lang="es">
+<html lang="<?= $_SESSION['idioma'] ?>">
 <head>
   <meta charset="UTF-8">
   <title><?php echo $entrada['titulo']; ?></title>
@@ -113,6 +113,7 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/publicacion.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <script src="../assets/js/Main.js" defer></script>
 </head>
 <body>

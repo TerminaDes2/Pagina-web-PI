@@ -93,7 +93,7 @@ if(isset($_GET['msg'])){
 ?>
 
 <!DOCTYPE html>
-<html lang="<?= htmlspecialchars($idiomaActual) ?>">
+<html lang="<?= $_SESSION['idioma'] ?>">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -106,23 +106,6 @@ if(isset($_GET['msg'])){
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="../assets/js/loggin_scripts.js" defer></script>
   <script src="../assets/js/Main.js" defer></script>
-  
-  <style>
-    /* Estilos simples para la barra de herramientas y el editor */
-    #toolbar {
-      margin-bottom: 10px;
-    }
-    #toolbar button {
-      padding: 5px 10px;
-      margin-right: 5px;
-      cursor: pointer;
-    }
-    #editor {
-      border: 1px solid #ccc;
-      padding: 10px;
-      min-height: 200px;
-    }
-  </style>
   
   <script>
     // Función de formateo con capacidad de toggle para bloques (h2, p, listas)
@@ -153,6 +136,13 @@ if(isset($_GET['msg'])){
         document.getElementById('contenido').value = document.getElementById('editor').innerHTML;
       });
     });
+
+    // Mostrar el nombre del archivo seleccionado
+    function mostrarNombreArchivo() {
+      var input = document.getElementById('imagen');
+      var nombre = input.files.length > 0 ? input.files[0].name : '';
+      document.getElementById('nombre-archivo').textContent = nombre;
+    }
   </script>
   
 </head>
@@ -188,7 +178,11 @@ if(isset($_GET['msg'])){
       <textarea name="contenido" id="contenido" style="display:none;"></textarea>
 
       <label for="imagen"><?= $translator->__("Imagen") ?> / Banner:</label>
-      <input type="file" name="imagen" id="imagen" accept="image/*">
+      <label for="imagen" class="custom-file-upload">
+        <?= $translator->__("Seleccionar archivo") ?>
+      </label>
+      <input type="file" name="imagen" id="imagen" accept="image/*" onchange="mostrarNombreArchivo()">
+      <span id="nombre-archivo" style="margin-left:10px;"></span>
 
       <button type="submit"><?= $translator->__("Crear Publicación") ?></button>
     </form>

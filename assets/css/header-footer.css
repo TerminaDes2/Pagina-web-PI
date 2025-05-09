@@ -1,5 +1,11 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 /* Header */
-.main-header {
+.hf-main-header {
   background: linear-gradient(to bottom, #187424, #0b751b);
   color: #fff;
   position: fixed;
@@ -7,9 +13,10 @@
   z-index: 1000;
   top: 0;
   height: 90px;
+  font-family: 'Montserrat', sans-serif;
 }
 
-.header-container {
+.hf-header-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -19,59 +26,59 @@
   height: 100%;
 }
 
-.logo-container {
+.hf-logo-container {
   display: flex;
   align-items: center;
 }
 
-.logo a {
+.hf-logo a {
   font-family: 'Roboto Slab', serif;
   font-weight: bold;
   color: #fff;
   text-decoration: none;
 }
 
-.main-nav {
+.hf-main-nav {
   display: flex;
   align-items: center;
   justify-content: flex-start;
   height: 100%;
 }
 
-.main-nav ul {
+.hf-main-nav ul {
   list-style: none;
   display: flex;
   margin: 0;
   padding: 0;
 }
 
-.main-nav li {
+.hf-main-nav li {
   margin-right: 15px;
 }
 
-.main-nav a {
+.hf-main-nav a {
   display: block;
   color: #fff;
   padding: 10px;
   transition: color 0.3s ease;
 }
 
-.main-nav a:hover {
+.hf-main-nav a:hover {
   color: #ffd700;
 }
 
-.header-actions {
+.hf-header-actions {
   display: flex;
   align-items: center;
 }
 
-.search-box {
+.hf-search-box {
   display: flex;
   align-items: center;
   margin-right: 10px;
 }
 
-.search-box input[type="text"] {
+.hf-search-box input[type="text"] {
   padding: 5px;
   border: none;
   border-radius: 30px;
@@ -79,7 +86,7 @@
   height: 25px;
 }
 
-.search-box button {
+.hf-search-box button {
   background: #0056b3;
   color: #fff;
   border: none;
@@ -91,26 +98,30 @@
   height: 25px;
 }
 
-.search-box button:hover {
+.hf-search-box button:hover {
   background: #00428f;
 }
 
-.social-icons a {
+.hf-social-icons a {
   display: inline-block;
   margin-left: 5px;
   color: #fff;
   font-size: 1rem;
 }
 
+.hf-menu-toggle {
+  display: none; /* Ocultar por defecto */
+}
+
 /* Footer */
-.main-footer {
+.hf-main-footer {
   background: linear-gradient(to top, #187424, #0b751b);
   color: #fff;
   padding: 20px 0;
   font-size: 16px;
 }
 
-.footer-container {
+.hf-footer-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
@@ -119,7 +130,7 @@
   padding: 0 20px;
 }
 
-.footer-logo a {
+.hf-footer-logo a {
   font-family: 'Roboto Slab', serif;
   font-size: 1.5rem;
   font-weight: bold;
@@ -127,18 +138,18 @@
   text-decoration: none;
 }
 
-.footer-social a {
+.hf-footer-social a {
   display: inline-block;
   margin-right: 10px;
   color: #fff;
   font-size: 1rem;
 }
 
-.footer-social a:hover {
+.hf-footer-social a:hover {
   color: #ffd700;
 }
 
-.footer-copyright {
+.hf-footer-copyright {
   text-align: center;
   grid-column: 1 / -1;
   margin-top: 20px;
@@ -146,39 +157,72 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-  .header-container,
-  .footer-container {
+  .hf-header-container {
     flex-direction: column;
     align-items: center;
   }
 
-  .main-nav ul {
+  .hf-main-nav {
+    display: none; /* Ocultar navegación principal */
+  }
+
+  .hf-header-actions .hf-social-icons,
+  .hf-header-actions .language-form {
+    display: none; /* Ocultar íconos sociales y selector de idioma */
+  }
+
+  .hf-menu-toggle {
+    display: block; /* Mostrar botón de menú en móviles */
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+
+  .hf-menu-desplegable {
+    display: none; /* Ocultar contenido desplegable inicialmente */
+    flex-direction: column;
+    background: #0b751b; /* Fondo para el menú desplegable */
+    position: absolute;
+    top: 90px; /* Ajustar debajo del header */
+    width: 100%;
+    left: 0;
+    z-index: 999;
+  }
+
+  .hf-menu-desplegable.active {
+    display: flex; /* Mostrar contenido desplegable al activarse */
+  }
+
+  .hf-main-nav ul {
     flex-direction: column;
   }
 
-  .main-nav li {
+  .hf-main-nav li {
     margin-right: 0;
     margin-bottom: 10px;
   }
 
-  .header-actions {
+  .hf-header-actions {
     flex-direction: column;
     align-items: center;
   }
 
-  .search-box {
+  .hf-search-box {
     margin-right: 0;
     margin-bottom: 10px;
   }
 }
 
 /* Sobrescribir estilos predeterminados de enlaces */
-a:-webkit-any-link {
+.hf-main-header a:-webkit-any-link {
   color: inherit; /* Hereda el color del elemento padre */
   cursor: pointer;
   text-decoration: none; /* Elimina el subrayado */
 }
 
-a:hover {
+.hf-main-header a:hover {
   text-decoration: underline; /* Opcional: Define un estilo para el hover */
 }
