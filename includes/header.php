@@ -6,6 +6,9 @@
 <script src="/Pagina-web-PI/assets/js/Main.js" defer></script>
 <header class="hf-main-header">
     <div class="hf-header-container">
+        <button class="hf-menu-toggle" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </button>
         <div class="hf-logo-container">
             <div class="hf-logo">
                 <a href="/Pagina-web-PI/index.php">
@@ -13,9 +16,6 @@
                 </a>
             </div>
         </div>
-        <button class="hf-menu-toggle" onclick="toggleMenu()">
-            <i class="fas fa-bars"></i>
-        </button>
         <nav class="hf-main-nav">
             <ul class="hf-menu-desplegable">
                 <li><a href="/Pagina-web-PI/index.php"><?= $translator->__("Inicio") ?></a></li>

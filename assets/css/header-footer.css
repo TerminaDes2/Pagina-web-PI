@@ -175,7 +175,7 @@
   }
 
   .hf-header-actions .hf-social-icons,
-  .hf-header-actions .language-form {
+  .hf-header-actions .language-form, .hf-search-box {
     display: none; /* Ocultar íconos sociales y selector de idioma */
   }
 
