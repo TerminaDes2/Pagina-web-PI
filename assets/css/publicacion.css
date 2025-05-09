@@ -15,7 +15,7 @@ body {
 }
 
 /* Encabezados: se restringen a main y titulo */
-#publicacion h1, #publicacion h2, #publicacion h3, #publicacion h4, #publicacion h5, #publicacion h6 {
+.titulo h1, #publicacion h2, #publicacion h3, #publicacion h4, #publicacion h5, #publicacion h6 {
   font-family: 'Montserrat', sans-serif;
   text-align: left;
   border-bottom: 2px solid #e2e6ea;
@@ -119,6 +119,14 @@ main img {
   text-decoration: none;
 }
 
+/* Asegurar que las imágenes de publicidad estén centradas */
+.publicidad .imagenes img {
+  display: block;
+  margin: 0 auto; /* Centra horizontalmente */
+  max-width: 100%; /* Evita desbordamientos */
+  height: auto;
+}
+
 /* Galería de imágenes */
 .imagenes {
   display: flex;
@@ -133,6 +141,7 @@ main img {
   box-shadow: 0 2px 8px rgba(0,0,0,0.07);
   max-width: 100%;
 }
+
 .imagenes h3 {
   margin: 0;
   text-align: center;
@@ -175,6 +184,37 @@ main img {
   }
   .ocultar-texto {
     display: none;
+  }
+}
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 600px) {
+  body {
+    padding-top: 70px;
+  }
+  .titulo h1 {
+    font-size: 1.8em;
+  }
+  main {
+    padding: 10px 5px;
+  }
+  .indice, .noticia, .publicidad {
+    width: 100%;
+    margin: 0 0 15px 0;
+    border-radius: 15px;
+    padding: 15px 10px;
+  }
+  .indice h2 {
+    font-size: 1.2em;
+  }
+  .noticia p {
+    font-size: 1em;
+  }
+  .publicidad h3 a {
+    font-size: 0.9em;
+  }
+  .imagenes img {
+    max-width: 90%;
   }
 }
 
