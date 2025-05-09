@@ -1,0 +1,184 @@
+/* Header */
+.main-header {
+  background: linear-gradient(to bottom, #187424, #0b751b);
+  color: #fff;
+  position: fixed;
+  width: 100%;
+  z-index: 1000;
+  top: 0;
+  height: 90px;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  height: 100%;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.logo a {
+  font-family: 'Roboto Slab', serif;
+  font-weight: bold;
+  color: #fff;
+  text-decoration: none;
+}
+
+.main-nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100%;
+}
+
+.main-nav ul {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.main-nav li {
+  margin-right: 15px;
+}
+
+.main-nav a {
+  display: block;
+  color: #fff;
+  padding: 10px;
+  transition: color 0.3s ease;
+}
+
+.main-nav a:hover {
+  color: #ffd700;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.search-box input[type="text"] {
+  padding: 5px;
+  border: none;
+  border-radius: 30px;
+  margin-right: 5px;
+  height: 25px;
+}
+
+.search-box button {
+  background: #0056b3;
+  color: #fff;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  text-decoration: none;
+  height: 25px;
+}
+
+.search-box button:hover {
+  background: #00428f;
+}
+
+.social-icons a {
+  display: inline-block;
+  margin-left: 5px;
+  color: #fff;
+  font-size: 1rem;
+}
+
+/* Footer */
+.main-footer {
+  background: linear-gradient(to top, #187424, #0b751b);
+  color: #fff;
+  padding: 20px 0;
+  font-size: 16px;
+}
+
+.footer-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.footer-logo a {
+  font-family: 'Roboto Slab', serif;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #fff;
+  text-decoration: none;
+}
+
+.footer-social a {
+  display: inline-block;
+  margin-right: 10px;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.footer-social a:hover {
+  color: #ffd700;
+}
+
+.footer-copyright {
+  text-align: center;
+  grid-column: 1 / -1;
+  margin-top: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .header-container,
+  .footer-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .main-nav ul {
+    flex-direction: column;
+  }
+
+  .main-nav li {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+
+  .header-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .search-box {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+}
+
+/* Sobrescribir estilos predeterminados de enlaces */
+a:-webkit-any-link {
+  color: inherit; /* Hereda el color del elemento padre */
+  cursor: pointer;
+  text-decoration: none; /* Elimina el subrayado */
+}
+
+a:hover {
+  text-decoration: underline; /* Opcional: Define un estilo para el hover */
+}

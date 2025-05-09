@@ -102,10 +102,7 @@ if(isset($_GET['msg'])){
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
-  
-  <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <!-- SweetAlert2 para popups -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="../assets/js/loggin_scripts.js" defer></script>
   <script src="../assets/js/Main.js" defer></script>
@@ -160,20 +157,7 @@ if(isset($_GET['msg'])){
   
 </head>
 <body>
-  <header class="header-top">
-    <div class="logo">
-      <h1><a href="../index.php">Voces del Proceso</a></h1>
-    </div>
-    <nav class="main-nav">
-      <div id="menu-button" class="menu-button">
-        <img src="../assets/img/menu.svg">
-        <span class="ocultar-texto"><?= $translator->__("MENU") ?></span>
-      </div>
-      <div class="search-bar">
-        <input type="text" placeholder="<?= $translator->__("Buscar...") ?>" />
-      </div>
-    </nav>
-  </header>
+  <?php include '../includes/header.php'; ?>
 
   <main class="main">
     <h1><?= $translator->__("Crear Nueva Publicación") ?></h1>
@@ -210,11 +194,8 @@ if(isset($_GET['msg'])){
     </form>
   </main>
 
-  <footer>
-    <p>&copy; 2025 Voces del Proceso. <?= $translator->__("Todos los derechos reservados.") ?></p>
-  </footer>
+  <?php include '../includes/footer.php'; ?>
 
-  <!-- Popup de notificación con SweetAlert2 -->
   <?php if (!empty($message)) : ?>
   <script>
     $(document).ready(function(){
@@ -228,5 +209,5 @@ if(isset($_GET['msg'])){
   </script>
   <?php endif; ?>
 </body>
-<?php $conn->close(); ?>
 </html>
+<?php $conn->close(); ?>

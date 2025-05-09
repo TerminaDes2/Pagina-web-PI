@@ -185,20 +185,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <script src="../assets/js/Main.js" defer></script>
 </head>
 <body>
-  <header class="header-top">
-    <div class="logo">
-      <h1><a href="../index.php">"Voces del Proceso"</a></h1>
-    </div>
-    <nav class="main-nav">
-      <div id="menu-button" class="menu-button">
-        <img src="../assets/img/menu.svg">
-        <span class="ocultar-texto"><?= $translator->__("MENU") ?></span>
-      </div>
-      <div class="search-bar">
-        <input type="text" placeholder="<?= $translator->__("Buscar...") ?>" />
-      </div>
-    </nav>
-  </header>
+  <?php include '../includes/header.php'; ?>
 
   <main class="main">
     <div class="card" id="datos">
@@ -228,13 +215,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
   </main>
 
-  <footer>
-    <p>&copy; 2025 Voces del Proceso. <?= $translator->__(" Todos los derechos reservados.") ?></p>
-  </footer>
-  <?php 
-  if (isset($conn) && $conn !== null) {
-      $conn->close();
-  }
-  ?>
+  <?php include '../includes/footer.php'; ?>
 </body>
 </html>
