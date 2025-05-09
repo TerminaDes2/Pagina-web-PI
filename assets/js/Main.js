@@ -1,3 +1,20 @@
+// Prevenir duplicación de hojas de estilo
+document.addEventListener('DOMContentLoaded', function() {
+    // Verificar si ya existe un script que haya ejecutado esta función
+    if (window.headerFooterStylesLoaded) return;
+    
+    // Marcar como ejecutado
+    window.headerFooterStylesLoaded = true;
+    
+    // Buscar todas las hojas de estilo de header-footer y dejar solo una
+    const headerFooterStyles = document.querySelectorAll('link[href*="header-footer.css"]');
+    if (headerFooterStyles.length > 1) {
+        for (let i = 1; i < headerFooterStyles.length; i++) {
+            headerFooterStyles[i].remove();
+        }
+    }
+});
+
 // Carrusel ajuste hola
 const carouselTrack = document.querySelector('.carousel-track');
 const carouselItems = document.querySelectorAll('.carousel-item');

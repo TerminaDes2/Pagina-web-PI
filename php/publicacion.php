@@ -104,49 +104,26 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
 ?>
 
 <!DOCTYPE html>
-<html lang="es">
+<html lang="<?= $_SESSION['idioma'] ?>">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/> <!-- Asegura diseño responsivo -->
   <title><?php echo $entrada['titulo']; ?></title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/publicacion.css">
-  <script src="../assets/js/Main.js" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-  <header class="header-top">
-    <div class="logo">
-      <h1><a href="../index.php">Voces del Proceso</a></h1>
-    </div>
-    <nav class="main-nav">
-      <div id="menu-button" class="menu-button">
-        <img src="./assets/img/menu.svg">
-        <span class="ocultar-texto"><?= $translator->__("MENU") ?></span>
-      </div>
-      <div class="search-bar">
-        <input type="text" placeholder="<?= $translator->__("Buscar...") ?>" />
-      </div>
-    </nav>
-  </header>
-
-  <div id="sidebar" class="sidebar">
-    <button id="close-button" class="close-button"><?= $translator->__("Cerrar") ?></button>
-    <ul>
-      <li><a href="index.php"><?= $translator->__("Inicio") ?></a></li>
-      <li><a href="#"><?= $translator->__("Noticias</a>") ?></li>
-      <li><a href="#"><?= $translator->__("Contacto") ?></a></li>
-      <li><a href="#"><?= $translator->__("Acerca de") ?></a></li>
-    </ul>
-    <button id="login-button" class="login-button"><?= $translator->__("Login") ?></button>
-  </div>
+  <?php include '../includes/header.php'; ?>
 
   <div class="titulo">
-    <h1><?php echo $entrada['titulo']; ?></h1>
+      <h1><?php echo $entrada['titulo']; ?></h1>
   </div>
 
   <main>
+    
     <!-- Sección Índice -->
     <div class="indice">
       <h2><?= $translator->__("Índice") ?></h2>
@@ -187,9 +164,6 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
     </aside>
   </main>
 
-  <footer>
-    <p>&copy; 2025 Voces del Proceso. <?= $translator->__("Todos los derechos reservados.") ?></p>
-  </footer>
-  <?php $conn->close(); ?>
+  <?php include '../includes/footer.php'; ?>
 </body>
 </html>

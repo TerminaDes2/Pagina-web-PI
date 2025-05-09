@@ -1,0 +1,251 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Header */
+.hf-main-header {
+  background: linear-gradient(to bottom, #187424, #0b751b);
+  color: #fff;
+  position: fixed;
+  width: 100%;
+  z-index: 1000;
+  top: 0;
+  height: 90px;
+  font-family: 'Montserrat', sans-serif;
+  line-height: 1.5;
+
+}
+
+.hf-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  height: 100%;
+}
+
+.hf-logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.hf-logo a {
+  font-family: 'Roboto Slab', serif;
+  font-weight: bold;
+  color: #fff;
+  text-decoration: none;
+}
+
+.hf-main-nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100%;
+}
+
+.hf-main-nav ul {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.hf-main-nav li {
+  margin-right: 15px;
+}
+
+.hf-main-nav a {
+  display: block;
+  color: #fff;
+  padding: 10px;
+  transition: color 0.3s ease;
+}
+
+.hf-main-nav a:hover {
+  color: #ffd700;
+}
+
+.hf-header-actions {
+  display: flex;
+  align-items: center;
+}
+
+.hf-search-box {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.hf-search-box input[type="text"] {
+  padding: 5px;
+  border: none;
+  border-radius: 30px;
+  margin-right: 5px;
+  height: 25px;
+}
+
+.hf-search-box button {
+  background: #0056b3;
+  color: #fff;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  text-decoration: none;
+  height: 25px;
+}
+
+.hf-search-box button:hover {
+  background: #00428f;
+}
+
+.hf-social-icons a {
+  display: inline-block;
+  margin-left: 5px;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.hf-menu-toggle {
+  display: none; /* Ocultar por defecto */
+}
+
+.hf-contenido-desplegable {
+  display: none;
+  position: absolute;
+  background-color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.hf-contenido-desplegable.visible {
+  display: block;
+}
+
+/* Footer */
+.hf-main-footer {
+  background: linear-gradient(to top, #187424, #0b751b);
+  color: #fff;
+  padding: 20px 0;
+  font-size: 16px;
+}
+
+.hf-footer-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.hf-footer-logo a {
+  font-family: 'Roboto Slab', serif;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #fff;
+  text-decoration: none;
+}
+
+.hf-footer-social a {
+  display: inline-block;
+  margin-right: 10px;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.hf-footer-social a:hover {
+  color: #ffd700;
+}
+
+.hf-footer-copyright {
+  text-align: center;
+  grid-column: 1 / -1;
+  margin-top: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hf-header-container {
+    flex-direction: row; /* Cambiar a fila */
+    justify-content: space-between; /* Espaciado entre elementos */
+    align-items: center; /* Alinear verticalmente */
+  }
+
+  input {
+      min-width: auto;
+      width: 100%;
+  }
+
+  .hf-main-nav {
+    display: none; /* Ocultar navegación principal */
+  }
+
+  .hf-header-actions .hf-social-icons,
+  .hf-header-actions .language-form, .hf-search-box {
+    display: none; /* Ocultar íconos sociales y selector de idioma */
+  }
+
+  .hf-menu-toggle {
+    display: block; /* Mostrar botón de menú en móviles */
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin-top: 0; /* Eliminar margen superior */
+    margin-right: 10px; /* Añadir espacio a la derecha */
+  }
+
+  .hf-menu-desplegable {
+    display: none; /* Ocultar contenido desplegable inicialmente */
+    flex-direction: column;
+    background: #0b751b; /* Fondo para el menú desplegable */
+    position: absolute;
+    top: 90px; /* Ajustar debajo del header */
+    width: 100%;
+    left: 0;
+    z-index: 999;
+  }
+
+  .hf-menu-desplegable.active {
+    display: flex; /* Mostrar contenido desplegable al activarse */
+  }
+
+  .hf-main-nav ul {
+    flex-direction: column;
+  }
+
+  .hf-main-nav li {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+
+  .hf-header-actions {
+    flex-direction: row; /* Asegurar que los elementos estén en fila */
+    align-items: center; /* Alinear verticalmente */
+  }
+
+  .hf-search-box {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+}
+
+/* Sobrescribir estilos predeterminados de enlaces */
+.hf-main-header a:-webkit-any-link {
+  color: inherit; /* Hereda el color del elemento padre */
+  cursor: pointer;
+  text-decoration: none; /* Elimina el subrayado */
+}
+
+.hf-main-header a:hover {
+  text-decoration: underline; /* Opcional: Define un estilo para el hover */
+}

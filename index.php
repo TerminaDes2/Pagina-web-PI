@@ -71,50 +71,7 @@ while ($row = $resultPosts->fetch_assoc()) {
     <script src="assets/js/Main.js" defer></script>
 </head>
 <body>
-    <header class="main-header">
-        <div class="header-container">
-            <div class="logo-container">
-                <div class="logo">
-                    <a href="index.php">
-                        <h1>Voces del Proceso</h1>
-                    </a>
-                </div>
-            </div>
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="index.php"><?= $translator->__("Inicio") ?></a></li>
-                    <li class="menu-desplegable">
-                        <a href="#"><?= $translator->__("Noticias") ?></a>
-                        <div class="contenido-desplegable"></div>
-                    </li>
-                    <li class="menu-desplegable">
-                        <a href="templates/Contacto.html"><?= $translator->__("Contacto") ?></a>
-                    </li>
-                    <li class="menu-desplegable">
-                        <a href="templates/Acerca-de-nosotros.html"><?= $translator->__("Acerca de") ?></a>
-                    </li>
-                </ul>
-            </nav>
-            <div class="header-actions">
-                <div class="search-box">
-                    <input type="text" placeholder="<?= $translator->__("Buscar...") ?>">
-                    <button><i class="fas fa-search"></i></button>
-                </div>
-                <div class="social-icons">
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <form method="POST" class="language-form">
-                        <select name="idioma" onchange="this.form.submit()">
-                            <option value="en" <?= $_SESSION['idioma'] == 'en' ? 'selected' : '' ?>><?= $translator->__("Inglés") ?></option>
-                            <option value="fr" <?= $_SESSION['idioma'] == 'fr' ? 'selected' : '' ?>><?= $translator->__("Francés") ?></option>
-                            <option value="es" <?= $_SESSION['idioma'] == 'es' ? 'selected' : '' ?>><?= $translator->__("Español") ?></option>
-                        </select>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </header>
+    <?php include 'includes/header.php'; ?>
 
     <?php if ($banner): ?>
     <section class="hero-section" onclick="window.location.href='php/publicacion.php?id=<?= $banner['id_entrada'] ?>';" style="cursor:pointer;">
@@ -197,23 +154,7 @@ while ($row = $resultPosts->fetch_assoc()) {
         </div>
     </section>
 
-    <footer class="main-footer">
-        <div class="footer-container">
-            <div class="footer-logo">
-                <a href="index.php">
-                    <h1>Voces del Proceso</h1>
-                </a>
-            </div>
-            <div class="footer-social">
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-            </div>
-            <div class="footer-copyright">
-                <p>&copy; 2025 Voces del Proceso.<?= $translator->__(" Todos los derechos reservados.") ?></p>
-            </div>
-        </div>
-    </footer>
+    <?php include 'includes/footer.php'; ?>
 
     <?php $conn->close(); ?>
 </body>
