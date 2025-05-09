@@ -105,7 +105,6 @@ if(isset($_GET['msg'])){
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="../assets/js/loggin_scripts.js" defer></script>
-  <script src="../assets/js/Main.js" defer></script>
   
   <script>
     // Función de formateo con capacidad de toggle para bloques (h2, p, listas)

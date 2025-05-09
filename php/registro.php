@@ -182,7 +182,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="../assets/js/loggin_scripts.js" defer></script>
-  <script src="../assets/js/Main.js" defer></script>
 </head>
 <body>
   <?php include '../includes/header.php'; ?>

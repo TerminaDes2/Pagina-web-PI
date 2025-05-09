@@ -114,7 +114,6 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
   <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/publicacion.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <script src="../assets/js/Main.js" defer></script>
 </head>
 <body>
   <?php include '../includes/header.php'; ?>

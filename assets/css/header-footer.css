@@ -115,6 +115,20 @@
   display: none; /* Ocultar por defecto */
 }
 
+.hf-contenido-desplegable {
+  display: none;
+  position: absolute;
+  background-color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.hf-contenido-desplegable.visible {
+  display: block;
+}
+
 /* Footer */
 .hf-main-footer {
   background: linear-gradient(to top, #187424, #0b751b);
