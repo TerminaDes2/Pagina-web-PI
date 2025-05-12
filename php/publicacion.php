@@ -36,11 +36,11 @@ if (isset($_GET['id'])) {
     if ($result->num_rows > 0) {
         $entrada = $result->fetch_assoc();
     } else {
-        echo "No se encontró la publicación.";
+        echo "<p>No se encontró la publicación especificada. <a href='../index.php'>Volver al inicio</a></p>";
         exit;
     }
 } else {
-    echo "No se especificó la publicación.";
+    echo "<p>No se especificó la publicación. <a href='../index.php'>Volver al inicio</a></p>";
     exit;
 }
 

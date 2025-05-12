@@ -1,8 +1,8 @@
 <?php
 // Configuración de la base de datos
-define('host', 'localhost');
-define('dbname', 'blog');
-define('dbuser', 'root');
-define('dbpass', '');
+if (!defined('host')) define('host', 'localhost');
+if (!defined('dbname')) define('dbname', 'blog');
+if (!defined('dbuser')) define('dbuser', 'root');
+if (!defined('dbpass')) define('dbpass', '');
 
 ?>

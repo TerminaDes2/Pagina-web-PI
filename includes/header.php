@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="/Pagina-web-PI/assets/css/header-footer.css">
+<link rel="stylesheet" href="<?= $_SERVER['DOCUMENT_ROOT'] . '/Pi/Pagina-web-PI/assets/css/header-footer.css' ?>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
@@ -18,7 +18,7 @@
         </div>
         <nav class="hf-main-nav">
             <ul class="hf-menu-desplegable">
-                <li><a href="/index.php"><?= $translator->__("Inicio") ?></a></li>
+                <li><a href="<?= $_SERVER['DOCUMENT_ROOT'] . '/Pi/Pagina-web-PI/index.php' ?>"><?= $translator->__("Inicio") ?></a></li>
                 <li class="hf-menu-desplegable">
                     <a href="#"><?= $translator->__("Noticias") ?></a>
                     <div class="hf-contenido-desplegable"></div>
@@ -33,8 +33,7 @@
         </nav>
         <div class="hf-header-actions">
             <div class="hf-search-box">
-                <input type="text" placeholder="<?= $translator->__("Buscar...") ?>">
-                <button><i class="fas fa-search"></i></button>
+                <?php include $_SERVER['DOCUMENT_ROOT'] . '/Pi/Pagina-web-PI/php/buscador.php'; ?>
             </div>
             <div class="hf-social-icons">
                 <a href="#"><i class="fab fa-facebook-f"></i></a>
