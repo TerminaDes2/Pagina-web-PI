@@ -30,7 +30,7 @@ if (isset($_GET['id'])) {
     $id_entrada = intval($_GET['id']);
     $sql = "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, i.imagen 
             FROM entradas e 
-            LEFT JOIN imagenes i ON e.id_imagen = i.id_imagen 
+            LEFT JOIN imagenes i ON i.id_entrada = e.id_entrada 
             WHERE e.id_entrada = $id_entrada";
     $result = $conn->query($sql);
     if ($result->num_rows > 0) {
@@ -51,7 +51,7 @@ $entrada['contenido'] = $translator->traducirHTML($entrada['contenido']);
 // Consulta para obtener otras publicaciones (para la sección de publicidad)
 $sqlAds = "SELECT e.id_entrada, e.titulo, e.fecha, i.imagen 
            FROM entradas e 
-           LEFT JOIN imagenes i ON e.id_imagen = i.id_imagen 
+           LEFT JOIN imagenes i ON i.id_entrada = e.id_entrada 
            WHERE e.id_entrada <> $id_entrada 
            ORDER BY e.fecha DESC 
            LIMIT 2";

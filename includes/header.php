@@ -3,7 +3,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-<script src="/Pagina-web-PI/assets/js/Main.js" defer></script>
+<script src="/Pagina-web-PI/assets/js/menu.js" defer></script>
 <header class="hf-main-header">
     <div class="hf-header-container">
         <button class="hf-menu-toggle" onclick="toggleMenu()">
@@ -11,14 +11,14 @@
         </button>
         <div class="hf-logo-container">
             <div class="hf-logo">
-                <a href="/Pagina-web-PI/index.php">
+                <a href="/index.php">
                     <h1>Voces del Proceso</h1>
                 </a>
             </div>
         </div>
         <nav class="hf-main-nav">
             <ul class="hf-menu-desplegable">
-                <li><a href="/Pagina-web-PI/index.php"><?= $translator->__("Inicio") ?></a></li>
+                <li><a href="/index.php"><?= $translator->__("Inicio") ?></a></li>
                 <li class="hf-menu-desplegable">
                     <a href="#"><?= $translator->__("Noticias") ?></a>
                     <div class="hf-contenido-desplegable"></div>

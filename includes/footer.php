@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="/Pagina-web-PI/assets/css/header-footer.css">
+<link rel="stylesheet" href="../assets/css/header-footer.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
