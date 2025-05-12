@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idioma'])) {
 // Consulta para el banner
 $sqlBanner = "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, i.imagen 
               FROM entradas e 
-              LEFT JOIN imagenes i ON e.id_imagen = i.id_imagen 
+              LEFT JOIN imagenes i ON i.id_entrada = e.id_entrada 
               ORDER BY e.id_entrada DESC 
               LIMIT 1";
 $resultBanner = $conn->query($sqlBanner);
@@ -41,12 +41,12 @@ if ($banner) {
 $sqlPosts = $banner ? 
     "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, i.imagen 
      FROM entradas e 
-     LEFT JOIN imagenes i ON e.id_imagen = i.id_imagen 
+     LEFT JOIN imagenes i ON i.id_entrada = e.id_entrada 
      WHERE e.id_entrada <> " . $banner['id_entrada'] . " 
      ORDER BY e.id_entrada DESC" :
     "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, i.imagen 
      FROM entradas e 
-     LEFT JOIN imagenes i ON e.id_imagen = i.id_imagen 
+     LEFT JOIN imagenes i ON i.id_entrada = e.id_entrada 
      ORDER BY e.id_entrada DESC";
 
 $resultPosts = $conn->query($sqlPosts);

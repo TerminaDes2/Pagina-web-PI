@@ -1,9 +1,9 @@
-<link rel="stylesheet" href="../assets/css/header-footer.css">
+<link rel="stylesheet" href="/Pagina-web-PI/assets/css/header-footer.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-<script src="/Pagina-web-PI/assets/js/Main.js" defer></script>
+<script src="/Pagina-web-PI/assets/js/menu.js" defer></script>
 <header class="hf-main-header">
     <div class="hf-header-container">
         <button class="hf-menu-toggle" onclick="toggleMenu()">
