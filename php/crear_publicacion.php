@@ -44,43 +44,65 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     // Inserta la publicación en la tabla entradas (sin id_imagen aún)
     $stmt = $conn->prepare("INSERT INTO entradas (titulo, categoria, contenido, fecha, id_usuario) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssssi", $titulo, $categoria, $contenido, $fecha, $id_usuario);
-    if ($stmt->execute()) {
-        $id_entrada = $stmt->insert_id;
-        
-        // Procesa la imagen si se sube alguna
-        if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
-            $destino = "uploads/";
-            if (!is_dir($destino)) {
-                mkdir($destino, 0777, true);
-            }
+    if ($stmt) {
+        $stmt->bind_param("ssssi", $titulo, $categoria, $contenido, $fecha, $id_usuario);
+        if ($stmt->execute()) {
+            $id_entrada = $stmt->insert_id;
             
-            $nombreArchivo = time() . "_" . basename($_FILES['imagen']['name']);
-            $rutaDestino   = $destino . $nombreArchivo;
-            
-            if (move_uploaded_file($_FILES['imagen']['tmp_name'], $rutaDestino)) {
-                $stmtImg = $conn->prepare("INSERT INTO imagenes (imagen, id_entrada) VALUES (?, ?)");
-                $stmtImg->bind_param("si", $rutaDestino, $id_entrada);
-                if ($stmtImg->execute()) {
-                    $id_imagen = $stmtImg->insert_id;
-                    $stmtUpdate = $conn->prepare("UPDATE entradas SET id_imagen = ? WHERE id_entrada = ?");
-                    $stmtUpdate->bind_param("ii", $id_imagen, $id_entrada);
-                    $stmtUpdate->execute();
-                    $stmtUpdate->close();
+            // Procesa la imagen si se sube alguna
+            if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+                $destino = "uploads/";
+                if (!is_dir($destino)) {
+                    mkdir($destino, 0777, true);
                 }
-                $stmtImg->close();
-            } else {
-                header("Location: crear_publicacion.php?msg=" . urlencode("Error al subir la imagen.") . "&msgType=error");
-                exit();
+                
+                $nombreArchivo = time() . "_" . basename($_FILES['imagen']['name']);
+                $rutaDestino   = $destino . $nombreArchivo;
+                
+                if (move_uploaded_file($_FILES['imagen']['tmp_name'], $rutaDestino)) {
+                    $stmtImg = $conn->prepare("INSERT INTO imagenes (imagen, id_entrada) VALUES (?, ?)");
+                    if ($stmtImg) {
+                        $stmtImg->bind_param("si", $rutaDestino, $id_entrada);
+                        if ($stmtImg->execute()) {
+                            $id_imagen = $stmtImg->insert_id;
+                            $stmtUpdate = $conn->prepare("UPDATE entradas SET id_imagen = ? WHERE id_entrada = ?");
+                            if ($stmtUpdate) {
+                                $stmtUpdate->bind_param("ii", $id_imagen, $id_entrada);
+                                $stmtUpdate->execute();
+                                $stmtUpdate->close();
+                            } else {
+                                error_log("Error en la preparación de la consulta UPDATE: " . $conn->error);
+                                header("Location: crear_publicacion.php?msg=" . urlencode("Error al actualizar la publicación.") . "&msgType=error");
+                                exit();
+                            }
+                        } else {
+                            error_log("Error al ejecutar la consulta INSERT INTO imagenes: " . $stmtImg->error);
+                            header("Location: crear_publicacion.php?msg=" . urlencode("Error al guardar la imagen.") . "&msgType=error");
+                            exit();
+                        }
+                        $stmtImg->close();
+                    } else {
+                        error_log("Error en la preparación de la consulta INSERT INTO imagenes: " . $conn->error);
+                        header("Location: crear_publicacion.php?msg=" . urlencode("Error al preparar la consulta para guardar la imagen.") . "&msgType=error");
+                        exit();
+                    }
+                } else {
+                    header("Location: crear_publicacion.php?msg=" . urlencode("Error al subir la imagen.") . "&msgType=error");
+                    exit();
+                }
             }
+            header("Location: crear_publicacion.php?msg=" . urlencode("Publicación creada exitosamente.") . "&msgType=success");
+            exit();
+        } else {
+            header("Location: crear_publicacion.php?msg=" . urlencode("Error al crear la publicación: " . $stmt->error) . "&msgType=error");
+            exit();
         }
-        header("Location: crear_publicacion.php?msg=" . urlencode("Publicación creada exitosamente.") . "&msgType=success");
-        exit();
+        $stmt->close();
     } else {
-        header("Location: crear_publicacion.php?msg=" . urlencode("Error al crear la publicación: " . $stmt->error) . "&msgType=error");
+        error_log("Error en la preparación de la consulta INSERT INTO entradas: " . $conn->error);
+        header("Location: crear_publicacion.php?msg=" . urlencode("Error al preparar la consulta para crear la publicación.") . "&msgType=error");
         exit();
     }
-    $stmt->close();
     $conn->close();
 }
 
