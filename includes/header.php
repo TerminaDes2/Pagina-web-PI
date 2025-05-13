@@ -19,12 +19,14 @@
         <nav class="hf-main-nav">
             <ul class="hf-main-menu" id="mainMenu">
                 <li><a href="/index.php"><?= $translator->__("Inicio") ?></a></li>
-                <li class="hf-menu-desplegable">
-                    <a href="#" class="hf-submenu-toggle"><?= $translator->__("Noticias") ?> <i class="fas fa-chevron-down"></i></a>
-                    <div class="hf-contenido-desplegable">
-                        <a href="#">Subcategoría 1</a>
-                        <a href="#">Subcategoría 2</a>
-                        <a href="#">Subcategoría 3</a>
+                <li class="hf-menu-categorias">
+                    <a href="#" class="hf-categoria-toggle"><?= $translator->__("Noticias") ?> <i class="fas fa-chevron-down"></i></a>
+                    <div class="hf-contenido-categorias">
+                        <a href="/Pagina-web-PI/categorias.php?cat=politica">Política</a>
+                        <a href="/Pagina-web-PI/categorias.php?cat=economia">Economía</a>
+                        <a href="/Pagina-web-PI/categorias.php?cat=cultura">Cultura</a>
+                        <a href="/Pagina-web-PI/categorias.php?cat=deportes">Deportes</a>
+                        <a href="/Pagina-web-PI/categorias.php?cat=tecnologia">Tecnología</a>
                     </div>
                 </li>
                 <li>

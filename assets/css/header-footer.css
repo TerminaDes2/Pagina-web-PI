@@ -389,13 +389,28 @@
   background-color: #0b751b;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
   z-index: 1000;
-  padding: 15px;
-  border-radius: 12px;
+  padding: 10px 0;
+  border-radius: 0 0 12px 12px;
   min-width: 200px;
   opacity: 0;
   transform: translateY(10px);
   transition: opacity 0.3s ease, transform 0.3s ease;
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hf-contenido-desplegable a {
+  display: block;
+  padding: 10px 20px;
+  color: #fff;
+  border-left: 3px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.hf-contenido-desplegable a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-left: 3px solid #ffd700;
+  color: #ffd700;
+  transform: translateX(5px);
 }
 
 .hf-contenido-desplegable.visible {
@@ -404,9 +419,94 @@
   transform: translateY(0);
 }
 
-/* Menú desplegable - oculto por defecto */
+/* Menú desplegable - visible en dispositivos normales */
 .hf-menu-desplegable {
-  display: none; /* Oculto por defecto en todos los dispositivos */
+  display: block;
+  position: relative;
+}
+
+.hf-menu-desplegable .hf-submenu-toggle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.hf-menu-desplegable .hf-submenu-toggle i {
+  font-size: 0.8rem;
+  transition: transform 0.3s ease;
+}
+
+.hf-menu-desplegable:hover .hf-submenu-toggle i,
+.hf-submenu-toggle:hover i {
+  transform: rotate(180deg);
+}
+
+/* Estilos específicos para el menú de categorías - Desktop */
+.hf-menu-categorias {
+  position: relative;
+  display: block;
+}
+
+.hf-categoria-toggle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.hf-categoria-toggle i {
+  font-size: 0.8rem;
+  transition: transform 0.3s ease;
+}
+
+.hf-menu-categorias:hover .hf-categoria-toggle i {
+  transform: rotate(180deg);
+}
+
+.hf-contenido-categorias {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #0b751b;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  padding: 10px 0;
+  border-radius: 0 0 12px 12px;
+  min-width: 200px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hf-contenido-categorias a {
+  display: block;
+  padding: 10px 20px;
+  color: #fff;
+  border-left: 3px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.hf-contenido-categorias a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-left: 3px solid #ffd700;
+  color: #ffd700;
+  transform: translateX(5px);
+}
+
+/* Mostrar el menú de categorías al hacer hover en desktop */
+@media (min-width: 769px) {
+  .hf-menu-categorias:hover .hf-contenido-categorias {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hf-contenido-categorias.visible {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* Footer */
@@ -632,6 +732,47 @@
   
   .hf-main-nav a::after {
     display: none;
+  }
+
+  /* Ajustes para el menú desplegable en móvil */
+  .hf-contenido-desplegable {
+    position: static;
+    box-shadow: none;
+    border-radius: 8px;
+    margin: 5px 0 5px 20px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 5px 0;
+  }
+
+  .hf-contenido-desplegable a {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+  }
+
+  /* Ajustes para el menú de categorías en móvil */
+  .hf-contenido-categorias {
+    position: static;
+    box-shadow: none;
+    border-radius: 8px;
+    margin: 5px 0 5px 20px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 5px 0;
+  }
+
+  .hf-contenido-categorias a {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+  }
+
+  /* Ocultar el menú de categorías en vista móvil inicialmente */
+  .hf-menu-categorias .hf-contenido-categorias {
+    display: none;
+  }
+
+  .hf-menu-categorias .hf-contenido-categorias.visible {
+    display: block;
   }
 
   /* Estilos para extras del menú móvil */
