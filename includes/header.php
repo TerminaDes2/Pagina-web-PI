@@ -1,15 +1,15 @@
 <link rel="stylesheet" href="/Pagina-web-PI/assets/css/header-footer.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <script src="/Pagina-web-PI/assets/js/menu.js" defer></script>
 <header class="hf-main-header">
     <div class="hf-header-container">
-        <button class="hf-menu-toggle" onclick="toggleMenu()">
-            <i class="fas fa-bars"></i>
-        </button>
         <div class="hf-logo-container">
+            <button class="hf-menu-toggle" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
             <div class="hf-logo">
                 <a href="/index.php">
                     <h1>Voces del Proceso</h1>
@@ -20,7 +20,7 @@
             <ul class="hf-menu-desplegable">
                 <li><a href="/index.php"><?= $translator->__("Inicio") ?></a></li>
                 <li class="hf-menu-desplegable">
-                    <a href="#"><?= $translator->__("Noticias") ?></a>
+                    <a href="#"><?= $translator->__("Noticias") ?> <i class="fas fa-chevron-down"></i></a>
                     <div class="hf-contenido-desplegable"></div>
                 </li>
                 <li class="hf-menu-desplegable">
@@ -37,17 +37,17 @@
                 <button><i class="fas fa-search"></i></button>
             </div>
             <div class="hf-social-icons">
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <form method="POST" class="language-form">
-                    <select name="idioma" onchange="this.form.submit()">
-                        <option value="en" <?= $_SESSION['idioma'] == 'en' ? 'selected' : '' ?>><?= $translator->__("Inglés") ?></option>
-                        <option value="fr" <?= $_SESSION['idioma'] == 'fr' ? 'selected' : '' ?>><?= $translator->__("Francés") ?></option>
-                        <option value="es" <?= $_SESSION['idioma'] == 'es' ? 'selected' : '' ?>><?= $translator->__("Español") ?></option>
-                    </select>
-                </form>
+                <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
             </div>
+            <form method="POST" class="language-form">
+                <select name="idioma" onchange="this.form.submit()">
+                    <option value="en" <?= $_SESSION['idioma'] == 'en' ? 'selected' : '' ?>><?= $translator->__("Inglés") ?></option>
+                    <option value="fr" <?= $_SESSION['idioma'] == 'fr' ? 'selected' : '' ?>><?= $translator->__("Francés") ?></option>
+                    <option value="es" <?= $_SESSION['idioma'] == 'es' ? 'selected' : '' ?>><?= $translator->__("Español") ?></option>
+                </select>
+            </form>
         </div>
     </div>
 </header>
@@ -56,4 +56,17 @@
         const menu = document.querySelector('.hf-menu-desplegable');
         menu.classList.toggle('active');
     }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const menuItems = document.querySelectorAll('.hf-menu-desplegable > a');
+        menuItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                const dropdown = this.nextElementSibling;
+                if (dropdown && dropdown.classList.contains('hf-contenido-desplegable')) {
+                    e.preventDefault();
+                    dropdown.classList.toggle('visible');
+                }
+            });
+        });
+    });
 </script>
