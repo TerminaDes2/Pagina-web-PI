@@ -66,6 +66,51 @@ if ($resultAds->num_rows > 0) {
     }
 }
 
+/* Ingresa comentarios */
+if(!isset($_SESSION['usuario'])) {
+  if(!isset($_GET['error'])) {
+    $id_entrada = $_GET['id'] ?? 0;
+    $error = urlencode("Es necesario iniciar sesión para poder realizar comentarios.");
+    header("Location: publicacion.php?id=$id_entrada&error=$error");
+    exit();
+  }
+} else {
+  $datos = $_SESSION['usuario'];
+}
+
+if(isset($_POST['comentar']) && isset($_SESSION['usuario']) && isset($_GET['id'])) {
+  $descripcion = trim($_POST['descripcion']);
+  $id_usuario = intval($_SESSION['usuario']['id_usuario']);
+  $id_entrada = intval($_GET['id']);
+
+  if(!empty($descripcion)) {
+    $stmt = $conn->prepare("INSERT INTO comentarios(descripcion, id_entrada, id_usuario) VALUES (?, ?, ?)");
+    $stmt->bind_param("sii", $descripcion, $id_entrada, $id_usuario);
+   
+    if($stmt->execute()) {
+      echo "<p>Comentario publicado correctamente.</p>";
+    } else {
+      echo "<p>Error al publicar el comentario: " . htmlspecialchars($stmt->error) . "</p>";
+    }
+
+    $stmt->close();
+  } else {
+    echo "<p>El comentario no puede estar vacío.</p>";
+  }
+}
+
+/* Mostrar comentarios comenzando desde el mas reciente */
+$sql = "SELECT c.descripcion, c.fecha, u.nombre, u.primer_apellido, u.segundo_apellido
+        FROM comentarios c
+        INNER JOIN usuarios u ON c.id_usuario = u.id_usuario
+        WHERE c.id_entrada = ?
+        ORDER BY c.id_comentario DESC";
+
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $id_entrada); // $id_entrada es la publicación
+$stmt->execute();
+$result = $stmt->get_result();
+
 /**
  * Función para generar un índice a partir de los encabezados <h2> en el contenido.
  * Se fuerza la codificación a UTF-8 para evitar warnings en setAttribute.
@@ -143,6 +188,37 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
           <?php echo $contenidoConAnchors; ?>
         </div>
       </article>
+
+      <div class="men_container">
+        <h2 class="men_titulo">Comentarios</h2>
+        <?php if(isset($_SESSION['usuario'])): ?>
+          <button class="btn_comen">Comentar</button>
+          <?php
+            if ($result->num_rows > 0) {
+              while ($row = $result->fetch_assoc()) {
+                  $nombre_completo = $row['nombre'] . ' ' . $row['primer_apellido'] . ' ' . $row['segundo_apellido'];
+                  $fecha = $row['fecha'];
+                  $descripcion = htmlspecialchars($row['descripcion']);
+                  echo "
+                  <div class='comentario-container'>
+                    <div class='comentario'>
+                      <div>
+                        <strong>$nombre_completo</strong><br>
+                        <span class='fecha'>$fecha</span>
+                      </div>
+                      <p class='comentario-texto'>$descripcion</p>
+                    </div>
+                  </div>
+                  ";
+              }
+            } else {
+                echo "<p class = 'men_err'>No hay comentarios aún.</p>";
+            }
+          ?>
+        <?php elseif(isset($_GET['error'])): ?>
+          <p class="men_err"><?= htmlspecialchars($_GET['error']) ?></p>
+        <?php endif; ?>
+      </div>
     </div>
 
     <!-- Sección Publicidad: Otras publicaciones -->
@@ -162,8 +238,30 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
       }
       ?>
     </aside>
+
+    <!-- Comentarios -->
+    <div>
+      <form action="publicacion.php?id=<?= $id_entrada ?>" method="POST" class="modal">
+        <div class="modal_container">
+          <label class="modal_title">
+            <?= $datos['nombre'] . ' ' . $datos['primer_apellido'] . ' ' . $datos['segundo_apellido'] ?>
+          </label>
+
+          <div class="modal_group">
+            <label class="modal_comen">Comentario:</label>
+            <textarea class="modal_paragraph" id="descripcion" name="descripcion" rows="5" maxlength="255" placeholder="Escribe tu comentario..."></textarea>
+          </div>
+          
+          <div class="modal_button">
+            <button type="button" class="modal_close">Cancelar</button>
+            <button type="submit" id="comentar" name="comentar" class="modal_publi">Publicar</button>
+          </div>
+        </div>
+      </form>
+    </div>
   </main>
 
   <?php include '../includes/footer.php'; ?>
+  <script src="../assets/js/comentarios.js"></script>
 </body>
 </html>
