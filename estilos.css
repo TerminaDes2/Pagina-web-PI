@@ -1,5 +1,5 @@
 body{
-    background-color: black;
+    background-color: #0d87a5;
     color: white;
     font-family: 'Helvetica', arial,;
     text-align: center;
@@ -12,7 +12,7 @@ h3{
     margin: 40px 0;
 }
 .btn{
-    background-color:chocolate;
+    background-color:rgb(19, 121, 185);
     color: white;
     padding: 15px 30px;
     border-radius: 20px;
