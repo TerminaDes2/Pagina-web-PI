@@ -12,7 +12,7 @@ require '../PHPMailer-master/src/Exception.php';
 session_start();
 // Verificar si el idioma está configurado en la sesión, si no, establecer un idioma predeterminado
 if (!isset($_SESSION['idioma'])) {
-  $_SESSION['idioma'] = 'es'; // Idioma predeterminado
+    $_SESSION['idioma'] = 'es'; // Idioma predeterminado
 }
 
 // Incluir configuración de base de datos
@@ -156,9 +156,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     'nombre'          => $usuario['nombre'],
                     'primer_apellido' => $usuario['primer_apellido'],
                     'segundo_apellido'=> $usuario['segundo_apellido'],
-                    'correo'          => $usuario['correo']
+                    'correo'          => $usuario['correo'],
+                    'perfil'          => $usuario['perfil'] // Agregar el campo perfil
                 ];
-                header("Location: crear_publicacion.php?success=" . urlencode($translator->__("Bienvenido")));
+                header("Location: ../index.php?success=" . urlencode($translator->__("Bienvenido")));
                 exit();
             } else {
                 echo $translator->__("Contraseña incorrecta.");

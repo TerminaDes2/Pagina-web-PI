@@ -1,12 +1,13 @@
 <?php
 session_start();
-if (!isset($_SESSION['usuario'])) {
-    header("Location: registro.php?error=Debe+iniciar+sesión");
+if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['perfil'] !== 'admin') {
+    header("Location: registro.php?error=Acceso+denegado");
     exit();
 }
+
 // Verificar si el idioma está configurado en la sesión, si no, establecer un idioma predeterminado
 if (!isset($_SESSION['idioma'])) {
-  $_SESSION['idioma'] = 'es'; // Idioma predeterminado
+    $_SESSION['idioma'] = 'es'; // Idioma predeterminado
 }
 $idiomaActual = $_SESSION['idioma']; // Guardar el idioma actual
 include "../includes/db_config.php";
@@ -63,19 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmtImg = $conn->prepare("INSERT INTO imagenes (imagen, id_entrada) VALUES (?, ?)");
                     if ($stmtImg) {
                         $stmtImg->bind_param("si", $rutaDestino, $id_entrada);
-                        if ($stmtImg->execute()) {
-                            $id_imagen = $stmtImg->insert_id;
-                            $stmtUpdate = $conn->prepare("UPDATE entradas SET id_imagen = ? WHERE id_entrada = ?");
-                            if ($stmtUpdate) {
-                                $stmtUpdate->bind_param("ii", $id_imagen, $id_entrada);
-                                $stmtUpdate->execute();
-                                $stmtUpdate->close();
-                            } else {
-                                error_log("Error en la preparación de la consulta UPDATE: " . $conn->error);
-                                header("Location: crear_publicacion.php?msg=" . urlencode("Error al actualizar la publicación.") . "&msgType=error");
-                                exit();
-                            }
-                        } else {
+                        if (!$stmtImg->execute()) {
                             error_log("Error al ejecutar la consulta INSERT INTO imagenes: " . $stmtImg->error);
                             header("Location: crear_publicacion.php?msg=" . urlencode("Error al guardar la imagen.") . "&msgType=error");
                             exit();
