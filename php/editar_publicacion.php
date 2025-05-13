@@ -5,23 +5,24 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['perfil'] !== 'admin') 
     exit();
 }
 
-// Verificar si el idioma está configurado en la sesión, si no, establecer un idioma predeterminado
 if (!isset($_SESSION['idioma'])) {
     $_SESSION['idioma'] = 'es'; // Idioma predeterminado
 }
-$idiomaActual = $_SESSION['idioma']; // Guardar el idioma actual
-include "../includes/db_config.php";
 
-date_default_timezone_set('America/Mexico_City');
+if (!isset($_GET['id'])) {
+    header("Location: lista_publicaciones.php?msg=" . urlencode("ID de publicación no proporcionado.") . "&msgType=error");
+    exit();
+}
+
+$id_publicacion = intval($_GET['id']);
+include "../includes/db_config.php";
 
 $conn = new mysqli(host, dbuser, dbpass, dbname);
 if ($conn->connect_error) {
     die("Error en la conexión: " . $conn->connect_error);
 }
-// Configurar la conexión para usar UTF-8
 $conn->set_charset("utf8");
 
-// Incluir el traductor
 require_once '../includes/traductor.php';
 $translator = new Translator($conn);
 
@@ -32,72 +33,60 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idioma'])) {
     exit();
 }
 
-// Procesa el formulario al enviarlo
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Recoger y sanitizar datos
     $titulo    = trim($_POST['titulo']);
     $categoria = trim($_POST['categoria']);
     $contenido = trim($_POST['contenido']);
-    // Convertir el contenido a UTF-8
     $contenido = mb_convert_encoding($contenido, 'UTF-8', 'auto');
-    $fecha     = date("Y-m-d");
-    $id_usuario = $_SESSION['usuario']['id_usuario'];
-    
-    // Inserta la publicación en la tabla entradas (sin id_imagen aún)
-    $stmt = $conn->prepare("INSERT INTO entradas (titulo, categoria, contenido, fecha, id_usuario) VALUES (?, ?, ?, ?, ?)");
+
+    $stmt = $conn->prepare("UPDATE entradas SET titulo = ?, categoria = ?, contenido = ? WHERE id_entrada = ?");
     if ($stmt) {
-        $stmt->bind_param("ssssi", $titulo, $categoria, $contenido, $fecha, $id_usuario);
+        $stmt->bind_param("sssi", $titulo, $categoria, $contenido, $id_publicacion);
         if ($stmt->execute()) {
-            $id_entrada = $stmt->insert_id;
-            
-            // Procesa la imagen si se sube alguna
             if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
                 $destino = "uploads/";
                 if (!is_dir($destino)) {
                     mkdir($destino, 0777, true);
                 }
-                
+
                 $nombreArchivo = time() . "_" . basename($_FILES['imagen']['name']);
                 $rutaDestino   = $destino . $nombreArchivo;
-                
+
                 if (move_uploaded_file($_FILES['imagen']['tmp_name'], $rutaDestino)) {
-                    $stmtImg = $conn->prepare("INSERT INTO imagenes (imagen, id_entrada) VALUES (?, ?)");
+                    $stmtImg = $conn->prepare("UPDATE imagenes SET imagen = ? WHERE id_entrada = ?");
                     if ($stmtImg) {
-                        $stmtImg->bind_param("si", $rutaDestino, $id_entrada);
-                        if (!$stmtImg->execute()) {
-                            error_log("Error al ejecutar la consulta INSERT INTO imagenes: " . $stmtImg->error);
-                            header("Location: crear_publicacion.php?msg=" . urlencode("Error al guardar la imagen.") . "&msgType=error");
-                            exit();
-                        }
+                        $stmtImg->bind_param("si", $rutaDestino, $id_publicacion);
+                        $stmtImg->execute();
                         $stmtImg->close();
-                    } else {
-                        error_log("Error en la preparación de la consulta INSERT INTO imagenes: " . $conn->error);
-                        header("Location: crear_publicacion.php?msg=" . urlencode("Error al preparar la consulta para guardar la imagen.") . "&msgType=error");
-                        exit();
                     }
-                } else {
-                    header("Location: crear_publicacion.php?msg=" . urlencode("Error al subir la imagen.") . "&msgType=error");
-                    exit();
                 }
             }
-            header("Location: crear_publicacion.php?msg=" . urlencode("Publicación creada exitosamente.") . "&msgType=success");
+            header("Location: editar_publicacion.php?id=$id_publicacion&msg=" . urlencode("Publicación actualizada exitosamente.") . "&msgType=success");
             exit();
         } else {
-            header("Location: crear_publicacion.php?msg=" . urlencode("Error al crear la publicación: " . $stmt->error) . "&msgType=error");
+            header("Location: editar_publicacion.php?id=$id_publicacion&msg=" . urlencode("Error al actualizar la publicación.") . "&msgType=error");
             exit();
         }
         $stmt->close();
-    } else {
-        error_log("Error en la preparación de la consulta INSERT INTO entradas: " . $conn->error);
-        header("Location: crear_publicacion.php?msg=" . urlencode("Error al preparar la consulta para crear la publicación.") . "&msgType=error");
-        exit();
     }
-    $conn->close();
+}
+
+$stmt = $conn->prepare("SELECT e.titulo, e.categoria, e.contenido, i.imagen FROM entradas e LEFT JOIN imagenes i ON e.id_entrada = i.id_entrada WHERE e.id_entrada = ?");
+$stmt->bind_param("i", $id_publicacion);
+$stmt->execute();
+$result = $stmt->get_result();
+$publicacion = $result->fetch_assoc();
+$stmt->close();
+
+if (!$publicacion) {
+    header("Location: lista_publicaciones.php?msg=" . urlencode("Publicación no encontrada.") . "&msgType=error");
+    exit();
 }
 
 $message = "";
 $messageType = "";
-if(isset($_GET['msg'])){
+if (isset($_GET['msg'])) {
     $message = $_GET['msg'];
     $messageType = isset($_GET['msgType']) ? $_GET['msgType'] : "success";
 }
@@ -108,19 +97,12 @@ if(isset($_GET['msg'])){
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Voces del Proceso</title>
+  <title><?= $translator->__("Editar Publicación") ?></title>
   <link rel="stylesheet" href="../assets/css/publicar.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="../assets/js/loggin_scripts.js" defer></script>
-  
   <script>
-    // Función de formateo con capacidad de toggle para bloques (h2, p, listas)
     function format(command, value = null) {
-      // Solo aplicamos el toggle para bloques 'h2', 'p', 'insertOrderedList', 'insertUnorderedList'
       if (command === 'h2' || command === 'p') {
         let sel = window.getSelection();
         if (sel.rangeCount > 0) {
@@ -135,38 +117,43 @@ if(isset($_GET['msg'])){
           }
         }
       } else {
-        // Para comandos como listas ordenadas/no ordenadas y otros
         document.execCommand(command, false, value);
       }
     }
-    
-    // Al enviar el formulario, copiamos el HTML del editor al campo oculto
+
     document.addEventListener('DOMContentLoaded', function() {
+      const editor = document.getElementById('editor');
+      const contenido = document.getElementById('contenido');
+
+      // Al enviar el formulario, copiar el contenido con etiquetas al campo oculto
       document.getElementById('publicacionForm').addEventListener('submit', function() {
-        document.getElementById('contenido').value = document.getElementById('editor').innerHTML;
+        contenido.value = editor.innerHTML;
+      });
+
+      // Aplicar etiquetas directamente al contenido editable
+      editor.addEventListener('input', function() {
+        contenido.value = editor.innerHTML;
       });
     });
 
-    // Mostrar el nombre del archivo seleccionado
     function mostrarNombreArchivo() {
       var input = document.getElementById('imagen');
       var nombre = input.files.length > 0 ? input.files[0].name : '';
       document.getElementById('nombre-archivo').textContent = nombre;
     }
   </script>
-  
 </head>
 <body>
   <?php include '../includes/header.php'; ?>
 
   <main class="main">
-    <h1><?= $translator->__("Crear Nueva Publicación") ?></h1>
-    <form id="publicacionForm" action="crear_publicacion.php" method="POST" enctype="multipart/form-data">
+    <h1><?= $translator->__("Editar Publicación") ?></h1>
+    <form id="publicacionForm" action="editar_publicacion.php?id=<?= $id_publicacion ?>" method="POST" enctype="multipart/form-data">
       <label for="titulo"><?= $translator->__("Título:") ?></label>
-      <input type="text" name="titulo" id="titulo" required>
+      <input type="text" name="titulo" id="titulo" value="<?= htmlspecialchars($publicacion['titulo']) ?>" required>
 
       <label for="categoria"><?= $translator->__("Categoría:") ?></label>
-      <input type="text" name="categoria" id="categoria" required>
+      <input type="text" name="categoria" id="categoria" value="<?= htmlspecialchars($publicacion['categoria']) ?>" required>
 
       <label for="contenido"><?= $translator->__("Contenido:") ?></label>
       
@@ -182,19 +169,19 @@ if(isset($_GET['msg'])){
       </div>
       
       <!-- Editor de texto editable -->
-      <div id="editor" contenteditable="true"></div>
+      <div id="editor" contenteditable="true"><?= $publicacion['contenido'] ?></div>
       
       <!-- Campo oculto para enviar el contenido formateado -->
-      <textarea name="contenido" id="contenido" style="display:none;"></textarea>
+      <textarea name="contenido" id="contenido" style="display:none;"><?= $publicacion['contenido'] ?></textarea>
 
-      <label for="imagen"><?= $translator->__("Imagen") ?> / Banner:</label>
+      <label for="imagen"><?= $translator->__("Imagen") ?>:</label>
       <label for="imagen" class="custom-file-upload">
         <?= $translator->__("Seleccionar archivo") ?>
       </label>
       <input type="file" name="imagen" id="imagen" accept="image/*" onchange="mostrarNombreArchivo()">
-      <span id="nombre-archivo" style="margin-left:10px;"></span>
+      <span id="nombre-archivo" style="margin-left:10px;"><?= basename($publicacion['imagen']) ?></span>
 
-      <button type="submit"><?= $translator->__("Crear Publicación") ?></button>
+      <button type="submit"><?= $translator->__("Actualizar Publicación") ?></button>
     </form>
   </main>
 

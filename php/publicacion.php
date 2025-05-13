@@ -2,7 +2,7 @@
 session_start();
 // Verificar si el idioma está configurado en la sesión, si no, establecer un idioma predeterminado
 if (!isset($_SESSION['idioma'])) {
-  $_SESSION['idioma'] = 'es'; // Idioma predeterminado
+    $_SESSION['idioma'] = 'es'; // Idioma predeterminado
 }
 
 // Conexión a la base de datos
