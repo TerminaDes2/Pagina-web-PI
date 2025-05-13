@@ -15,7 +15,24 @@
   height: 90px;
   font-family: 'Montserrat', sans-serif;
   line-height: 1.5;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease;
+}
 
+.hf-main-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(to right, #ffd700, #187424, #ffd700);
+}
+
+.hf-main-header.scrolled {
+  height: 70px;
+  background: rgba(11, 117, 27, 0.95);
+  backdrop-filter: blur(5px);
 }
 
 .hf-header-container {
@@ -38,6 +55,20 @@
   font-weight: bold;
   color: #fff;
   text-decoration: none;
+  font-size: 30px;
+  text-shadow: 1px 2px 4px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  display: block;
+}
+
+.hf-logo h1 {
+  font-size: 30px;
+}
+
+.hf-logo a:hover {
+  transform: scale(1.05);
+  color: #ffd700;
+  text-shadow: 1px 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 .hf-main-nav {
@@ -52,200 +83,821 @@
   display: flex;
   margin: 0;
   padding: 0;
+  height: 100%;
+  align-items: center;
 }
 
 .hf-main-nav li {
   margin-right: 15px;
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
 
 .hf-main-nav a {
   display: block;
   color: #fff;
-  padding: 10px;
-  transition: color 0.3s ease;
+  padding: 10px 15px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  border-radius: 4px;
+  position: relative;
 }
 
 .hf-main-nav a:hover {
   color: #ffd700;
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.hf-main-nav a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #ffd700;
+  transition: width 0.3s ease;
+}
+
+.hf-main-nav a:hover::after {
+  width: 100%;
 }
 
 .hf-header-actions {
   display: flex;
   align-items: center;
+  gap: 15px;
 }
 
 .hf-search-box {
   display: flex;
   align-items: center;
-  margin-right: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 2px 10px;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hf-search-box:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .hf-search-box input[type="text"] {
-  padding: 5px;
+  padding: 5px 10px;
   border: none;
-  border-radius: 30px;
+  border-radius: 20px;
   margin-right: 5px;
-  height: 25px;
+  height: 30px;
+  width: 150px;
+  background: transparent;
+  color: #fff;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.hf-search-box input[type="text"]::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.hf-search-box input[type="text"]:focus {
+  background: rgba(255, 255, 255, 0.2);
+  width: 180px;
 }
 
 .hf-search-box button {
-  background: #0056b3;
+  background: transparent;
   color: #fff;
   border: none;
-  padding: 4px 8px;
-  border-radius: 4px;
   cursor: pointer;
-  transition: background 0.3s ease;
-  text-decoration: none;
-  height: 25px;
-}
-
-.hf-search-box button:hover {
-  background: #00428f;
-}
-
-.hf-social-icons a {
-  display: inline-block;
-  margin-left: 5px;
-  color: #fff;
+  transition: all 0.3s ease;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
   font-size: 1rem;
 }
 
+.hf-search-box button:hover {
+  color: #ffd700;
+  transform: scale(1.1);
+}
+
+.hf-social-icons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hf-social-icons a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.hf-social-icons a:hover {
+  background-color: #ffd700;
+  color: #187424;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.language-form select {
+  padding: 5px 10px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.language-form select:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.language-form select option {
+  background: #0b751b;
+  color: #fff;
+  padding: 10px;
+}
+
+/* Estilos para el botón de inicio de sesión */
+.hf-login-btn {
+  display: flex;
+  align-items: center;
+  padding: 8px 15px;
+  background: rgba(255, 215, 0, 0.2);
+  border-radius: 20px;
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  margin-left: 10px;
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  white-space: nowrap;
+}
+
+.hf-login-btn:hover {
+  background: rgba(255, 215, 0, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: #fff;
+  text-decoration: none;
+}
+
+.hf-login-btn i {
+  margin-right: 5px;
+}
+
+/* Estilos para el círculo de perfil cuando el usuario está logueado */
+.hf-profile-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 215, 0, 0.2);
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  margin-left: 10px;
+  border: 2px solid rgba(255, 215, 0, 0.4);
+  overflow: hidden;
+}
+
+.hf-profile-circle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-color: #ffd700;
+}
+
+.hf-profile-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hf-profile-circle i {
+  font-size: 1.2rem;
+}
+
+/* Estilos para el círculo de perfil en el menú móvil */
+.hf-mobile-profile-circle {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 215, 0, 0.2);
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: 2px solid rgba(255, 215, 0, 0.4);
+  z-index: 1002;
+  overflow: hidden;
+}
+
+.hf-mobile-profile-circle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-color: #ffd700;
+}
+
+.hf-mobile-profile-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hf-mobile-profile-circle i {
+  font-size: 1.2rem;
+}
+
+/* Estilos para el botón de inicio de sesión en el menú móvil */
+.hf-mobile-login-btn {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  display: flex;
+  align-items: center;
+  padding: 8px 15px;
+  background: rgba(255, 215, 0, 0.2);
+  border-radius: 20px;
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  z-index: 1002;
+  font-size: 0.9rem;
+}
+
+.hf-mobile-login-btn:hover {
+  background: rgba(255, 215, 0, 0.4);
+  transform: translateY(-2px);
+  color: #fff;
+  text-decoration: none;
+}
+
+.hf-mobile-login-btn i {
+  margin-right: 5px;
+}
+
 .hf-menu-toggle {
-  display: none; /* Ocultar por defecto */
+  display: none;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.hf-menu-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffd700;
+  transform: rotate(90deg);
 }
 
 .hf-contenido-desplegable {
   display: none;
   position: absolute;
-  background-color: #fff;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  top: 100%;
+  left: 0;
+  background-color: #0b751b;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
   z-index: 1000;
-  padding: 10px;
-  border-radius: 5px;
+  padding: 10px 0;
+  border-radius: 0 0 12px 12px;
+  min-width: 200px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hf-contenido-desplegable a {
+  display: block;
+  padding: 10px 20px;
+  color: #fff;
+  border-left: 3px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.hf-contenido-desplegable a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-left: 3px solid #ffd700;
+  color: #ffd700;
+  transform: translateX(5px);
 }
 
 .hf-contenido-desplegable.visible {
   display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Menú desplegable - visible en dispositivos normales */
+.hf-menu-desplegable {
+  display: block;
+  position: relative;
+}
+
+.hf-menu-desplegable .hf-submenu-toggle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.hf-menu-desplegable .hf-submenu-toggle i {
+  font-size: 0.8rem;
+  transition: transform 0.3s ease;
+}
+
+.hf-menu-desplegable:hover .hf-submenu-toggle i,
+.hf-submenu-toggle:hover i {
+  transform: rotate(180deg);
+}
+
+/* Estilos específicos para el menú de categorías - Desktop */
+.hf-menu-categorias {
+  position: relative;
+  display: block;
+}
+
+.hf-categoria-toggle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.hf-categoria-toggle i {
+  font-size: 0.8rem;
+  transition: transform 0.3s ease;
+}
+
+.hf-menu-categorias:hover .hf-categoria-toggle i {
+  transform: rotate(180deg);
+}
+
+.hf-contenido-categorias {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #0b751b;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  padding: 10px 0;
+  border-radius: 0 0 12px 12px;
+  min-width: 200px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hf-contenido-categorias a {
+  display: block;
+  padding: 10px 20px;
+  color: #fff;
+  border-left: 3px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.hf-contenido-categorias a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-left: 3px solid #ffd700;
+  color: #ffd700;
+  transform: translateX(5px);
+}
+
+/* Mostrar el menú de categorías al hacer hover en desktop */
+@media (min-width: 769px) {
+  .hf-menu-categorias:hover .hf-contenido-categorias {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hf-contenido-categorias.visible {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* Footer */
 .hf-main-footer {
   background: linear-gradient(to top, #187424, #0b751b);
   color: #fff;
-  padding: 20px 0;
+  padding: 40px 0 20px;
   font-size: 16px;
+  font-family: 'Montserrat', sans-serif;
+  position: relative;
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.hf-main-footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(to right, #ffd700, #187424, #ffd700);
 }
 
 .hf-footer-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 30px;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
+  align-items: center;
+}
+
+.hf-footer-logo {
+  text-align: center;
 }
 
 .hf-footer-logo a {
   font-family: 'Roboto Slab', serif;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   font-weight: bold;
   color: #fff;
   text-decoration: none;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease;
+  display: inline-block;
+}
+
+.hf-footer-logo a:hover {
+  transform: scale(1.05);
+  color: #ffd700;
+}
+
+.hf-footer-social {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
 }
 
 .hf-footer-social a {
-  display: inline-block;
-  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
   color: #fff;
-  font-size: 1rem;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
 }
 
 .hf-footer-social a:hover {
-  color: #ffd700;
+  color: #187424;
+  background-color: #ffd700;
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .hf-footer-copyright {
   text-align: center;
   grid-column: 1 / -1;
-  margin-top: 20px;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+}
+
+/* Responsive footer */
+@media (max-width: 768px) {
+  .hf-footer-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .hf-footer-logo, .hf-footer-social {
+    text-align: center;
+  }
+  
+  .hf-footer-social {
+    justify-content: center;
+  }
 }
 
 /* Responsive */
 @media (max-width: 768px) {
   .hf-header-container {
-    flex-direction: row; /* Cambiar a fila */
-    justify-content: space-between; /* Espaciado entre elementos */
-    align-items: center; /* Alinear verticalmente */
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
   }
 
-  input {
-      min-width: auto;
-      width: 100%;
+  .hf-main-header {
+    height: 70px;
   }
 
   .hf-main-nav {
-    display: none; /* Ocultar navegación principal */
+    display: none;
   }
 
   .hf-header-actions .hf-social-icons,
-  .hf-header-actions .language-form, .hf-search-box {
-    display: none; /* Ocultar íconos sociales y selector de idioma */
+  .hf-header-actions .language-form,
+  .hf-header-actions .hf-search-box {
+    display: none;
+  }
+  
+  .hf-header-actions .hf-login-btn {
+    display: none;
   }
 
   .hf-menu-toggle {
-    display: block; /* Mostrar botón de menú en móviles */
-    background: none;
-    border: none;
-    color: #fff;
-    font-size: 1.5rem;
-    cursor: pointer;
-    margin-top: 0; /* Eliminar margen superior */
-    margin-right: 10px; /* Añadir espacio a la derecha */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
   }
 
+  /* Nuevo estilo para el menú lateral */
   .hf-menu-desplegable {
-    display: none; /* Ocultar contenido desplegable inicialmente */
-    flex-direction: column;
-    background: #0b751b; /* Fondo para el menú desplegable */
-    position: absolute;
-    top: 90px; /* Ajustar debajo del header */
-    width: 100%;
-    left: 0;
-    z-index: 999;
+    display: block;
+    position: fixed;
+    top: 0;
+    left: -85%; /* Inicia fuera de la pantalla */
+    width: 85%;
+    height: 100vh;
+    background: linear-gradient(145deg, #0b751b, #0a6619);
+    z-index: 1001;
+    box-shadow: 5px 0 25px rgba(0, 0, 0, 0.3);
+    padding: 25px 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: left 0.4s ease-in-out; /* Transición suave para deslizamiento lateral */
   }
 
   .hf-menu-desplegable.active {
-    display: flex; /* Mostrar contenido desplegable al activarse */
+    left: 0; /* Se mueve a la posición visible */
   }
 
+  /* Botón para cerrar el menú */
+  .hf-menu-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 1002;
+  }
+
+  .hf-menu-close-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+  }
+
+  /* Título del menú */
+  .hf-menu-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-right: 40px; /* Espacio para el botón de cerrar */
+  }
+
+  /* Ajuste de márgenes para menú */
   .hf-main-nav ul {
+    margin-top: 30px;
     flex-direction: column;
+    width: 100%;
+    gap: 5px;
   }
 
   .hf-main-nav li {
     margin-right: 0;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
+    width: 100%;
   }
 
-  .hf-header-actions {
-    flex-direction: row; /* Asegurar que los elementos estén en fila */
-    align-items: center; /* Alinear verticalmente */
+  .hf-main-nav a {
+    padding: 12px 15px;
+    width: 100%;
+    border-radius: 8px;
+    border-left: 3px solid transparent;
+  }
+  
+  .hf-main-nav a:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-left: 3px solid #ffd700;
+    transform: none;
+  }
+  
+  .hf-main-nav a::after {
+    display: none;
   }
 
-  .hf-search-box {
-    margin-right: 0;
-    margin-bottom: 10px;
+  /* Ajustes para el menú desplegable en móvil */
+  .hf-contenido-desplegable {
+    position: static;
+    box-shadow: none;
+    border-radius: 8px;
+    margin: 5px 0 5px 20px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 5px 0;
+  }
+
+  .hf-contenido-desplegable a {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+  }
+
+  /* Ajustes para el menú de categorías en móvil */
+  .hf-contenido-categorias {
+    position: static;
+    box-shadow: none;
+    border-radius: 8px;
+    margin: 5px 0 5px 20px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 5px 0;
+  }
+
+  .hf-contenido-categorias a {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+  }
+
+  /* Ocultar el menú de categorías en vista móvil inicialmente */
+  .hf-menu-categorias .hf-contenido-categorias {
+    display: none;
+  }
+
+  .hf-menu-categorias .hf-contenido-categorias.visible {
+    display: block;
+  }
+
+  /* Estilos para extras del menú móvil */
+  .hf-mobile-menu-extras {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .hf-mobile-search {
+    display: flex !important;
+    width: 100%;
+    margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 5px 10px;
+  }
+
+  .hf-mobile-search input[type="text"] {
+    width: 100% !important;
+    background: transparent !important;
+    height: 40px;
+  }
+
+  .hf-mobile-language {
+    display: block !important;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .hf-mobile-language select {
+    width: 100%;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .hf-mobile-social {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+  }
+
+  .hf-mobile-social a {
+    width: 40px;
+    height: 40px;
+  }
+
+  .hf-logo a {
+    font-size: 1.1rem;
+  }
+
+  .hf-logo h1 {
+    font-size: 1.1rem;
+  }
+}
+
+/* Responsive */
+@media (max-width: 450px) {
+  /* Mostrar el botón de menú solo en pantallas pequeñas */
+  .hf-menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+  }
+
+  /* Nuevo estilo para el menú lateral - Solo visible en móviles pequeños */
+  .hf-menu-desplegable {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: -80%; /* Inicia fuera de la pantalla */
+    width: 80%;
+    height: 100vh;
+    background: #0b751b;
+    z-index: 1001;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: left 0.3s ease; /* Transición suave para deslizamiento lateral */
+  }
+
+  .hf-menu-desplegable.active {
+    left: 0; /* Se mueve a la posición visible */
+  }
+}
+
+/* Para pantallas entre 451px y 768px */
+@media (min-width: 451px) and (max-width: 768px) {
+  /* Ocultar el menú desplegable */
+  .hf-menu-desplegable {
+    display: none !important;
+  }
+  
+  /* Ocultar el botón de menú */
+  .hf-menu-toggle {
+    display: none !important;
+  }
+  
+  /* Mostrar la navegación normal */
+  .hf-main-nav {
+    display: flex !important;
+  }
+}
+
+/* Media query específico para asegurar que el menú desplegable se oculte en pantallas mayores a 450px */
+@media (min-width: 451px) {
+  .hf-menu-desplegable, 
+  .hf-menu-desplegable.active {
+    display: none !important; /* Forzar ocultamiento */
+    left: -100% !important; /* Asegurar que esté fuera de la pantalla */
   }
 }
 
 /* Sobrescribir estilos predeterminados de enlaces */
 .hf-main-header a:-webkit-any-link {
-  color: inherit; /* Hereda el color del elemento padre */
+  color: inherit;
   cursor: pointer;
-  text-decoration: none; /* Elimina el subrayado */
+  text-decoration: none;
 }
 
 .hf-main-header a:hover {
-  text-decoration: underline; /* Opcional: Define un estilo para el hover */
+  text-decoration: underline;
 }

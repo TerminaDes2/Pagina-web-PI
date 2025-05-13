@@ -18,11 +18,14 @@ class Translator {
     }
 
     public function traducirTexto($texto) {
+        if (!isset($_SESSION['idioma']) || $_SESSION['idioma'] === 'es') {
+            return $texto; // No traducir si el idioma es español o si no está configurado
+        }
         $url = $this->config['endpoint'] . "/translate?api-version=3.0&to=" . $_SESSION['idioma'];
         
         $headers = [
             'Ocp-Apim-Subscription-Key: ' . $this->config['key'],
-            'Ocp-Apim-Subscription-Region: ' . $this->config['location'],
+            'Ocp-Apim-Subscription-Region: ' . $this->config['location'], // Región actualizada
             'Content-Type: application/json'
         ];
 
@@ -43,7 +46,9 @@ class Translator {
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         
         if (curl_errno($ch)) {
-            throw new Exception("Error cURL: " . curl_error($ch));
+            error_log("Error cURL: " . curl_error($ch)); // Registrar el error
+            curl_close($ch);
+            return $texto; // Devolver el texto original
         }
         curl_close($ch);
 
@@ -52,14 +57,17 @@ class Translator {
             return $result[0]['translations'][0]['text'];
         }
         
-        throw new Exception("Error $httpCode: " . print_r($response, true));
+        error_log("Error $httpCode: " . print_r($response, true)); // Registrar el error
+        return $texto; // Devolver el texto original
     }
 
     public function cambiarIdioma($nuevoIdioma) {
         $_SESSION['idioma'] = $nuevoIdioma;
     }
     public function traducirHTML($html) {
-        // Extraer texto manteniendo estructura HTML
+        if (!isset($_SESSION['idioma']) || $_SESSION['idioma'] === 'es') {
+            return $html; // No traducir si el idioma es español o si no está configurado
+        }
         $url = $this->config['endpoint'] . "/translate?api-version=3.0&to=" . $_SESSION['idioma'] . "&textType=html";
         $dom = new DOMDocument();
         @$dom->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'));

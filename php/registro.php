@@ -1,4 +1,4 @@
-<?php
+<?php 
 // Libreria PHPMailer para poder mandar correo de verificación
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
@@ -12,7 +12,7 @@ require '../PHPMailer-master/src/Exception.php';
 session_start();
 // Verificar si el idioma está configurado en la sesión, si no, establecer un idioma predeterminado
 if (!isset($_SESSION['idioma'])) {
-  $_SESSION['idioma'] = 'es'; // Idioma predeterminado
+    $_SESSION['idioma'] = 'es'; // Idioma predeterminado
 }
 
 // Incluir configuración de base de datos
@@ -42,12 +42,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     include "../includes/db_config.php";
     
     try {
-      $pdo = new PDO("mysql:host=" . host . ";dbname=" . dbname . ";charset=utf8", dbuser, dbpass);
-      $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo = new PDO("mysql:host=" . host . ";dbname=" . dbname . ";charset=utf8", dbuser, dbpass);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     } catch (PDOException $e) {
-        die("Error en la conexión: " . $e->getMessage());
+        die(json_encode(["error" => $translator->__("Error en la conexión: ") . $e->getMessage()]));
     }
-    
+
     if (isset($_POST['action']) && $_POST['action'] === 'register') {    
 
         $nombre           = trim($_POST['nombre']);
@@ -59,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         
         if (empty($nombre) || empty($primer_apellido) || empty($correo) || empty($contra)) {
-            echo $translator->__("Por favor, completa todos los campos requeridos.");
+            echo json_encode(["error" => $translator->__("Por favor, completa todos los campos requeridos.")]);
             exit;
         }
         
@@ -68,7 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->execute();
 
         if ($stmt->rowCount() > 0) {
-            echo $translator->__("El correo ya está registrado.") . " <a href='login.php'>" . $translator->__("Inicia sesión") . "</a>.";
+            echo json_encode(["error" => $translator->__("El correo ya está registrado.") . " <a href='login.php'>" . $translator->__("Inicia sesión") . "</a>."]);
             exit;
         }
 
@@ -125,11 +125,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                  <a href='localhost/pagina-web-pi/templates/verificar.html'>" . $translator->__("Verifica aquí") . "</a>";
 
             $mail->send();
-            echo $translator->__("Código enviado al correo.") . " <a href='../templates/verificar.html'>" . $translator->__("Verifica aquí") . "</a>";
+            echo json_encode(["success" => $translator->__("Código enviado al correo.")]);
         } catch (Exception $e) {
             error_log("Error al enviar el correo: {$mail->ErrorInfo}"); // Registrar el error en el log
-            echo $translator->__("Hubo un problema al enviar el correo. Por favor, intenta más tarde.");
+            echo json_encode(["error" => $translator->__("Hubo un problema al enviar el correo. Por favor, intenta más tarde.")]);
         }
+        exit;
 
     } elseif (isset($_POST['action']) && $_POST['action'] === 'login') {
         
@@ -155,9 +156,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     'nombre'          => $usuario['nombre'],
                     'primer_apellido' => $usuario['primer_apellido'],
                     'segundo_apellido'=> $usuario['segundo_apellido'],
-                    'correo'          => $usuario['correo']
+                    'correo'          => $usuario['correo'],
+                    'perfil'          => $usuario['perfil'] // Agregar el campo perfil
                 ];
-                header("Location: crear_publicacion.php?success=" . urlencode($translator->__("Bienvenido")));
+                header("Location: ../index.php?success=" . urlencode($translator->__("Bienvenido")));
                 exit();
             } else {
                 echo $translator->__("Contraseña incorrecta.");
@@ -165,6 +167,48 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             echo $translator->__("Usuario no encontrado.");
         }
+    } elseif (isset($_POST['action']) && $_POST['action'] === 'verify') {
+        $codigoIngresado = $_POST['codigo'];
+
+        if (!isset($_SESSION['registro'])) {
+            echo json_encode(["error" => $translator->__("No hay datos para verificar.")]);
+            exit;
+        }
+
+        $datos = $_SESSION['registro'];
+
+        if ($codigoIngresado == $datos['codigo']) {
+            try {
+                $perfil = 'cliente';
+                $hashed_password = password_hash($datos['contra'], PASSWORD_DEFAULT);
+
+                $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, primer_apellido, segundo_apellido, correo, contra, perfil) VALUES (?, ?, ?, ?, ?, ?)");
+                $stmt->execute([
+                    $datos['nombre'], 
+                    $datos['primer_apellido'], 
+                    $datos['segundo_apellido'], 
+                    $datos['correo'], 
+                    $hashed_password, 
+                    $perfil
+                ]);
+
+                // Iniciar sesión automáticamente
+                $_SESSION['usuario'] = [
+                    'nombre'          => $datos['nombre'],
+                    'primer_apellido' => $datos['primer_apellido'],
+                    'segundo_apellido'=> $datos['segundo_apellido'],
+                    'correo'          => $datos['correo']
+                ];
+
+                unset($_SESSION['registro']);
+                echo json_encode(["success" => $translator->__("Usuario registrado correctamente.")]);
+            } catch (PDOException $e) {
+                echo json_encode(["error" => $translator->__("Error al registrar el usuario: ") . $e->getMessage()]);
+            }
+        } else {
+            echo json_encode(["error" => $translator->__("Código incorrecto. Intenta nuevamente.")]);
+        }
+        exit;
     } else {
         echo $translator->__("Acción no reconocida.");
     }
@@ -182,6 +226,49 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="../assets/js/loggin_scripts.js" defer></script>
+  <script>
+    $(document).ready(function () {
+      $("#form-left").on("submit", function (e) {
+        e.preventDefault();
+        $.ajax({
+          url: "registro.php",
+          type: "POST",
+          data: $(this).serialize(),
+          success: function (response) {
+            const res = JSON.parse(response);
+            if (res.success) {
+              alert(res.success);
+              $("#verifyModal").show();
+            } else if (res.error) {
+              alert(res.error);
+            }
+          },
+        });
+      });
+
+      $("#verifyForm").on("submit", function (e) {
+        e.preventDefault();
+        $.ajax({
+          url: "registro.php",
+          type: "POST",
+          data: $(this).serialize(),
+          success: function (response) {
+            const res = JSON.parse(response);
+            if (res.success) {
+              alert(res.success);
+              window.location.href = "crear_publicacion.php";
+            } else if (res.error) {
+              alert(res.error);
+            }
+          },
+        });
+      });
+
+      $(".close").on("click", function () {
+        $("#verifyModal").hide();
+      });
+    });
+  </script>
 </head>
 <body>
   <?php include '../includes/header.php'; ?>
@@ -192,8 +279,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           <input type="hidden" name="action" value="login">
           <h1><?= $translator->__("Inicio de Sesión") ?></h1>
           <p><?= $translator->__("Bienvenido de vuelta! Inicia sesión en tu cuenta para registrar las asistencias de tu club.") ?></p>
-          <input type="text" id="correo" name="correo" placeholder="Cuenta o correo" required>
-          <input type="password" id="contra" name="contra" placeholder="Contraseña" required>
+          <input type="text" id="correo" name="correo" placeholder="<?= $translator->__("Cuenta o correo") ?>" required>
+          <input type="password" id="contra" name="contra" placeholder="<?= $translator->__("Contraseña") ?>" required>
           <button type="submit" class="btn"><?= $translator->__("Iniciar Sesión") ?></button>
           <button class="btin" type="button" onclick="mostrarFormulario2()"><?= $translator->__("Crear una cuenta nueva") ?></button>
       </form>
@@ -203,15 +290,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <form id="form-left" action="registro.php" method="POST">
           <input type="hidden" name="action" value="register">
           <h1><?= $translator->__("Registro de Cuenta") ?></h1>
-          <input type="text" id="nombre" name="nombre" placeholder="Nombre(s)" required>
-          <input type="text" id="primer_apellido" name="primer_apellido" placeholder="Primer Apellido" required>
-          <input type="text" id="segundo_apellido" name="segundo_apellido" placeholder="Segundo Apellido" required>
-          <input type="text" id="correo" name="correo" placeholder="Cuenta o correo" required>
-          <input type="password" id="contra" name="contra" placeholder="Contraseña" required>
-          <button class="btn" type="submit"><?= $translator->__(" Registrar") ?></button>
-          <button class="btin" type="button" onclick="mostrarFormulario()">Iniciar sesión</button>
+          <input type="text" id="nombre" name="nombre" placeholder="<?= $translator->__("Name") ?>" required>
+          <input type="text" id="primer_apellido" name="primer_apellido" placeholder="<?= $translator->__("Primer Apellido") ?>" required>
+          <input type="text" id="segundo_apellido" name="segundo_apellido" placeholder="<?= $translator->__("Segundo Apellido") ?>" required>
+          <input type="text" id="correo" name="correo" placeholder="<?= $translator->__("Cuenta o correo") ?>" required>
+          <input type="password" id="contra" name="contra" placeholder="<?= $translator->__("Contraseña") ?>" required>
+          <button class="btn" type="submit"><?= $translator->__("Crear cuenta") ?></button>
+          <button class="btin" type="button" onclick="mostrarFormulario()"><?= $translator->__("Iniciar sesión") ?></button>
       </form>
     </div>
+
+    <!-- Modal de verificación -->
+    <div id="verifyModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2><?= $translator->__("Ingresa tu código de verificación") ?></h2>
+            <form id="verifyForm" action="registro.php" method="POST">
+            <input type="hidden" name="action" value="verify">
+            <p><?= $translator->__("Código enviado a tu correo:") ?></p>
+            <input type="text" name="codigo" required>
+            <br><br>
+            <button type="submit"><?= $translator->__("Verificar y Registrar") ?></button>
+            </form>
+        </div>
+    </div>
+
   </main>
 
   <?php include '../includes/footer.php'; ?>
