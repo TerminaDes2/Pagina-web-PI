@@ -264,6 +264,11 @@
   transform: translateY(0);
 }
 
+/* Menú desplegable - oculto por defecto */
+.hf-menu-desplegable {
+  display: none; /* Oculto por defecto en todos los dispositivos */
+}
+
 /* Footer */
 .hf-main-footer {
   background: linear-gradient(to top, #187424, #0b751b);
@@ -393,31 +398,79 @@
     margin-right: 10px;
   }
 
+  /* Nuevo estilo para el menú lateral */
   .hf-menu-desplegable {
-    display: none;
-    flex-direction: column;
+    display: block;
+    position: fixed;
+    top: 0;
+    left: -80%; /* Inicia fuera de la pantalla */
+    width: 80%;
+    height: 100vh;
     background: #0b751b;
-    position: absolute;
-    top: 90px;
-    width: 100%;
-    left: 0;
-    z-index: 999;
+    z-index: 1001;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    padding: 10px 0;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.5s ease;
+    padding: 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: left 0.3s ease; /* Transición suave para deslizamiento lateral */
   }
 
   .hf-menu-desplegable.active {
+    left: 0; /* Se mueve a la posición visible */
+  }
+
+  /* Botón para cerrar el menú */
+  .hf-menu-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
     display: flex;
-    max-height: 500px;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 1002;
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .hf-menu-close-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+  }
+
+  /* Título del menú */
+  .hf-menu-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-right: 40px; /* Espacio para el botón de cerrar */
+  }
+
+  /* Eliminar pseudo-elemento redundante */
+  .hf-menu-desplegable::before {
+    content: none;
+  }
+
+  /* Ajuste de márgenes para menú */
+  .hf-main-nav ul {
+    margin-top: 20px;
   }
 
   .hf-main-nav ul {
     flex-direction: column;
     width: 100%;
-    padding: 0 20px;
+    padding: 0;
+    margin-top: 60px;
   }
 
   .hf-main-nav li {
@@ -432,12 +485,102 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 
+  /* Estilos para extras del menú móvil */
+  .hf-mobile-menu-extras {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .hf-mobile-search {
+    display: flex !important;
+    width: 100%;
+    margin-bottom: 15px;
+  }
+
+  .hf-mobile-search input[type="text"] {
+    width: 100% !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+  }
+
+  .hf-mobile-language {
+    display: block !important;
+    width: 100%;
+    margin-bottom: 15px;
+  }
+
+  .hf-mobile-language select {
+    width: 100%;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+  }
+
   .hf-logo a {
     font-size: 1.1rem;
   }
 
   .hf-logo h1 {
     font-size: 1.1rem;
+  }
+}
+
+/* Responsive */
+@media (max-width: 450px) {
+  /* Mostrar el botón de menú solo en pantallas pequeñas */
+  .hf-menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+  }
+
+  /* Nuevo estilo para el menú lateral - Solo visible en móviles pequeños */
+  .hf-menu-desplegable {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: -80%; /* Inicia fuera de la pantalla */
+    width: 80%;
+    height: 100vh;
+    background: #0b751b;
+    z-index: 1001;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: left 0.3s ease; /* Transición suave para deslizamiento lateral */
+  }
+
+  .hf-menu-desplegable.active {
+    left: 0; /* Se mueve a la posición visible */
+  }
+}
+
+/* Para pantallas entre 451px y 768px */
+@media (min-width: 451px) and (max-width: 768px) {
+  /* Ocultar el menú desplegable */
+  .hf-menu-desplegable {
+    display: none !important;
+  }
+  
+  /* Ocultar el botón de menú */
+  .hf-menu-toggle {
+    display: none !important;
+  }
+  
+  /* Mostrar la navegación normal */
+  .hf-main-nav {
+    display: flex !important;
+  }
+}
+
+/* Media query específico para asegurar que el menú desplegable se oculte en pantallas mayores a 450px */
+@media (min-width: 451px) {
+  .hf-menu-desplegable, 
+  .hf-menu-desplegable.active {
+    display: none !important; /* Forzar ocultamiento */
+    left: -100% !important; /* Asegurar que esté fuera de la pantalla */
   }
 }
 

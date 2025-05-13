@@ -1,6 +1,6 @@
 /**
  * Script para manejar la funcionalidad del menú desplegable
- * Versión: 2.0
+ * Versión: 3.1
  */
 document.addEventListener('DOMContentLoaded', function() {
     // Referencias a elementos del DOM
@@ -37,17 +37,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Evento clic para el botón de menú
         menuBtn.addEventListener('click', toggleMenu);
         
-        // Evento para cerrar el menú al hacer clic fuera
-        document.addEventListener('click', function(e) {
-            if (menuVisible && 
-                !e.target.closest('.hf-menu-desplegable') && 
-                !e.target.closest('.hf-menu-toggle') &&
-                e.target !== menuBtn && 
-                !menuBtn.contains(e.target)) {
-                toggleMenu(null, false);
-            }
-        });
-        
         // Evento para submenús desktop
         const submenuToggles = document.querySelectorAll('.hf-submenu-toggle');
         submenuToggles.forEach(toggle => {
@@ -67,6 +56,21 @@ document.addEventListener('DOMContentLoaded', function() {
             mobileMenu = document.createElement('div');
             mobileMenu.className = 'hf-menu-desplegable';
             
+            // Agregar botón de cierre en la parte superior
+            const closeBtn = document.createElement('button');
+            closeBtn.className = 'hf-menu-close-btn';
+            closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+            closeBtn.addEventListener('click', function() {
+                toggleMenu(null, false);
+            });
+            mobileMenu.appendChild(closeBtn);
+            
+            // Agregar el título del menú
+            const menuTitle = document.createElement('div');
+            menuTitle.className = 'hf-menu-title';
+            menuTitle.textContent = 'Menú';
+            mobileMenu.appendChild(menuTitle);
+            
             // Clonar el menú principal para el móvil
             const mainMenu = document.querySelector('.hf-main-menu');
             if (mainMenu) {
@@ -79,6 +83,29 @@ document.addEventListener('DOMContentLoaded', function() {
                     toggle.addEventListener('click', handleSubmenuToggle);
                 });
             }
+            
+            // Agregar el buscador y selector de idioma
+            const mobileMenuExtras = document.createElement('div');
+            mobileMenuExtras.className = 'hf-mobile-menu-extras';
+            
+            // Clonar el buscador
+            const searchBox = document.querySelector('.hf-search-box');
+            if (searchBox) {
+                const clonedSearch = searchBox.cloneNode(true);
+                clonedSearch.className = 'hf-search-box hf-mobile-search';
+                mobileMenuExtras.appendChild(clonedSearch);
+            }
+            
+            // Clonar el selector de idioma
+            const langForm = document.querySelector('.language-form');
+            if (langForm) {
+                const clonedLangForm = langForm.cloneNode(true);
+                clonedLangForm.className = 'language-form hf-mobile-language';
+                mobileMenuExtras.appendChild(clonedLangForm);
+            }
+            
+            // Añadir extras al menú móvil
+            mobileMenu.appendChild(mobileMenuExtras);
             
             // Añadir al DOM
             header.appendChild(mobileMenu);
@@ -111,6 +138,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 icon.classList.add('fa-bars');
             }
         }
+        
+        // Prevenir scroll cuando el menú está abierto
+        document.body.style.overflow = menuVisible ? 'hidden' : '';
     }
     
     /**
