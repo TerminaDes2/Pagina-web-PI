@@ -237,6 +237,131 @@
   padding: 10px;
 }
 
+/* Estilos para el botón de inicio de sesión */
+.hf-login-btn {
+  display: flex;
+  align-items: center;
+  padding: 8px 15px;
+  background: rgba(255, 215, 0, 0.2);
+  border-radius: 20px;
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  margin-left: 10px;
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  white-space: nowrap;
+}
+
+.hf-login-btn:hover {
+  background: rgba(255, 215, 0, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: #fff;
+  text-decoration: none;
+}
+
+.hf-login-btn i {
+  margin-right: 5px;
+}
+
+/* Estilos para el círculo de perfil cuando el usuario está logueado */
+.hf-profile-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 215, 0, 0.2);
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  margin-left: 10px;
+  border: 2px solid rgba(255, 215, 0, 0.4);
+  overflow: hidden;
+}
+
+.hf-profile-circle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-color: #ffd700;
+}
+
+.hf-profile-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hf-profile-circle i {
+  font-size: 1.2rem;
+}
+
+/* Estilos para el círculo de perfil en el menú móvil */
+.hf-mobile-profile-circle {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 215, 0, 0.2);
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: 2px solid rgba(255, 215, 0, 0.4);
+  z-index: 1002;
+  overflow: hidden;
+}
+
+.hf-mobile-profile-circle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-color: #ffd700;
+}
+
+.hf-mobile-profile-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hf-mobile-profile-circle i {
+  font-size: 1.2rem;
+}
+
+/* Estilos para el botón de inicio de sesión en el menú móvil */
+.hf-mobile-login-btn {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  display: flex;
+  align-items: center;
+  padding: 8px 15px;
+  background: rgba(255, 215, 0, 0.2);
+  border-radius: 20px;
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  z-index: 1002;
+  font-size: 0.9rem;
+}
+
+.hf-mobile-login-btn:hover {
+  background: rgba(255, 215, 0, 0.4);
+  transform: translateY(-2px);
+  color: #fff;
+  text-decoration: none;
+}
+
+.hf-mobile-login-btn i {
+  margin-right: 5px;
+}
+
 .hf-menu-toggle {
   display: none;
   background: none;
@@ -405,8 +530,12 @@
   }
 
   .hf-header-actions .hf-social-icons,
-  .hf-header-actions .language-form, 
-  .hf-search-box {
+  .hf-header-actions .language-form,
+  .hf-header-actions .hf-search-box {
+    display: none;
+  }
+  
+  .hf-header-actions .hf-login-btn {
     display: none;
   }
 

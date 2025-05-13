@@ -52,6 +52,19 @@
                     <option value="es" <?= $_SESSION['idioma'] == 'es' ? 'selected' : '' ?>><?= $translator->__("Español") ?></option>
                 </select>
             </form>
+            <?php if (isset($_SESSION['usuario'])): ?>
+                <a href="/Pagina-web-PI/perfil.php" class="hf-profile-circle" title="<?= $translator->__("Mi perfil") ?>">
+                    <?php if (isset($_SESSION['usuario']['avatar']) && !empty($_SESSION['usuario']['avatar'])): ?>
+                        <img src="<?= $_SESSION['usuario']['avatar'] ?>" alt="<?= $translator->__("Foto de perfil") ?>">
+                    <?php else: ?>
+                        <i class="fas fa-user"></i>
+                    <?php endif; ?>
+                </a>
+            <?php else: ?>
+                <a href="/Pagina-web-PI/php/registro.php" class="hf-login-btn">
+                    <i class="fas fa-user"></i> <?= $translator->__("Iniciar sesión") ?>
+                </a>
+            <?php endif; ?>
         </div>
     </div>
 </header>
