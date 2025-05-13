@@ -1,22 +1,150 @@
-console.log('menu.js cargado correctamente');
-
-document.addEventListener('DOMContentLoaded', () => {
-    const menuButton = document.querySelector('.hf-menu-toggle');
-    const mainMenu  = document.querySelector('.hf-menu-desplegable'); // Cambiado a .hf-menu-desplegable
-  
-    menuButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        mainMenu.classList.toggle('active');
-        console.log('Menú principal toggled');
-    });
-
-    // Si quieres mantener también los submenús:
-    const submenuToggles = document.querySelectorAll('.hf-menu-desplegable > li > a');
-    submenuToggles.forEach(toggle => {
-        toggle.addEventListener('click', e => {
-            e.preventDefault();
-            toggle.nextElementSibling.classList.toggle('visible');
-            console.log('Submenú toggled');
+/**
+ * Script para manejar la funcionalidad del menú desplegable
+ * Versión: 2.0
+ */
+document.addEventListener('DOMContentLoaded', function() {
+    // Referencias a elementos del DOM
+    const menuBtn = document.getElementById('menuToggleBtn');
+    const header = document.querySelector('.hf-main-header');
+    const mainNav = document.querySelector('.hf-main-nav');
+    
+    // Estado inicial
+    let menuVisible = false;
+    let mobileMenuCreated = false;
+    let mobileMenu = null;
+    
+    // Inicialización
+    init();
+    
+    /**
+     * Inicializa la configuración del menú
+     */
+    function init() {
+        // Preparar el menú móvil si estamos en una pantalla pequeña
+        checkAndCreateMobileMenu();
+        
+        // Configurar event listeners
+        setupEventListeners();
+        
+        // Verificar el tamaño de la ventana al inicio
+        handleWindowResize();
+    }
+    
+    /**
+     * Configura todos los event listeners necesarios
+     */
+    function setupEventListeners() {
+        // Evento clic para el botón de menú
+        menuBtn.addEventListener('click', toggleMenu);
+        
+        // Evento para cerrar el menú al hacer clic fuera
+        document.addEventListener('click', function(e) {
+            if (menuVisible && 
+                !e.target.closest('.hf-menu-desplegable') && 
+                !e.target.closest('.hf-menu-toggle') &&
+                e.target !== menuBtn && 
+                !menuBtn.contains(e.target)) {
+                toggleMenu(null, false);
+            }
         });
-    });
+        
+        // Evento para submenús desktop
+        const submenuToggles = document.querySelectorAll('.hf-submenu-toggle');
+        submenuToggles.forEach(toggle => {
+            toggle.addEventListener('click', handleSubmenuToggle);
+        });
+        
+        // Evento resize para ajustar el menú al cambio de tamaño
+        window.addEventListener('resize', handleWindowResize);
+    }
+    
+    /**
+     * Crea el menú móvil si no existe
+     */
+    function checkAndCreateMobileMenu() {
+        if (!mobileMenuCreated) {
+            // Crear el contenedor del menú móvil
+            mobileMenu = document.createElement('div');
+            mobileMenu.className = 'hf-menu-desplegable';
+            
+            // Clonar el menú principal para el móvil
+            const mainMenu = document.querySelector('.hf-main-menu');
+            if (mainMenu) {
+                const clonedMenu = mainMenu.cloneNode(true);
+                mobileMenu.appendChild(clonedMenu);
+                
+                // Agregar event listeners a los submenús clonados
+                const clonedSubmenuToggles = mobileMenu.querySelectorAll('.hf-submenu-toggle');
+                clonedSubmenuToggles.forEach(toggle => {
+                    toggle.addEventListener('click', handleSubmenuToggle);
+                });
+            }
+            
+            // Añadir al DOM
+            header.appendChild(mobileMenu);
+            mobileMenuCreated = true;
+        }
+    }
+    
+    /**
+     * Alterna la visibilidad del menú móvil
+     * @param {Event|null} e - El evento click (opcional)
+     * @param {boolean|undefined} force - Forzar estado específico (opcional)
+     */
+    function toggleMenu(e, force) {
+        if (e) e.preventDefault();
+        
+        // Determinar el nuevo estado
+        menuVisible = force !== undefined ? force : !menuVisible;
+        
+        // Aplicar estado al menú
+        mobileMenu.classList.toggle('active', menuVisible);
+        
+        // Actualizar ícono del botón
+        const icon = menuBtn.querySelector('i');
+        if (icon) {
+            if (menuVisible) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        }
+    }
+    
+    /**
+     * Maneja el toggle de los submenús
+     * @param {Event} e - El evento click
+     */
+    function handleSubmenuToggle(e) {
+        e.preventDefault();
+        
+        // Obtener el submenú relacionado con este toggle
+        const parent = this.parentElement;
+        const submenu = parent.querySelector('.hf-contenido-desplegable');
+        
+        if (!submenu) return;
+        
+        // Cerrar otros submenús
+        const allSubmenus = document.querySelectorAll('.hf-contenido-desplegable');
+        allSubmenus.forEach(menu => {
+            if (menu !== submenu && menu.classList.contains('visible')) {
+                menu.classList.remove('visible');
+            }
+        });
+        
+        // Alternar el submenú actual
+        submenu.classList.toggle('visible');
+    }
+    
+    /**
+     * Maneja el cambio de tamaño de la ventana
+     */
+    function handleWindowResize() {
+        // Si la ventana es grande y el menú está visible, cerrarlo
+        if (window.innerWidth > 768 && menuVisible) {
+            toggleMenu(null, false);
+        }
+    }
 });

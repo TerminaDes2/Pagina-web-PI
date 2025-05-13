@@ -7,7 +7,7 @@
 <header class="hf-main-header">
     <div class="hf-header-container">
         <div class="hf-logo-container">
-            <button class="hf-menu-toggle" onclick="toggleMenu()">
+            <button class="hf-menu-toggle" id="menuToggleBtn">
                 <i class="fas fa-bars"></i>
             </button>
             <div class="hf-logo">
@@ -17,16 +17,20 @@
             </div>
         </div>
         <nav class="hf-main-nav">
-            <ul class="hf-menu-desplegable">
+            <ul class="hf-main-menu" id="mainMenu">
                 <li><a href="/index.php"><?= $translator->__("Inicio") ?></a></li>
                 <li class="hf-menu-desplegable">
-                    <a href="#"><?= $translator->__("Noticias") ?> <i class="fas fa-chevron-down"></i></a>
-                    <div class="hf-contenido-desplegable"></div>
+                    <a href="#" class="hf-submenu-toggle"><?= $translator->__("Noticias") ?> <i class="fas fa-chevron-down"></i></a>
+                    <div class="hf-contenido-desplegable">
+                        <a href="#">Subcategoría 1</a>
+                        <a href="#">Subcategoría 2</a>
+                        <a href="#">Subcategoría 3</a>
+                    </div>
                 </li>
-                <li class="hf-menu-desplegable">
+                <li>
                     <a href="templates/Contacto.html"><?= $translator->__("Contacto") ?></a>
                 </li>
-                <li class="hf-menu-desplegable">
+                <li>
                     <a href="templates/Acerca-de-nosotros.html"><?= $translator->__("Acerca de") ?></a>
                 </li>
             </ul>
@@ -51,22 +55,3 @@
         </div>
     </div>
 </header>
-<script>
-    function toggleMenu() {
-        const menu = document.querySelector('.hf-menu-desplegable');
-        menu.classList.toggle('active');
-    }
-    
-    document.addEventListener('DOMContentLoaded', function() {
-        const menuItems = document.querySelectorAll('.hf-menu-desplegable > a');
-        menuItems.forEach(item => {
-            item.addEventListener('click', function(e) {
-                const dropdown = this.nextElementSibling;
-                if (dropdown && dropdown.classList.contains('hf-contenido-desplegable')) {
-                    e.preventDefault();
-                    dropdown.classList.toggle('visible');
-                }
-            });
-        });
-    });
-</script>
