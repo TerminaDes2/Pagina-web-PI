@@ -18,11 +18,14 @@ class Translator {
     }
 
     public function traducirTexto($texto) {
+        if (!isset($_SESSION['idioma']) || $_SESSION['idioma'] === 'es') {
+            return $texto; // No traducir si el idioma es español o si no está configurado
+        }
         $url = $this->config['endpoint'] . "/translate?api-version=3.0&to=" . $_SESSION['idioma'];
         
         $headers = [
             'Ocp-Apim-Subscription-Key: ' . $this->config['key'],
-            'Ocp-Apim-Subscription-Region: ' . $this->config['location'],
+            'Ocp-Apim-Subscription-Region: ' . $this->config['location'], // Región actualizada
             'Content-Type: application/json'
         ];
 
@@ -53,7 +56,6 @@ class Translator {
             $result = json_decode($response, true);
             return $result[0]['translations'][0]['text'];
         }
-
         error_log("Error $httpCode: " . print_r($response, true)); // Registrar el error
         return $texto; // Devolver el texto original
     }
@@ -62,7 +64,9 @@ class Translator {
         $_SESSION['idioma'] = $nuevoIdioma;
     }
     public function traducirHTML($html) {
-        // Extraer texto manteniendo estructura HTML
+        if (!isset($_SESSION['idioma']) || $_SESSION['idioma'] === 'es') {
+            return $html; // No traducir si el idioma es español o si no está configurado
+        }
         $url = $this->config['endpoint'] . "/translate?api-version=3.0&to=" . $_SESSION['idioma'] . "&textType=html";
         $dom = new DOMDocument();
         @$dom->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'));

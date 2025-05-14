@@ -1,0 +1,337 @@
+/* Reset global (solo para admin, sin afectar otros componentes) */
+.admin-container * {
+  box-sizing: border-box;
+}
+
+/* Estilos generales con namespace */
+.admin-container {
+  font-family: 'Montserrat', sans-serif;
+  background-color: #f8f8f8;
+  color: #333;
+  line-height: 1.6;
+  padding: 30px 15px;
+  margin-top: 90px;
+}
+
+.admin-container h1 {
+  text-align: center;
+  margin: 20px 0 30px;
+  font-size: 2.2rem;
+  color: #1d231e;
+  font-weight: 700;
+}
+
+.admin-section {
+  background: #fff;
+  border-radius: 25px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  padding: 30px;
+  margin: 0 auto 30px;
+  max-width: 1200px;
+  overflow-x: auto;
+}
+
+.admin-container h2 {
+  margin-bottom: 20px;
+  color: #1d231e;
+  font-weight: 600;
+  font-size: 1.5rem;
+  border-bottom: 2px solid #e2e6ea;
+  padding-bottom: 10px;
+}
+
+/* Tablas con namespace */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.admin-table th, 
+.admin-table td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #e2e6ea;
+}
+
+.admin-table th {
+  background-color: #719743;
+  color: #fff;
+  font-weight: 500;
+}
+
+.admin-table tr:hover {
+  background-color: #f5f5f5;
+}
+
+/* Botones específicos de admin */
+.admin-button, 
+.admin-container button, 
+.admin-container .button, 
+.admin-container a[href]:not(.hf-main-nav a):not(.hf-footer-logo a):not(.hf-footer-social a) {
+  display: inline-block;
+  padding: 8px 15px;
+  margin: 3px;
+  background-color: #719743;
+  color: #fff !important;
+  border: none;
+  border-radius: 24px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.admin-button:hover, 
+.admin-container button:hover, 
+.admin-container .button:hover, 
+.admin-container a[href]:not(.hf-main-nav a):not(.hf-footer-logo a):not(.hf-footer-social a):hover {
+  background-color: #5a7d33;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  text-decoration: none;
+}
+
+.admin-container button[value="eliminar_usuario"], 
+.admin-container button[value="eliminar_publicacion"] {
+  background-color: #d32f2f;
+}
+
+.admin-container button[value="eliminar_usuario"]:hover, 
+.admin-container button[value="eliminar_publicacion"]:hover {
+  background-color: #b71c1c;
+}
+
+.admin-container button[value="hacer_admin"] {
+  background-color: #2196F3;
+}
+
+.admin-container button[value="hacer_admin"]:hover {
+  background-color: #0d47a1;
+}
+
+.admin-container button[value="quitar_admin"] {
+  background-color: #ff9800;
+}
+
+.admin-container button[value="quitar_admin"]:hover {
+  background-color: #e65100;
+}
+
+/* Ajustes para iconos */
+.admin-button i,
+.admin-container button i,
+.admin-tab i,
+.admin-link i {
+  margin-right: 6px;
+}
+
+.admin-tab i {
+  font-size: 1.1em;
+}
+
+.admin-button i,
+.admin-container button i {
+  font-size: 0.95em;
+}
+
+/* Enlaces específicos de la sección admin */
+.admin-link {
+  color: #187424;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  margin-right: 8px;
+  display: inline-block;
+  padding: 3px 0;
+}
+
+.admin-link:hover {
+  color: #0b751b;
+  text-decoration: underline;
+}
+
+.admin-link .fas {
+  margin-right: 5px;
+}
+
+/* Enlaces con distintos colores según su función */
+.admin-link .fa-external-link-alt {
+  color: #0056b3;
+}
+
+.admin-link .fa-edit {
+  color: #FF9800;
+}
+
+.admin-link:hover .fa-external-link-alt,
+.admin-link:hover .fa-edit {
+  transform: scale(1.1);
+}
+
+/* Formularios en línea */
+.admin-container form[style="display:inline;"] {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+}
+
+/* Estilos para pestañas */
+.admin-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+/* Nuevo estilo para centrar los botones de acciones */
+.admin-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin: 0 auto 25px;
+  text-align: center;
+}
+
+.admin-tab {
+  padding: 12px 25px;
+  background-color: #e2e6ea;
+  color: #333 !important;
+  border: none;
+  border-radius: 12px 12px 0 0;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.admin-tab:hover {
+  background-color: #d1d5d9;
+}
+
+.admin-tab.active {
+  background-color: #719743;
+  color: #fff !important;
+}
+
+.admin-tab.crear-publicacion {
+  background-color: #3f51b5;
+  color: #fff !important;
+  text-decoration: none;
+  text-align: center;
+}
+
+.admin-tab.crear-publicacion:hover {
+  background-color: #303f9f;
+}
+
+.tab-content {
+  display: none;
+}
+
+/* Estilos para vista de usuario específico */
+.usuario-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.usuario-header h2 {
+  margin-bottom: 0;
+  border-bottom: none;
+}
+
+.admin-tabs-usuario {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e2e6ea;
+  padding-bottom: 5px;
+}
+
+.admin-tab-usuario {
+  padding: 10px 20px;
+  background-color: #f8f8f8;
+  color: #333 !important;
+  border: none;
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.admin-tab-usuario:hover {
+  background-color: #e2e6ea;
+}
+
+.admin-tab-usuario.active {
+  background-color: #719743;
+  color: #fff !important;
+}
+
+.tab-usuario-content {
+  display: block;
+}
+
+.no-data {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .admin-container {
+    padding: 15px 10px;
+    margin-top: 70px;
+  }
+  
+  .admin-section {
+    padding: 15px;
+    border-radius: 15px;
+    margin: 0 0 20px;
+  }
+  
+  .admin-table {
+    display: block;
+    overflow-x: auto;
+  }
+  
+  .admin-button, 
+  .admin-container button, 
+  .admin-container .button {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+  
+  .admin-container h1 {
+    font-size: 1.8rem;
+  }
+  
+  .admin-container h2 {
+    font-size: 1.3rem;
+  }
+  
+  .admin-tabs {
+    gap: 5px;
+  }
+  
+  .admin-tab {
+    padding: 10px 15px;
+    font-size: 0.9rem;
+  }
+  
+  .admin-button i,
+  .admin-container button i,
+  .admin-tab i,
+  .admin-link i {
+    margin-right: 4px;
+  }
+}

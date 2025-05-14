@@ -2,7 +2,7 @@
 session_start();
 // Verificar si el idioma está configurado en la sesión, si no, establecer un idioma predeterminado
 if (!isset($_SESSION['idioma'])) {
-  $_SESSION['idioma'] = 'es'; // Idioma predeterminado
+    $_SESSION['idioma'] = 'es'; // Idioma predeterminado
 }
 
 // Conexión a la base de datos
@@ -28,9 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idioma'])) {
 // Verificar que se haya pasado el id de la publicación por GET
 if (isset($_GET['id'])) {
     $id_entrada = intval($_GET['id']);
-    $sql = "SELECT e.id_entrada, e.titulo, e.contenido, e.cita, e.fecha, i.imagen 
+    $sql = "SELECT e.id_entrada, e.titulo, e.contenido, e.cita, e.fecha, c.categoria as nombre_categoria, i.imagen 
             FROM entradas e 
             LEFT JOIN imagenes i ON i.id_entrada = e.id_entrada 
+            LEFT JOIN categorias c ON e.categoria = c.id_categoria
             WHERE e.id_entrada = $id_entrada";
     $result = $conn->query($sql);
     if ($result->num_rows > 0) {
@@ -47,6 +48,7 @@ if (isset($_GET['id'])) {
 // Traducir los datos de la publicación principal
 $entrada['titulo'] = $translator->traducirTexto($entrada['titulo']);
 $entrada['contenido'] = $translator->traducirHTML($entrada['contenido']);
+$entrada['cita'] = $translator->traducirTexto($entrada['cita']);
 
 // Consulta para obtener otras publicaciones (para la sección de publicidad)
 $sqlAds = "SELECT e.id_entrada, e.titulo, e.fecha, i.imagen 
@@ -184,6 +186,8 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
         }
         ?>
         <p><strong><?= $translator->__("Fecha:") ?></strong> <?php echo $entrada['fecha']; ?></p>
+        <p><strong><?= $translator->__("Categoría:") ?></strong> <?php echo $entrada['nombre_categoria']; ?></p>
+        <blockquote><?php echo $entrada['cita']; ?></blockquote>
         <div>
           <?php echo $contenidoConAnchors; ?>
         </div>

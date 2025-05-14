@@ -14,6 +14,7 @@ body {
   flex-direction: column;
   height: 100%;
   padding-top: 90px; /* Añadir esto para compensar el header fijo */
+  background-image: linear-gradient(to bottom right, rgba(240,244,248,0.8), rgba(248,248,248,0.9));
 }
 
 /* Menú principal */
@@ -60,6 +61,12 @@ main img {
   max-width: 80%;
   height: auto;
   margin: 10%;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+main img:hover {
+  transform: scale(1.02);
 }
 
 /* Formularios y tarjetas */
@@ -67,7 +74,7 @@ main form {
   padding: 40px 30px;
   background: #fff;
   border-radius: 25px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
@@ -76,16 +83,31 @@ main form {
   margin: 0 auto;
   min-width: 280px;
   max-width: 400px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(225,225,225,0.3);
+}
+main form::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(to right, #719743, #187424);
+  z-index: 1;
 }
 main form div {
   margin-bottom: 15px;
+  width: 100%;
 }
 main form label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   font-family: 'Montserrat', sans-serif;
   font-weight: 600;
   color: #1d231e;
+  transition: color 0.3s ease;
 }
 main form h1 {
   margin-bottom: 20px;
@@ -93,19 +115,35 @@ main form h1 {
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
   font-size: 2rem;
+  position: relative;
+  padding-bottom: 10px;
+}
+main form h1::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 60px;
+  height: 3px;
+  background: #719743;
 }
 main form p {
   line-height: 155%;
   margin-bottom: 5px;
   font-size: 14px;
   color: #000;
-  opacity: 0.65;
+  opacity: 0.75;
   font-weight: 400;
   max-width: 200px;
   margin-bottom: 40px;
 }
 .alert {
   margin-bottom: 20px;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #ffecb3;
+  border-left: 4px solid #ffc107;
+  color: #856404;
 }
 #register {
   display: none;
@@ -116,9 +154,10 @@ main form p {
   place-self: center;
   background: #fff;
   border-radius: 25px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
   padding: 30px 20px;
   margin-bottom: 30px;
+  border: 1px solid rgba(225,225,225,0.3);
 }
 
 /* Inputs dentro de main */
@@ -127,21 +166,31 @@ main form p {
   padding: 15px 15px;
   height: 48px;
   border: 1px solid #e2e6ea;
-  border-radius: 8px;
+  border-radius: 12px;
   background: #fff;
   min-width: 220px;
   box-sizing: border-box;
-  transition: all 0.3s linear;
+  transition: all 0.3s ease;
   color: #333;
   font-weight: 400;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  width: 100%;
+}
+.main input:focus {
+  border-color: #719743;
+  box-shadow: 0 0 0 3px rgba(113, 151, 67, 0.25);
+  outline: none;
+}
+.main input:hover {
+  border-color: #aaa;
 }
 
 /* Hover en botones */
 button:hover {
   cursor: pointer;
-  box-shadow: #424242b9 0 2px 2px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  transform: translateY(-2px);
 }
 
 /* Botón principal */
@@ -156,11 +205,26 @@ button:hover {
   color: #fff;
   font-size: 1rem;
   font-family: 'Montserrat', sans-serif;
-  font-weight: 500;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(113, 151, 67, 0.3);
   border: none;
   transition: all 0.3s ease;
   outline: 0;
+  position: relative;
+  overflow: hidden;
+}
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.7s ease;
+}
+.btn:hover::before {
+  left: 100%;
 }
 
 /* Botón alternativo */
@@ -176,10 +240,13 @@ button:hover {
   font-size: 1rem;
   font-family: 'Montserrat', sans-serif;
   font-weight: 500;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.07);
   border: none;
   transition: all 0.3s ease;
   outline: 0;
+}
+.btin:hover {
+  background-color: #d1d5d9;
 }
 
 /* Mostrar/Ocultar contraseña */
@@ -241,6 +308,57 @@ button:hover {
 html,
 body {
   height: 100%;
+}
+
+/* modal */
+/* El fondo semi-transparente */
+.modal {
+  display: none; /* oculto por defecto */
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.6);
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+}
+
+/* Contenido del modal */
+.modal-content {
+  background-color: #fefefe;
+  margin: 10% auto; /* centrado vertical y horizontal */
+  padding: 25px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  transform: scale(0.9);
+  opacity: 0;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(225,225,225,0.3);
+  position: relative;
+}
+
+.modal.active .modal-content {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* Botón de cerrar */
+.modal-content .close {
+  color: #aaa;
+  float: right;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.modal-content .close:hover {
+  color: #000;
+  transform: rotate(90deg);
 }
 
 /* Responsive */

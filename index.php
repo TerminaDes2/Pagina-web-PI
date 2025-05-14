@@ -2,6 +2,10 @@
 session_start();
 header('Content-Type: text/html; charset=utf-8');
 
+if (!isset($_SESSION['idioma'])) {
+    $_SESSION['idioma'] = 'es'; // Idioma predeterminado
+}
+
 // Conexión a la base de datos
 include "includes/db_config.php";
 
@@ -24,9 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idioma'])) {
 
 // Obtener y traducir contenido dinámico
 // Consulta para el banner
-$sqlBanner = "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, i.imagen 
+$sqlBanner = "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, c.categoria as nombre_categoria, i.imagen 
               FROM entradas e 
               LEFT JOIN imagenes i ON i.id_entrada = e.id_entrada 
+              LEFT JOIN categorias c ON e.categoria = c.id_categoria
               ORDER BY e.id_entrada DESC 
               LIMIT 1";
 $resultBanner = $conn->query($sqlBanner);
@@ -39,14 +44,16 @@ if ($banner) {
 
 // Consulta para artículos
 $sqlPosts = $banner ? 
-    "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, i.imagen 
+    "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, c.categoria as nombre_categoria, i.imagen 
      FROM entradas e 
      LEFT JOIN imagenes i ON i.id_entrada = e.id_entrada 
+     LEFT JOIN categorias c ON e.categoria = c.id_categoria
      WHERE e.id_entrada <> " . $banner['id_entrada'] . " 
      ORDER BY e.id_entrada DESC" :
-    "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, i.imagen 
+    "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, c.categoria as nombre_categoria, i.imagen 
      FROM entradas e 
      LEFT JOIN imagenes i ON i.id_entrada = e.id_entrada 
+     LEFT JOIN categorias c ON e.categoria = c.id_categoria
      ORDER BY e.id_entrada DESC";
 
 $resultPosts = $conn->query($sqlPosts);
@@ -78,7 +85,12 @@ while ($row = $resultPosts->fetch_assoc()) {
         <div class="hero-content">
             <h1><?= $banner['titulo'] ?></h1>
             <div class="banner-content">
-                <?= $banner['contenido'] ?> <!-- Aquí se renderizará el HTML -->
+                <?php 
+                $contenido_limpio = strip_tags($banner['contenido']);
+                $palabras = explode(' ', $contenido_limpio);
+                $resumen = implode(' ', array_slice($palabras, 0, 20)) . '...';
+                echo $resumen;
+                ?>
             </div>
         </div>
         <div class="hero-image">
@@ -90,31 +102,37 @@ while ($row = $resultPosts->fetch_assoc()) {
     <?php endif; ?>
 
     <section class="featured-articles" id="featured-articles">
+        <div class="bg-circle"></div> <!-- Elemento decorativo circular -->
         <h2><?= $translator->__("Artículos destacados") ?></h2>
         <div class="carousel-container">
-            <div class="carousel-track">
-                <?php foreach ($articulos as $articulo): ?>
-                <article class="carousel-item" onclick="window.location.href='php/publicacion.php?id=<?= $articulo['id_entrada'] ?>';" style="cursor:pointer;">
-                    <?php if (!empty($articulo['imagen'])): ?>
-                    <img src="php/<?= htmlspecialchars($articulo['imagen']) ?>" alt="<?= htmlspecialchars($articulo['titulo']) ?>">
-                    <?php endif; ?>
-                    <h3><?= htmlspecialchars($articulo['titulo']) ?></h3>
-                    
-                    <!-- Contenido sin escapar (renderiza HTML) -->
-                    <div class="article-preview">
-                        <?= substr($articulo['contenido'], 0, 100) ?>...
-                    </div>
-
-                    <a href="php/publicacion.php?id=<?= $articulo['id_entrada'] ?>" class="btn btn-secondary">
-                        <?= $translator->__("Leer más") ?>
-                    </a>
-                </article>
-                <?php endforeach; ?>
+            <div class="carousel-nav-buttons">
+                <button class="carousel-button-left" aria-label="Anterior"><i class="fas fa-chevron-left"></i></button>
+                <button class="carousel-button-right" aria-label="Siguiente"><i class="fas fa-chevron-right"></i></button>
             </div>
-        </div>
-        <div class="carousel-controls">
-            <button class="carousel-prev"><i class="fas fa-chevron-left"></i></button>
-            <button class="carousel-next"><i class="fas fa-chevron-right"></i></button>
+            <div class="carousel-viewport">
+                <div class="carousel-track">
+                    <?php foreach ($articulos as $articulo): ?>
+                    <article class="carousel-item">
+                        <?php if (!empty($articulo['imagen'])): ?>
+                        <img src="php/<?= htmlspecialchars($articulo['imagen']) ?>" alt="<?= htmlspecialchars($articulo['titulo']) ?>">
+                        <?php endif; ?>
+                        <div class="carousel-item-content">
+                            <h3 class="carousel-title"><?= htmlspecialchars($articulo['titulo']) ?></h3>
+                            <?php 
+                            $contenido_limpio = strip_tags($articulo['contenido']); 
+                            $resumen = !empty($contenido_limpio) ? substr($contenido_limpio, 0, 150) . '...' : '';
+                            ?>
+                            <p class="carousel-subtitle"><?= $resumen ?></p>
+                        </div>
+                        <a href="php/publicacion.php?id=<?= $articulo['id_entrada'] ?>" class="btn btn-secondary">
+                            <?= $translator->__("Leer más") ?>
+                        </a>
+                    </article>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <!-- Simplificar el contenedor de indicadores - el JS los generará dinámicamente -->
+            <div class="carousel-indicators"></div>
         </div>
     </section>
 
