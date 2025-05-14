@@ -123,6 +123,7 @@ if(isset($_GET['msg'])){
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="../assets/js/loggin_scripts.js" defer></script>
@@ -148,6 +149,67 @@ if(isset($_GET['msg'])){
         // Para comandos como listas ordenadas/no ordenadas y otros
         document.execCommand(command, false, value);
       }
+    }
+    
+    // Nueva función para insertar imagen en editor
+    function insertarImagenEnEditor() {
+      const fileInput = document.createElement('input');
+      fileInput.type = 'file';
+      fileInput.accept = 'image/*';
+      fileInput.style.display = 'none';
+      document.body.appendChild(fileInput);
+      
+      fileInput.addEventListener('change', function() {
+        if (fileInput.files && fileInput.files[0]) {
+          const formData = new FormData();
+          formData.append('imagen', fileInput.files[0]);
+          
+          // Mostrar indicador de carga
+          Swal.fire({
+            title: '<?= $translator->__("Subiendo imagen...") ?>',
+            allowOutsideClick: false,
+            didOpen: () => {
+              Swal.showLoading();
+            }
+          });
+          
+          // Subir la imagen al servidor
+          fetch('upload_image_inline.php', {
+            method: 'POST',
+            body: formData
+          })
+          .then(response => response.json())
+          .then(data => {
+            Swal.close();
+            
+            if (data.success) {
+              // Insertar la imagen en el contenido
+              const imgHtml = `<img src="${data.url}" alt="${data.filename}" style="max-width:100%; margin:10px 0;">`;
+              document.execCommand('insertHTML', false, imgHtml);
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: '<?= $translator->__("Error") ?>',
+                text: data.error || '<?= $translator->__("Error al subir la imagen") ?>'
+              });
+            }
+          })
+          .catch(error => {
+            Swal.close();
+            Swal.fire({
+              icon: 'error',
+              title: '<?= $translator->__("Error") ?>',
+              text: '<?= $translator->__("Hubo un problema al subir la imagen") ?>'
+            });
+            console.error('Error:', error);
+          });
+        }
+        
+        // Eliminar el input una vez usado
+        document.body.removeChild(fileInput);
+      });
+      
+      fileInput.click();
     }
     
     // Mostrar el nombre del archivo seleccionado y previsualizar la imagen
@@ -262,13 +324,30 @@ if(isset($_GET['msg'])){
       
       <!-- Barra de herramientas para formateo -->
       <div id="toolbar">
-        <button type="button" onclick="format('h2')"><?= $translator->__("Subtítulo") ?></button>
-        <button type="button" onclick="format('p')"><?= $translator->__("Texto Cuerpo") ?></button>
-        <button type="button" onclick="format('bold')"><?= $translator->__("Negrita") ?></button>
-        <button type="button" onclick="format('italic')"><?= $translator->__("Cursiva") ?></button>
-        <button type="button" onclick="format('underline')"><?= $translator->__("Subrayado") ?></button>
-        <button type="button" onclick="format('insertOrderedList')"><?= $translator->__("Lista Ordenada") ?></button>
-        <button type="button" onclick="format('insertUnorderedList')"><?= $translator->__("Lista No Ordenada") ?></button>
+        <button type="button" onclick="format('h2')" title="<?= $translator->__("Subtítulo") ?>">
+          <i class="fas fa-heading"></i>
+        </button>
+        <button type="button" onclick="format('p')" title="<?= $translator->__("Texto Cuerpo") ?>">
+          <i class="fas fa-paragraph"></i>
+        </button>
+        <button type="button" onclick="format('bold')" title="<?= $translator->__("Negrita") ?>">
+          <i class="fas fa-bold"></i>
+        </button>
+        <button type="button" onclick="format('italic')" title="<?= $translator->__("Cursiva") ?>">
+          <i class="fas fa-italic"></i>
+        </button>
+        <button type="button" onclick="format('underline')" title="<?= $translator->__("Subrayado") ?>">
+          <i class="fas fa-underline"></i>
+        </button>
+        <button type="button" onclick="format('insertOrderedList')" title="<?= $translator->__("Lista Ordenada") ?>">
+          <i class="fas fa-list-ol"></i>
+        </button>
+        <button type="button" onclick="format('insertUnorderedList')" title="<?= $translator->__("Lista No Ordenada") ?>">
+          <i class="fas fa-list-ul"></i>
+        </button>
+        <button type="button" onclick="insertarImagenEnEditor()" title="<?= $translator->__("Insertar Imagen") ?>">
+          <i class="fas fa-image"></i> <span><?= $translator->__("Insertar Imagen") ?></span>
+        </button>
       </div>
       
       <!-- Editor de texto editable -->
