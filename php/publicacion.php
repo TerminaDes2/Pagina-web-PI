@@ -246,6 +246,8 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
               </div>
             </div>
           </form>
+        <?php elseif(isset($_GET['error'])): ?>
+          <p class="men_err"><?= htmlspecialchars($_GET['error']) ?></p>
           <button type="button" class="btn_comen" id="btn_comen">Ver comentarios</button>
           <div id="contenedor-comentarios" class="ocultar">
             <?php
@@ -275,8 +277,6 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
               }
             ?>
           </div>
-        <?php elseif(isset($_GET['error'])): ?>
-          <p class="men_err"><?= htmlspecialchars($_GET['error']) ?></p>
         <?php endif; ?>
       </div>
     </div>
