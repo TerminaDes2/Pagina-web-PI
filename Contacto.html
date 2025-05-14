@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto - POALCE </title>
+    <link rel="stylesheet" href="Contacto.css">
+    <script src="Contacto.js" defer></script>
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="img/POALCE.png" alt="Logo POALCE" width="120">
+                </a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="noticias.html">Noticias</a></li>
+                    <li><a href="Contacto.html" class="activo">Contacto</a></li>
+                    <li><a href="Acerca-de-nosotros.html">Acerca de</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="contacto-contenedor">
+        <h1>Contacto</h1>
+        <p class="frase">"Juntos por un empleo digno y un crecimiento sostenible."</p>
+
+        <div class="info-contacto">
+            <div>
+                <h2>Información</h2>
+                <p><strong>Dirección:</strong> Facultad de Ingeniería Electromecánica, Universidad de Colima, Manzanillo, Colima, México.</p>
+                <p><strong>Email:</strong> POALCE@gmail.com</p>
+                <p><strong>Horario:</strong> Lunes a Viernes de 7 am a 2:30 pm</p>
+            </div>
+            <div class="mapa">
+                <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3771.8854736227214!2d-104.33617212574068!3d19.086636682118115!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x84255b8e6ee38c65%3A0x8fd9d19f83f60b79!2sFacultad%20de%20Ingenier%C3%ADa%20Electromec%C3%A1nica%20Manzanillo!5e0!3m2!1ses-419!2smx!4v1714960000000"
+                    width="100%" height="250" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+        </div>
+
+        <div class="faq">
+            <h2>Preguntas Frecuentes</h2>
+            <div class="pregunta">
+                <button class="toggle-btn">¿Qué tipo de contenido publican? ⮟</button>
+                <div class="respuesta" style="display: none;">Publicamos noticias, análisis y recursos sobre derechos laborales y desarrollo social.</div>
+            </div>
+            <div class="pregunta">
+                <button class="toggle-btn">¿Puedo colaborar con ustedes? ⮟</button>
+                <div class="respuesta" style="display: none;">Sí, puedes escribirnos a nuestro correo para conocer las oportunidades de colaboración.</div>
+            </div>
+            <div class="pregunta">
+                <button class="toggle-btn">¿La información está verificada? ⮟</button>
+                <div class="respuesta" style="display: none;">Sí, trabajamos con fuentes oficiales y confiables para asegurar la veracidad de lo publicado.</div>
+            </div>
+            <div class="pregunta">
+                <button class="toggle-btn">¿Dónde puedo encontrar las reformas laborales recientes? ⮟</button>
+                <div class="respuesta" style="display: none;">En la sección Noticias, encontrarás artículos actualizados sobre reformas recientes.</div>
+            </div>
+            <div class="pregunta">
+                <button class="toggle-btn">¿Tienen redes sociales activas? ⮟</button>
+                <div class="respuesta" style="display: none;">Sí, puedes seguirnos en Facebook, Instagram y Twitter para más contenido.</div>
+            </div>
+        </div>
+
+        <div class="formulario">
+            <h2>Cualquier duda o aclaración. Envíanos un mensaje:</h2>
+            <form action="Contacto.php" method="POST">
+                <label for="nombre">Nombre:</label>
+                <input type="text" name="nombre" id="nombre" required>
+
+                <label for="correo">Correo electrónico:</label>
+                <input type="email" name="correo" id="correo" required>
+
+                <label for="asunto">Asunto:</label>
+                <select name="asunto" id="asunto" required>
+                    <option value="">Selecciona una opción</option>
+                    <option value="consulta">Consulta</option>
+                    <option value="soporte">Soporte</option>
+                    <option value="otros">Otros</option>
+                </select>
+
+                <label for="mensaje">Mensaje:</label>
+                <div id="mensaje" contenteditable="true"></div>
+                <div class="editor">
+                    <button type="button" onclick="document.execCommand('bold')"><b>B</b></button>
+                    <button type="button" onclick="document.execCommand('underline')"><u>U</u></button>
+                    <button type="button" onclick="document.execCommand('justifyLeft')">Izquierda</button>
+                    <button type="button" onclick="document.execCommand('justifyCenter')">Centro</button>
+                    <button type="button" onclick="document.execCommand('justifyRight')">Derecha</button>
+                    <button type="button" onclick="document.execCommand('justifyFull')">Justificar</button>
+                </div>
+
+                <button type="submit" class="btn-enviar">Enviar</button>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <div class="franja-derechos">
+            <p>©2025 POALCE. Todos los derechos reservados.</p>
+        </div>
+        <header class="main-header" style="height: 80px;">
+    <div class="header-container">
+        <!-- contenido del logo y navegación -->
+        </div>
+    </footer>
+</body>
+</html>

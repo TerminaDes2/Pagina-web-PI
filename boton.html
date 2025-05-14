@@ -1,0 +1,95 @@
+¡Claro! Aquí tienes un ejemplo de cómo crear un botón en HTML que te lleve a la parte superior de la página cuando se haga clic en él:
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Botón Subir Arriba</title>
+    <style>
+        #subirArriba {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: none;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div style="height: 1500px;">
+        <h1>Contenido de la página</h1>
+        <p>Desplázate hacia abajo para ver el botón.</p>
+    </div>
+
+    <button id="subirArriba" onclick="subirArriba()">Subir Arriba</button>
+
+    <script>
+        window.onscroll = function() {
+            var boton = document.getElementById("subirArriba");
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                boton.style.display = "block";
+            } else {
+                boton.style.display = "none";
+            }
+        };
+
+        function subirArriba() {
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+        }
+    </script>
+    <!-- Botón Subir Arriba -->
+<button id="subirArriba" onclick="subirArriba()">↑ Subir</button>
+
+<style>
+    #subirArriba {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        display: none;
+        background-color: #006400;
+        color: white;
+        border: none;
+        padding: 12px 16px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 18px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        z-index: 999;
+        transition: background-color 0.3s ease;
+    }
+
+    #subirArriba:hover {
+        background-color: #228B22;
+    }
+</style>
+
+<script>
+    window.onscroll = function () {
+        var boton = document.getElementById("subirArriba");
+        if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+            boton.style.display = "block";
+        } else {
+            boton.style.display = "none";
+        }
+    };
+
+    function subirArriba() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+    
+        <footer class="franja-final">
+            <p>&copy; 2025 POALCE. Todos los derechos reservados.</p>
+        </footer>
+    
+        <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+</body>
+</html>

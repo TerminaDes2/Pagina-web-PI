@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acerca de Nosotros - POALCE </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f4f4f4; /* Fondo gris claro */
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .main-header {
+            background-color: #003366; /* Azul oscuro */
+            color: white;
+            padding: 10px 20px; /* Ajuste de padding para hacer la franja más chica */
+            text-align: center;
+        }
+        .main-header .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .main-header .logo h1 {
+            margin: 0;
+            font-size: 1.5em; /* Tamaño de letra más pequeño */
+            color: white; /* Asegura que el texto sea blanco */
+        }
+        .main-nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            gap: 20px;
+        }
+        .main-nav ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 5px 10px;
+        }
+        .main-nav ul li a:hover {
+            color: #FFD700; /* Color dorado o mostaza */
+        }
+        .header-actions {
+            display: flex;
+            gap: 20px;
+        }
+        .search-box input {
+            padding: 5px; /* Cuadro de búsqueda más delgado */
+            border: none;
+            border-radius: 5px;
+        }
+        .search-box button {
+            background-color: #003366; /* Azul oscuro */
+            color: white;
+            border: none;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        .social-icons a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .main-content {
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 160px); /* Ajusta la altura mínima */
+        }
+        .contenido {
+            width: 60%;
+            background-color: white;
+            color: black;
+            padding: 40px;
+            margin: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: justify; /* Centra más el texto */
+        }
+        .contenido h1 {
+            color: #006400;
+            text-align: center;
+        }
+        .contenido h2 {
+            color: #154360;
+        }
+        .contenido p, .contenido ul {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        ul li {
+            margin-bottom: 10px;
+        }
+        .franja-final {
+            background-color: #006400;
+            color: white;
+            padding: 10px 20px; /* Ajuste de padding para hacer la franja más chica */
+            text-align: center;
+            margin-top: 20px;
+        }
+        .franja-derechos {
+            background-color: #006400;
+            color: white;
+            padding: 10px 20px; /* Ajuste de padding para hacer la franja más chica */
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<header class="main-header">
+    <div class="header-container">
+        <div class="logo">
+    <a href="index.html">
+        <img src="img/POALCE.png" alt="Logo POALCE" width="120" height="auto">
+    </a>
+</div>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="noticias.html">Noticias</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+                <li><a href="Acerca-de-nosotros.html">Acerca de</a></li>
+            </ul>
+        </nav>
+        <div class="header-actions">
+            <div class="search-box">
+                <input type="text" placeholder="Buscar...">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="main-content">
+    <section class="contenido">
+        <h1>Acerca de Nosotros</h1>
+
+        <h2>¿Quiénes somos?</h2>
+        <p><strong>POALCE</strong> Somos una plataforma digital comprometida con la difusión de información clara, accesible y verificada sobre derechos laborales, reformas sociales y leyes que impactan la vida de las personas,con el proposito de ayudar a las personas a tener un futuro mejor.</p>
+
+        <h2>¿Qué hacemos?</h2>
+        <p>Brindamos noticias, análisis y recursos prácticos que permiten a los ciudadanos conocer y ejercer sus derechos laborales asi como permitirles el acceso a informacion para encontrar un trabajo decente con un buen sueldo, fomentando así el trabajo digno y el crecimiento económico sostenible.</p>
+
+        <h2>Misión: </h2>
+        <p>Impulsar el acceso a un trabajo decente y al conocimiento de los derechos laborales, empoderando a las personas mediante información confiable y fomentando la participación social activa.</p>
+
+        <h2>Visión</h2>
+        <p>Convertirnos en el principal referente de información laboral y de desarrollo social en América Latina, promoviendo el respeto, la equidad y el bienestar común.</p>
+
+        <h2>Valores</h2>
+        <ul>
+            <li><strong>Compromiso social:</strong> Trabajamos para mejorar la calidad de vida de las personas.</li>
+            <li><strong>Veracidad:</strong> Publicamos únicamente información verificada y sustentada.</li>
+            <li><strong>Accesibilidad:</strong> Hacemos que el conocimiento esté al alcance de todos.</li>
+            <li><strong>Responsabilidad:</strong> Cumplimos con los más altos estándares éticos.</li>
+        </ul>
+
+        <h2>Información Adicional</h2>
+        <p>En <strong>POALCE</strong>, nos dedicamos a brindar información precisa, actualizada y verificada sobre reformas, derechos laborales y leyes que impactan a trabajadores y ciudadanos.</p>
+        <p>Somos un equipo comprometido con la difusión de noticias que promueven el trabajo decente, el crecimiento económico y el desarrollo sostenible.</p>
+        <p>Nuestra misión es impulsar una ciudadanía informada, capaz de participar activamente en las decisiones que transforman nuestras comunidades.</p>
+        <p>Creemos en la importancia de acercar la información de manera clara, accesible y basada en hechos, fomentando el diálogo y el análisis crítico.</p>
+    </section>
+</main>
+<!-- Franja de Derechos -->
+<div class="franja-derechos">
+    <p>©2025 POALCE. Todos los derechos reservados.</p>
+</div><!-- Botón Subir Arriba -->
+<button id="subirArriba" onclick="subirArriba()">↑ Subir</button>
+
+<style>
+    #subirArriba {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        display: none;
+        background-color: #006400;
+        color: white;
+        border: none;
+        padding: 12px 16px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 18px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        z-index: 999;
+        transition: background-color 0.3s ease;
+    }
+
+    #subirArriba:hover {
+        background-color: #228B22;
+    }
+</style>
+  <style>
+    #subirArriba {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        display: none;
+        background-color: #006400;
+        color: white;
+        border: none;
+        padding: 12px 16px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 18px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        z-index: 999;
+        transition: background-color 0.3s ease;
+    }
+
+    #subirArriba:hover {
+        background-color: #228B22;
+    }
+</style>
+
+<script>
+    window.onscroll = function () {
+        var boton = document.getElementById("subirArriba");
+        if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+            boton.style.display = "block";
+        } else {
+            boton.style.display = "none";
+        }
+    };
+
+    function subirArriba() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+<script>
+    // Mostrar el botón "Volver arriba" cuando se desplaza hacia abajo
+    window.onscroll = function() {
+        var btnSubir = document.getElementById("btnSubir");
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            btnSubir.style.display = "block";
+        } else {
+            btnSubir.style.display = "none";
+        }
+    };
+
+    // Al hacer clic en el botón, desplazar hacia arriba
+    document.getElementById("btnSubir").onclick = function() {
+        document.body.scrollTop = 0; // Para Safari
+        document.documentElement.scrollTop = 0; // Para Chrome, Firefox, IE y Opera
+    }
+
+</body>

@@ -1,0 +1,154 @@
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    color: #333;
+}
+
+.main-header {
+    background-color: #003366;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+}
+
+.main-header .header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.main-nav ul {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+}
+
+.main-nav a {
+    color: white;
+    text-decoration: none;
+}
+
+.main-nav a:hover,
+.main-nav .activo {
+    color: #FFD700;
+}
+
+.contacto-contenedor {
+    max-width: 1000px;
+    margin: auto;
+    padding: 30px 20px;
+}
+
+.contacto-contenedor h1 {
+    text-align: center;
+    color: #154360;
+}
+
+.frase {
+    text-align: center;
+    font-style: italic;
+    margin-bottom: 30px;
+    color: #006400;
+}
+
+.info-contacto {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.info-contacto > div {
+    flex: 1 1 45%;
+    margin-bottom: 20px;
+}
+
+.faq .pregunta {
+    margin: 10px 0;
+}
+
+.toggle-btn {
+    background-color: #006400;
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.respuesta {
+    display: none;
+    padding: 10px;
+    background-color: #e8f5e9;
+    border-left: 4px solid #006400;
+}
+
+.formulario {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.formulario form {
+    display: flex;
+    flex-direction: column;
+}
+
+.formulario label {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.formulario input,
+.formulario select,
+.formulario textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.editor {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.editor button {
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.btn-enviar {
+    background-color: #003366;
+    color: white;
+    padding: 10px;
+    border: none;
+    margin-top: 10px;
+   .main-header {
+    background-color: #154360; /* Azul oscuro sofisticado */
+    padding: 10px 0;
+}
+
+.header-container {
+    max-width: 1200px; /* Ajusta este valor si tu index usa otro ancho */
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+.logo img {
+    display: block;
+}
