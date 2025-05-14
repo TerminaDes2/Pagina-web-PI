@@ -32,8 +32,8 @@ function initCarousel() {
     if (!carouselTrack || !carouselItems.length) return;
     
     // Configuración del carrusel
-    let cardsToShow = 3; // Número de tarjetas a mostrar a la vez
-    let totalGroups;
+    const cardsToShow = 3; // Siempre mostrar 3 tarjetas a la vez
+    const totalGroups = Math.ceil(carouselItems.length / cardsToShow);
     
     // Hacer que las tarjetas sean clickeables
     carouselItems.forEach(item => {
@@ -57,120 +57,54 @@ function initCarousel() {
     let itemGap = parseInt(window.getComputedStyle(carouselTrack).columnGap || 30);
     const itemFullWidth = itemWidth + itemGap;
     
-    // Detectar si es dispositivo móvil
+    // Detectar si es dispositivo móvil (solo para ajustes visuales, no de comportamiento)
     const isMobile = window.innerWidth <= 768;
-    cardsToShow = isMobile ? 1 : 3; // En móvil muestra 1, en desktop 3
-    totalGroups = Math.ceil(carouselItems.length / cardsToShow);
     
-    // Función para mover el carrusel
+    // Función para mover el carrusel (siempre en grupos de 3)
     function moveToIndex(index) {
         currentIndex = index;
         
-        // Si es dispositivo móvil, usar un cálculo más preciso
-        if (isMobile) {
-            // Obtener el ancho real de la tarjeta incluyendo el margen
-            const mobileItemWidth = carouselItems[0].offsetWidth;
-            const mobileItemGap = parseInt(window.getComputedStyle(carouselTrack).columnGap || 15);
-            const totalWidth = mobileItemWidth + mobileItemGap;
+        // Calcular el grupo actual
+        const currentGroup = Math.floor(index / cardsToShow);
+        
+        // Calcular posición del primer elemento del grupo
+        let offset = currentGroup * (itemFullWidth * cardsToShow);
+        
+        // Si es el último grupo, ajustar para eliminar espacio vacío
+        if (currentGroup === totalGroups - 1) {
+            const viewport = carouselTrack.parentElement;
+            const viewportWidth = viewport.offsetWidth;
+            const contentWidth = carouselItems.length * itemFullWidth;
             
-            let offset = currentIndex * totalWidth;
-            
-            // Aseguramos que la última tarjeta se vea completa
-            if (index === carouselItems.length - 1) {
-                const viewport = carouselTrack.parentElement;
-                const viewportWidth = viewport.offsetWidth;
-                const contentWidth = carouselItems.length * totalWidth;
-                
-                // Ajustar para que la última tarjeta esté completamente visible
+            // Ajustar para mostrar hasta el final sin espacio extra
+            if (carouselItems.length % cardsToShow !== 0) {
                 offset = contentWidth - viewportWidth;
                 offset = Math.max(0, offset);
             }
-            
-            // Aplicar el desplazamiento calculado
-            carouselTrack.style.transform = `translateX(-${offset}px)`;
-            
-            // Actualizar indicadores
-            const indicatorsContainer = document.querySelector('.carousel-indicators');
-            const currentIndicators = indicatorsContainer.querySelectorAll('.carousel-indicator');
-            currentIndicators.forEach((indicator, i) => {
-                indicator.classList.toggle('active', i === currentIndex);
-            });
-            return;
         }
         
-        // Si hay 5 o más tarjetas, avanzar como si hubiera grupos de 3
-        if (carouselItems.length >= 5) {
-            // Calcular el grupo actual
-            const currentGroup = Math.floor(index / cardsToShow);
-            
-            // Calcular posición del primer elemento del grupo
-            let offset = currentGroup * (itemFullWidth * cardsToShow);
-            
-            // Si es el último grupo, ajustar para eliminar espacio vacío
-            if (currentGroup === totalGroups - 1) {
-                const viewport = carouselTrack.parentElement;
-                const viewportWidth = viewport.offsetWidth;
-                const contentWidth = carouselItems.length * itemFullWidth;
-                
-                // Ajustar para mostrar hasta el final sin espacio extra
-                offset = contentWidth - viewportWidth;
-                offset = Math.max(0, offset);
-            }
-            
-            // Aplicar el desplazamiento
-            carouselTrack.style.transform = `translateX(-${offset}px)`;
-        } else {
-            // Comportamiento original para menos de 5 tarjetas
-            let offset = currentIndex * itemFullWidth;
-            
-            // Si es la última tarjeta o posterior, ajustar para eliminar espacio vacío
-            if (index >= carouselItems.length - 1) {
-                const viewport = carouselTrack.parentElement;
-                const viewportWidth = viewport.offsetWidth;
-                
-                // Calcular la posición máxima para que la última tarjeta quede justo al borde derecho
-                const maxOffset = ((carouselItems.length) * itemFullWidth) - viewportWidth;
-                
-                // Aplicar el desplazamiento máximo
-                offset = Math.max(0, maxOffset);
-            }
-            
-            // Aplicar el desplazamiento
-            carouselTrack.style.transform = `translateX(-${offset}px)`;
-        }
+        // Aplicar el desplazamiento
+        carouselTrack.style.transform = `translateX(-${offset}px)`;
         
-        // Actualizar indicadores - CORREGIDO
+        // Actualizar indicadores
         const indicatorsContainer = document.querySelector('.carousel-indicators');
         const currentIndicators = indicatorsContainer.querySelectorAll('.carousel-indicator');
         
-        if (carouselItems.length >= 5 && !isMobile) {
-            // Para 5+ tarjetas en desktop, activar indicador según el grupo
-            const currentGroup = Math.floor(index / cardsToShow);
-            currentIndicators.forEach((indicator, i) => {
-                indicator.classList.toggle('active', parseInt(indicator.dataset.group) === currentGroup);
-            });
-        } else {
-            // Comportamiento normal para menos de 5 tarjetas o en móvil
-            currentIndicators.forEach((indicator, i) => {
-                indicator.classList.toggle('active', i === currentIndex);
-            });
-        }
+        // Activar indicador según el grupo
+        currentIndicators.forEach((indicator, i) => {
+            indicator.classList.toggle('active', parseInt(indicator.dataset.group) === currentGroup);
+        });
     }
     
-    // Navegación con botones
+    // Navegación con botones (siempre de 3 en 3)
     if (buttonLeft) {
         buttonLeft.addEventListener('click', (e) => {
             e.stopPropagation();
             
-            if (carouselItems.length >= 5) {
-                // Para 5+ tarjetas, retroceder un grupo completo
-                const currentGroup = Math.floor(currentIndex / cardsToShow);
-                const newGroup = (currentGroup - 1 + totalGroups) % totalGroups;
-                currentIndex = newGroup * cardsToShow;
-            } else {
-                // Comportamiento normal
-                currentIndex = (currentIndex - 1 + carouselItems.length) % carouselItems.length;
-            }
+            // Retroceder un grupo completo
+            const currentGroup = Math.floor(currentIndex / cardsToShow);
+            const newGroup = (currentGroup - 1 + totalGroups) % totalGroups;
+            currentIndex = newGroup * cardsToShow;
             
             moveToIndex(currentIndex);
         });
@@ -180,21 +114,16 @@ function initCarousel() {
         buttonRight.addEventListener('click', (e) => {
             e.stopPropagation();
             
-            if (carouselItems.length >= 5) {
-                // Para 5+ tarjetas, avanzar un grupo completo
-                const currentGroup = Math.floor(currentIndex / cardsToShow);
-                const newGroup = (currentGroup + 1) % totalGroups;
-                currentIndex = newGroup * cardsToShow;
-            } else {
-                // Comportamiento normal
-                currentIndex = (currentIndex + 1) % carouselItems.length;
-            }
+            // Avanzar un grupo completo
+            const currentGroup = Math.floor(currentIndex / cardsToShow);
+            const newGroup = (currentGroup + 1) % totalGroups;
+            currentIndex = newGroup * cardsToShow;
             
             moveToIndex(currentIndex);
         });
     }
     
-    // Navegación con indicadores - REHECHO COMPLETAMENTE
+    // Navegación con indicadores (un indicador por grupo)
     const setupIndicators = () => {
         const indicatorsContainer = document.querySelector('.carousel-indicators');
         if (!indicatorsContainer) return;
@@ -202,38 +131,20 @@ function initCarousel() {
         // Limpiar indicadores existentes
         indicatorsContainer.innerHTML = '';
         
-        if (carouselItems.length >= 5 && !isMobile) {
-            // Crear indicadores para grupos (desktop con 5+ tarjetas)
-            for (let i = 0; i < totalGroups; i++) {
-                const indicator = document.createElement('span');
-                indicator.classList.add('carousel-indicator');
-                indicator.dataset.group = i;
-                if (i === 0) indicator.classList.add('active');
-                
-                indicator.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    currentIndex = i * cardsToShow;
-                    moveToIndex(currentIndex);
-                });
-                
-                indicatorsContainer.appendChild(indicator);
-            }
-        } else {
-            // Crear indicadores individuales (móvil o menos de 5 tarjetas)
-            for (let i = 0; i < carouselItems.length; i++) {
-                const indicator = document.createElement('span');
-                indicator.classList.add('carousel-indicator');
-                indicator.dataset.index = i;
-                if (i === 0) indicator.classList.add('active');
-                
-                indicator.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    currentIndex = i;
-                    moveToIndex(currentIndex);
-                });
-                
-                indicatorsContainer.appendChild(indicator);
-            }
+        // Crear indicadores para grupos
+        for (let i = 0; i < totalGroups; i++) {
+            const indicator = document.createElement('span');
+            indicator.classList.add('carousel-indicator');
+            indicator.dataset.group = i;
+            if (i === 0) indicator.classList.add('active');
+            
+            indicator.addEventListener('click', (e) => {
+                e.stopPropagation();
+                currentIndex = i * cardsToShow;
+                moveToIndex(currentIndex);
+            });
+            
+            indicatorsContainer.appendChild(indicator);
         }
     };
     
@@ -254,17 +165,13 @@ function initCarousel() {
         moveToIndex(currentIndex);
     });
     
-    // Auto-deslizamiento (opcional)
+    // Auto-deslizamiento (siempre de 3 en 3)
     let autoSlide = setInterval(() => {
-        if (carouselItems.length >= 5) {
-            // Para 5+ tarjetas, avanzar un grupo completo
-            const currentGroup = Math.floor(currentIndex / cardsToShow);
-            const newGroup = (currentGroup + 1) % totalGroups;
-            currentIndex = newGroup * cardsToShow;
-        } else {
-            // Comportamiento normal
-            currentIndex = (currentIndex + 1) % carouselItems.length;
-        }
+        // Avanzar un grupo completo
+        const currentGroup = Math.floor(currentIndex / cardsToShow);
+        const newGroup = (currentGroup + 1) % totalGroups;
+        currentIndex = newGroup * cardsToShow;
+        
         moveToIndex(currentIndex);
     }, 5000);
     
@@ -275,15 +182,9 @@ function initCarousel() {
     
     carouselTrack.addEventListener('mouseleave', () => {
         autoSlide = setInterval(() => {
-            if (carouselItems.length >= 5) {
-                // Para 5+ tarjetas, avanzar un grupo completo
-                const currentGroup = Math.floor(currentIndex / cardsToShow);
-                const newGroup = (currentGroup + 1) % totalGroups;
-                currentIndex = newGroup * cardsToShow;
-            } else {
-                // Comportamiento normal
-                currentIndex = (currentIndex + 1) % carouselItems.length;
-            }
+            const currentGroup = Math.floor(currentIndex / cardsToShow);
+            const newGroup = (currentGroup + 1) % totalGroups;
+            currentIndex = newGroup * cardsToShow;
             moveToIndex(currentIndex);
         }, 5000);
     });
@@ -343,27 +244,15 @@ function initCarousel() {
             // Determinar dirección y distancia del deslizamiento
             if (Math.abs(diff) > 50) { // Umbral mínimo para considerar un deslizamiento
                 if (diff > 0) {
-                    // Deslizamiento a la derecha (ir a la tarjeta anterior)
-                    if (isMobile) {
-                        currentIndex = Math.max(0, currentIndex - 1);
-                    } else if (carouselItems.length >= 5) {
-                        const currentGroup = Math.floor(currentIndex / cardsToShow);
-                        const newGroup = Math.max(0, currentGroup - 1);
-                        currentIndex = newGroup * cardsToShow;
-                    } else {
-                        currentIndex = Math.max(0, currentIndex - 1);
-                    }
+                    // Deslizamiento a la derecha (grupo anterior)
+                    const currentGroup = Math.floor(currentIndex / cardsToShow);
+                    const newGroup = Math.max(0, currentGroup - 1);
+                    currentIndex = newGroup * cardsToShow;
                 } else {
-                    // Deslizamiento a la izquierda (ir a la siguiente tarjeta)
-                    if (isMobile) {
-                        currentIndex = Math.min(carouselItems.length - 1, currentIndex + 1);
-                    } else if (carouselItems.length >= 5) {
-                        const currentGroup = Math.floor(currentIndex / cardsToShow);
-                        const newGroup = Math.min(totalGroups - 1, currentGroup + 1);
-                        currentIndex = newGroup * cardsToShow;
-                    } else {
-                        currentIndex = Math.min(carouselItems.length - 1, currentIndex + 1);
-                    }
+                    // Deslizamiento a la izquierda (grupo siguiente)
+                    const currentGroup = Math.floor(currentIndex / cardsToShow);
+                    const newGroup = Math.min(totalGroups - 1, currentGroup + 1);
+                    currentIndex = newGroup * cardsToShow;
                 }
             }
             
@@ -375,49 +264,19 @@ function initCarousel() {
             
             // Reiniciar auto-deslizamiento
             autoSlide = setInterval(() => {
-                if (carouselItems.length >= 5) {
-                    // Para 5+ tarjetas, avanzar un grupo completo
-                    const currentGroup = Math.floor(currentIndex / cardsToShow);
-                    const newGroup = (currentGroup + 1) % totalGroups;
-                    currentIndex = newGroup * cardsToShow;
-                } else {
-                    // Comportamiento normal
-                    currentIndex = (currentIndex + 1) % carouselItems.length;
-                }
+                const currentGroup = Math.floor(currentIndex / cardsToShow);
+                const newGroup = (currentGroup + 1) % totalGroups;
+                currentIndex = newGroup * cardsToShow;
                 moveToIndex(currentIndex);
             }, 5000);
         }, { passive: true });
     }
     
-    // Responder a cambios de tamaño - ACTUALIZADO
+    // Responder a cambios de tamaño
     window.addEventListener('resize', () => {
-        // Actualizar detección de móvil
-        const wasMobile = isMobile;
-        const newIsMobile = window.innerWidth <= 768;
-        
-        // Si cambió el estado móvil/desktop, reconfigurar los indicadores
-        if (wasMobile !== newIsMobile) {
-            // Actualizar cardsToShow
-            cardsToShow = newIsMobile ? 1 : 3;
-            // Recalcular total de grupos
-            totalGroups = Math.ceil(carouselItems.length / cardsToShow);
-            // Recrear indicadores
-            setupIndicators();
-            // Reiniciar carrusel
-            currentIndex = 0;
-            moveToIndex(0);
-            return;
-        }
-        
-        const newItemWidth = carouselItems[0].offsetWidth;
-        const newGap = parseInt(window.getComputedStyle(carouselTrack).columnGap || 30);
-        
-        // Actualizar las variables para cálculos correctos
-        itemWidth = newItemWidth;
-        itemGap = newGap;
-        
-        // Recalcular total de grupos
-        totalGroups = Math.ceil(carouselItems.length / cardsToShow);
+        // Recalcular dimensiones
+        itemWidth = carouselItems[0].offsetWidth;
+        itemGap = parseInt(window.getComputedStyle(carouselTrack).columnGap || 30);
         
         // Volver a aplicar la posición
         moveToIndex(currentIndex);

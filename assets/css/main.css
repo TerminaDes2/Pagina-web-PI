@@ -423,16 +423,17 @@ a {
   perspective: 1000px;
 }
 
-/* Tarjetas individuales del carrusel - MEJORADAS */
+/* Tarjetas individuales del carrusel - TAMAÑO FIJO */
 .carousel-item {
   min-width: 320px;
+  width: 320px; /* Ancho fijo para todas las tarjetas */
   padding: 0;
   border-radius: 20px;
   box-shadow: 0 15px 35px rgba(0,0,0,0.12);
   background: linear-gradient(135deg, #ffffff 0%, #f8f9fb 100%);
   border: 1px solid rgba(255,255,255,0.9);
   transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-  height: 600px;
+  height: 600px; /* Altura fija para todas las tarjetas */
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -675,8 +676,9 @@ a {
   }
   
   .carousel-item {
-    min-width: calc(100% - 40px);
-    height: 520px;
+    min-width: 280px;
+    width: 280px; /* Ancho fijo en móviles */
+    height: 550px;
   }
 
   .carousel-item:hover {
@@ -891,6 +893,7 @@ a {
 
   .carousel-item {
     min-width: 280px;
+    width: 280px; /* Ancho fijo en móviles */
     height: 550px;
   }
 
