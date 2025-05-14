@@ -68,6 +68,51 @@ if ($resultAds->num_rows > 0) {
     }
 }
 
+/* Ingresa comentarios */
+if(!isset($_SESSION['usuario'])) {
+  if(!isset($_GET['error'])) {
+    $id_entrada = $_GET['id'] ?? 0;
+    $error = urlencode("Es necesario iniciar sesión para poder realizar comentarios.");
+    header("Location: publicacion.php?id=$id_entrada&error=$error");
+    exit();
+  }
+} else {
+  $datos = $_SESSION['usuario'];
+}
+
+if(isset($_POST['comentar']) && isset($_SESSION['usuario']) && isset($_GET['id'])) {
+  $descripcion = trim($_POST['descripcion']);
+  $id_usuario = intval($_SESSION['usuario']['id_usuario']);
+  $id_entrada = intval($_GET['id']);
+
+  if(!empty($descripcion)) {
+    $stmt = $conn->prepare("INSERT INTO comentarios(descripcion, id_entrada, id_usuario) VALUES (?, ?, ?)");
+    $stmt->bind_param("sii", $descripcion, $id_entrada, $id_usuario);
+   
+    if($stmt->execute()) {
+      echo "<p>Comentario publicado correctamente.</p>";
+    } else {
+      echo "<p>Error al publicar el comentario: " . htmlspecialchars($stmt->error) . "</p>";
+    }
+
+    $stmt->close();
+  } else {
+    echo "<p>El comentario no puede estar vacío.</p>";
+  }
+}
+
+/* Mostrar comentarios comenzando desde el mas reciente */
+$sql = "SELECT c.descripcion, c.fecha, u.nombre, u.primer_apellido, u.segundo_apellido, u.imagen
+        FROM comentarios c
+        INNER JOIN usuarios u ON c.id_usuario = u.id_usuario
+        WHERE c.id_entrada = ?
+        ORDER BY c.id_comentario DESC";
+
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $id_entrada); // $id_entrada es la publicación
+$stmt->execute();
+$result = $stmt->get_result();
+
 /**
  * Función para generar un índice a partir de los encabezados <h2> en el contenido.
  * Se fuerza la codificación a UTF-8 para evitar warnings en setAttribute.
@@ -146,7 +191,94 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
         <div>
           <?php echo $contenidoConAnchors; ?>
         </div>
+
+        <?php if (!empty($entrada['cita'])): ?> 
+        <!-- Si el campo de referencias no está vacío, entonces se muestra el bloque -->
+          <div class="mt-4">
+            <h5>Referencias</h5>
+            <ul>
+              <?php 
+                $lineas = explode("\n", $entrada['cita']); 
+                // Separa las referencias por cada salto de línea, creando un array        
+                foreach ($lineas as $ref): 
+                  $ref = trim($ref); 
+                  // Quita espacios en blanco al inicio y al final de cada línea
+                  if (!empty($ref)): 
+                  // Solo si la línea no está vacía
+                    if (filter_var($ref, FILTER_VALIDATE_URL)) {
+                    // Si la línea es una URL válida...
+                    $host = parse_url($ref, PHP_URL_HOST);
+                    // Obtiene el dominio del enlace (por ejemplo: www.ejemplo.com)
+                    $nombreSitio = ucfirst(str_replace('www.', '', $host));
+                    // Elimina el "www." si existe y pone la primera letra en mayúscula
+                    echo "<li>$nombreSitio. (s.f.). Recuperado de <a href=\"$ref\" target=\"_blank\">$ref</a></li>";
+                    // Muestra la referencia con formato APA básico para sitios web
+                    } else {
+                    echo "<li>" . htmlspecialchars($ref) . "</li>";
+                    // Si no es un enlace, se imprime tal cual el texto de la referencia, protegido con htmlspecialchars
+                    }
+                  endif;
+                endforeach;
+              ?>
+            </ul>
+          </div>
+        <?php endif; ?>
       </article>
+
+      <div class="men_container">
+        <h2 class="men_titulo">Comentarios</h2>
+        <?php if(isset($_SESSION['usuario'])): ?>
+          <!-- Comentarios -->
+
+          <form action="publicacion.php?id=<?= $id_entrada ?>" method="POST" class="comen_container">
+            <div class="comen">
+              <label class="comen_title">
+                <?= $datos['nombre'] . ' ' . $datos['primer_apellido'] . ' ' . $datos['segundo_apellido'] ?>
+              </label>
+
+              <div class="comen_group">
+                <label class="comen_comen">Comentario:</label>
+                <textarea class="comen_paragraph" id="descripcion" name="descripcion" rows="5" maxlength="255" placeholder="Escribe tu comentario..."></textarea>
+              </div>
+                
+              <div class="button_comen">
+                <button type="submit" id="comentar" name="comentar" class="btn_comen">Publicar</button>
+              </div>
+            </div>
+          </form>
+          <button type="button" class="btn_comen" id="btn_comen">Ver comentarios</button>
+          <div id="contenedor-comentarios" class="ocultar">
+            <?php
+              if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    $nombre_completo = $row['nombre'] . ' ' . $row['primer_apellido'] . ' ' . $row['segundo_apellido'];
+                    $fecha = $row['fecha'];
+                    $descripcion = htmlspecialchars($row['descripcion']);
+                    $imagen = $row['imagen'];
+                    echo "
+                    <div class='comentario-container'>
+                      <div class='comentario'>
+                        <div class='usuario-info'>
+                          <img src='$imagen' alt='avatar' class='avatar'>
+                          <div>
+                            <strong>$nombre_completo</strong><br>
+                            <span class='fecha'>$fecha</span>
+                          </div>
+                        </div>
+                        <p class='comentario-texto'>$descripcion</p>
+                      </div>
+                    </div>
+                    ";
+                }
+              } else {
+                  echo "<p class = 'men_err'>No hay comentarios aún.</p>";
+              }
+            ?>
+          </div>
+        <?php elseif(isset($_GET['error'])): ?>
+          <p class="men_err"><?= htmlspecialchars($_GET['error']) ?></p>
+        <?php endif; ?>
+      </div>
     </div>
 
     <!-- Sección Publicidad: Otras publicaciones -->
@@ -169,5 +301,6 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
   </main>
 
   <?php include '../includes/footer.php'; ?>
+  <script src="../assets/js/comentarios.js"></script>
 </body>
 </html>

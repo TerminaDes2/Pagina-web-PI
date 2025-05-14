@@ -56,7 +56,6 @@ class Translator {
             $result = json_decode($response, true);
             return $result[0]['translations'][0]['text'];
         }
-        
         error_log("Error $httpCode: " . print_r($response, true)); // Registrar el error
         return $texto; // Devolver el texto original
     }
@@ -76,11 +75,16 @@ class Translator {
         $xpath = new DOMXPath($dom);
         $textNodes = $xpath->query('//text()');
         
-        foreach ($textNodes as $node) {
-            if (trim($node->nodeValue)) {
-                $traducido = $this->traducirTexto($node->nodeValue);
-                $node->nodeValue = htmlspecialchars_decode($traducido);
+        try {
+            foreach ($textNodes as $node) {
+                if (trim($node->nodeValue)) {
+                    $traducido = $this->traducirTexto($node->nodeValue);
+                    $node->nodeValue = htmlspecialchars_decode($traducido);
+                }
             }
+        } catch (Exception $e) {
+            error_log("Error al traducir HTML: " . $e->getMessage()); // Registrar el error
+            return $html; // Devolver el HTML original
         }
         
         // Devolver solo el body
