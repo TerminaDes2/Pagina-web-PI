@@ -195,25 +195,6 @@ document.addEventListener('DOMContentLoaded', function() {
             mobileMenu = document.createElement('div');
             mobileMenu.className = 'hf-menu-desplegable';
             
-            // Verificar si el usuario está logueado
-            const isUserLoggedIn = document.querySelector('.hf-profile-circle') !== null;
-            
-            // Agregar el botón de inicio de sesión o círculo de perfil en la parte superior izquierda
-            if (isUserLoggedIn) {
-                const profileCircle = document.querySelector('.hf-profile-circle');
-                if (profileCircle) {
-                    const clonedProfileCircle = profileCircle.cloneNode(true);
-                    clonedProfileCircle.className = 'hf-mobile-profile-circle';
-                    mobileMenu.appendChild(clonedProfileCircle);
-                }
-            } else {
-                const loginBtn = document.createElement('a');
-                loginBtn.className = 'hf-mobile-login-btn';
-                loginBtn.href = '/Pagina-web-PI/php/registro.php';
-                loginBtn.innerHTML = '<i class="fas fa-user"></i> Iniciar sesión';
-                mobileMenu.appendChild(loginBtn);
-            }
-            
             // Agregar botón de cierre en la parte superior
             const closeBtn = document.createElement('button');
             closeBtn.className = 'hf-menu-close-btn';

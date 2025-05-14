@@ -586,6 +586,24 @@ a {
   pointer-events: auto;
   box-shadow: 0 10px 20px rgba(113, 151, 67, 0.4);
   opacity: 0.85;
+  transform: scale(1); /* Asegurar que no hay transformación previa */
+  margin: 0; /* Eliminar cualquier margen que pueda afectar */
+  padding: 0; /* Normalizar el padding */
+  flex-shrink: 0; /* Evitar que se compriman */
+  flex-grow: 0; /* Evitar que se expandan */
+}
+
+/* Asegurar que ambos botones tienen la misma forma específicamente */
+.carousel-button-left {
+  transform: scale(1);
+  position: relative;
+  left: 0;
+}
+
+.carousel-button-right {
+  transform: scale(1);
+  position: relative;
+  right: 0;
 }
 
 .carousel-button-left:hover,
@@ -671,14 +689,36 @@ a {
   }
   
   .carousel-track {
-    gap: 20px;
-    padding: 10px;
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    padding: 15px 0; /* Reducido el padding horizontal para mejor centrado */
+    gap: 30px;
   }
   
   .carousel-item {
     min-width: 280px;
     width: 280px; /* Ancho fijo en móviles */
     height: 550px;
+    /* Centrado visual mejorado */
+    margin: 0 auto;
+    /* Añadimos un pequeño ajuste para compensar cualquier desplazamiento visual */
+    transform: none;
+  }
+
+  .carousel-track {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    padding: 15px 15px;
+    gap: 30px;
+  }
+
+  .carousel-viewport {
+    overflow: hidden;
+    border-radius: 15px;
+    padding: 0;
+    background: transparent;
+    box-shadow: none;
+    border: none;
   }
 
   .carousel-item:hover {

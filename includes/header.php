@@ -24,7 +24,8 @@ if ($result_categorias && $result_categorias->num_rows > 0) {
             </button>
             <div class="hf-logo">
                 <a href="/Pagina-web-PI/index.php">
-                    <h1>Voces del Proceso</h1>
+                    <!-- Usamos ruta absoluta desde la raíz del servidor web -->
+                    <img src="/Pagina-web-PI/assets/img/POALCE.png" alt="POALCE Logo" style="max-height: 120px; width: auto;">
                 </a>
             </div>
         </div>

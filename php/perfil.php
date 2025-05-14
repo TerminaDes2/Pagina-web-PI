@@ -38,6 +38,11 @@ $stmt->bind_result($nombre, $primer_apellido, $segundo_apellido, $correo, $image
 $stmt->fetch();
 $stmt->close();
 
+// Actualizar la imagen en la sesión
+if ($imagen_perfil !== $_SESSION['usuario']['imagen']) {
+    $_SESSION['usuario']['imagen'] = $imagen_perfil;
+}
+
 // Obtener las publicaciones del usuario
 $stmt = $conn->prepare("SELECT e.id_entrada, e.titulo, c.categoria as nombre_categoria, e.fecha 
                        FROM entradas e 
@@ -141,7 +146,7 @@ if(isset($_GET['msg'])){
         <div class="perfil-header">
             <div class="perfil-avatar">
                 <?php if (!empty($imagen_perfil)): ?>
-                    <img src="<?= htmlspecialchars($imagen_perfil) ?>" alt="<?= $translator->__("Foto de perfil") ?>">
+                    <img src="../<?= htmlspecialchars($imagen_perfil) ?>" alt="<?= $translator->__("Foto de perfil") ?>">
                 <?php else: ?>
                     <div class="avatar-placeholder">
                         <i class="fas fa-user"></i>
