@@ -51,6 +51,12 @@ document.addEventListener('DOMContentLoaded', function() {
             toggle.addEventListener('click', handleCategoriaToggle);
         });
         
+        // Evento para el menú de usuario
+        const userProfileButtons = document.querySelectorAll('.hf-profile-circle');
+        userProfileButtons.forEach(btn => {
+            btn.addEventListener('click', handleUserMenuToggle);
+        });
+        
         // Evento para cerrar submenús al hacer clic fuera
         document.addEventListener('click', function(e) {
             // Cerrar menús de categorías al hacer clic fuera
@@ -66,6 +72,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 const visibleSubmenus = document.querySelectorAll('.hf-contenido-desplegable.visible');
                 visibleSubmenus.forEach(submenu => {
                     submenu.classList.remove('visible');
+                });
+            }
+            
+            // Cerrar menú de usuario al hacer clic fuera
+            if (!e.target.closest('.hf-user-menu')) {
+                const userDropdowns = document.querySelectorAll('.hf-user-dropdown');
+                userDropdowns.forEach(dropdown => {
+                    dropdown.classList.remove('show');
                 });
             }
         });
@@ -143,6 +157,33 @@ document.addEventListener('DOMContentLoaded', function() {
         if (icon) {
             icon.style.transform = submenu.classList.contains('visible') ? 'rotate(180deg)' : '';
         }
+    }
+    
+    /**
+     * Maneja el toggle del menú de usuario
+     * @param {Event} e - El evento click
+     */
+    function handleUserMenuToggle(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // Obtener el dropdown relacionado con este botón de perfil
+        const parent = this.closest('.hf-user-menu');
+        if (!parent) return;
+        
+        const dropdown = parent.querySelector('.hf-user-dropdown');
+        if (!dropdown) return;
+        
+        // Cerrar otros dropdowns de usuario
+        const allDropdowns = document.querySelectorAll('.hf-user-dropdown');
+        allDropdowns.forEach(menu => {
+            if (menu !== dropdown && menu.classList.contains('show')) {
+                menu.classList.remove('show');
+            }
+        });
+        
+        // Alternar el dropdown actual
+        dropdown.classList.toggle('show');
     }
     
     /**

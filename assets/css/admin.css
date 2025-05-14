@@ -123,16 +123,54 @@
   background-color: #e65100;
 }
 
+/* Ajustes para iconos */
+.admin-button i,
+.admin-container button i,
+.admin-tab i,
+.admin-link i {
+  margin-right: 6px;
+}
+
+.admin-tab i {
+  font-size: 1.1em;
+}
+
+.admin-button i,
+.admin-container button i {
+  font-size: 0.95em;
+}
+
 /* Enlaces específicos de la sección admin */
 .admin-link {
   color: #187424;
   text-decoration: none;
   transition: color 0.3s ease;
+  margin-right: 8px;
+  display: inline-block;
+  padding: 3px 0;
 }
 
 .admin-link:hover {
   color: #0b751b;
   text-decoration: underline;
+}
+
+.admin-link .fas {
+  margin-right: 5px;
+}
+
+/* Enlaces con distintos colores según su función */
+.admin-link .fa-external-link-alt {
+  color: #0056b3;
+}
+
+.admin-link .fa-edit {
+  color: #FF9800;
+}
+
+.admin-link:hover .fa-external-link-alt,
+.admin-link:hover .fa-edit {
+  transform: scale(1.1);
 }
 
 /* Formularios en línea */
@@ -148,6 +186,15 @@
   justify-content: center;
   gap: 10px;
   margin-bottom: 20px;
+}
+
+/* Nuevo estilo para centrar los botones de acciones */
+.admin-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin: 0 auto 25px;
+  text-align: center;
 }
 
 .admin-tab {
@@ -279,5 +326,12 @@
   .admin-tab {
     padding: 10px 15px;
     font-size: 0.9rem;
+  }
+  
+  .admin-button i,
+  .admin-container button i,
+  .admin-tab i,
+  .admin-link i {
+    margin-right: 4px;
   }
 }

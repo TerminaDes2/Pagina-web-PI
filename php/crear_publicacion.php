@@ -32,21 +32,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idioma'])) {
     exit();
 }
 
+// Obtener categorías disponibles
+$categorias = [];
+$resultCats = $conn->query("SELECT id_categoria, categoria FROM categorias ORDER BY categoria");
+if ($resultCats) {
+    while ($cat = $resultCats->fetch_assoc()) {
+        $categorias[] = $cat;
+    }
+}
+
 // Procesa el formulario al enviarlo
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Recoger y sanitizar datos
     $titulo    = trim($_POST['titulo']);
-    $categoria = trim($_POST['categoria']);
+    $categoria = intval($_POST['categoria']); // Ahora es un ID de categoría
     $contenido = trim($_POST['contenido']);
+    $cita = isset($_POST['cita']) ? trim($_POST['cita']) : ''; // Nuevo campo cita
     // Convertir el contenido a UTF-8
     $contenido = mb_convert_encoding($contenido, 'UTF-8', 'auto');
     $fecha     = date("Y-m-d");
     $id_usuario = $_SESSION['usuario']['id_usuario'];
     
     // Inserta la publicación en la tabla entradas (sin id_imagen aún)
-    $stmt = $conn->prepare("INSERT INTO entradas (titulo, categoria, contenido, fecha, id_usuario) VALUES (?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO entradas (titulo, categoria, contenido, cita, fecha, id_usuario) VALUES (?, ?, ?, ?, ?, ?)");
     if ($stmt) {
-        $stmt->bind_param("ssssi", $titulo, $categoria, $contenido, $fecha, $id_usuario);
+        $stmt->bind_param("sisssi", $titulo, $categoria, $contenido, $cita, $fecha, $id_usuario);
         if ($stmt->execute()) {
             $id_entrada = $stmt->insert_id;
             
@@ -140,21 +150,93 @@ if(isset($_GET['msg'])){
       }
     }
     
-    // Al enviar el formulario, copiamos el HTML del editor al campo oculto
-    document.addEventListener('DOMContentLoaded', function() {
-      document.getElementById('publicacionForm').addEventListener('submit', function() {
-        document.getElementById('contenido').value = document.getElementById('editor').innerHTML;
-      });
-    });
-
-    // Mostrar el nombre del archivo seleccionado
+    // Mostrar el nombre del archivo seleccionado y previsualizar la imagen
     function mostrarNombreArchivo() {
       var input = document.getElementById('imagen');
       var nombre = input.files.length > 0 ? input.files[0].name : '';
       document.getElementById('nombre-archivo').textContent = nombre;
+      
+      // Previsualizar la imagen
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        
+        reader.onload = function(e) {
+          // Comprobar si ya existe la previsualización
+          var imgPreview = document.getElementById('image-preview');
+          if (!imgPreview) {
+            // Crear el contenedor de previsualización si no existe
+            imgPreview = document.createElement('div');
+            imgPreview.id = 'image-preview';
+            imgPreview.style.marginTop = '10px';
+            imgPreview.style.marginBottom = '20px';
+            imgPreview.style.textAlign = 'center';
+            
+            // Insertar después del span nombre-archivo
+            var nombreArchivo = document.getElementById('nombre-archivo');
+            nombreArchivo.parentNode.insertBefore(imgPreview, nombreArchivo.nextSibling);
+          }
+          
+          // Crear o actualizar la imagen
+          var img = imgPreview.querySelector('img') || document.createElement('img');
+          img.src = e.target.result;
+          img.style.maxWidth = '100%';
+          img.style.maxHeight = '300px';
+          img.style.borderRadius = '8px';
+          img.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+          
+          // Añadir la imagen al contenedor si es nueva
+          if (!imgPreview.querySelector('img')) {
+            imgPreview.appendChild(img);
+          }
+        };
+        
+        reader.readAsDataURL(input.files[0]);
+      } else {
+        // Eliminar previsualización si no hay archivo
+        var imgPreview = document.getElementById('image-preview');
+        if (imgPreview) {
+          imgPreview.remove();
+        }
+      }
     }
+    
+    // Confirmar antes de enviar el formulario
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('publicacionForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        document.getElementById('contenido').value = document.getElementById('editor').innerHTML;
+        
+        const titulo = document.getElementById('titulo').value;
+        
+        Swal.fire({
+          title: '<?= $translator->__("Confirmar publicación") ?>',
+          html: `<?= $translator->__("¿Estás seguro de crear la publicación") ?> <strong>${titulo}</strong>?`,
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#719743',
+          cancelButtonColor: '#d33',
+          confirmButtonText: '<?= $translator->__("Sí, publicar") ?>',
+          cancelButtonText: '<?= $translator->__("Cancelar") ?>'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.submit();
+          }
+        });
+      });
+    });
   </script>
-  
+  <style>
+    /* Estilos adicionales para la previsualización */
+    #image-preview {
+      transition: all 0.3s ease;
+    }
+    #image-preview img {
+      transition: transform 0.3s ease;
+    }
+    #image-preview img:hover {
+      transform: scale(1.03);
+    }
+  </style>
 </head>
 <body>
   <?php include '../includes/header.php'; ?>
@@ -166,7 +248,15 @@ if(isset($_GET['msg'])){
       <input type="text" name="titulo" id="titulo" required>
 
       <label for="categoria"><?= $translator->__("Categoría:") ?></label>
-      <input type="text" name="categoria" id="categoria" required>
+      <select name="categoria" id="categoria" required>
+        <option value=""><?= $translator->__("Seleccione una categoría") ?></option>
+        <?php foreach ($categorias as $cat): ?>
+        <option value="<?= $cat['id_categoria'] ?>"><?= htmlspecialchars($cat['categoria']) ?></option>
+        <?php endforeach; ?>
+      </select>
+
+      <label for="cita"><?= $translator->__("Cita:") ?></label>
+      <input type="text" name="cita" id="cita">
 
       <label for="contenido"><?= $translator->__("Contenido:") ?></label>
       

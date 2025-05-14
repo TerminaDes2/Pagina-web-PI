@@ -45,7 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $pdo = new PDO("mysql:host=" . host . ";dbname=" . dbname . ";charset=utf8", dbuser, dbpass);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     } catch (PDOException $e) {
-        die(json_encode(["error" => $translator->__("Error en la conexión: ") . $e->getMessage()]));
+        die(json_encode(["error" => $translator->__("Error en la conexión: ") . $e->getMessage(), "icon" => "error"]));
     }
 
     if (isset($_POST['action']) && $_POST['action'] === 'register') {    
@@ -59,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         
         if (empty($nombre) || empty($primer_apellido) || empty($correo) || empty($contra)) {
-            echo json_encode(["error" => $translator->__("Por favor, completa todos los campos requeridos.")]);
+            echo json_encode(["error" => $translator->__("Por favor, completa todos los campos requeridos."), "icon" => "warning"]);
             exit;
         }
         
@@ -68,7 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->execute();
 
         if ($stmt->rowCount() > 0) {
-            echo json_encode(["error" => $translator->__("El correo ya está registrado.") . " <a href='login.php'>" . $translator->__("Inicia sesión") . "</a>."]);
+            echo json_encode(["error" => $translator->__("El correo ya está registrado.") . " <a href='login.php'>" . $translator->__("Inicia sesión") . "</a>.", "icon" => "info"]);
             exit;
         }
 
@@ -125,10 +125,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                  <a href='localhost/pagina-web-pi/templates/verificar.html'>" . $translator->__("Verifica aquí") . "</a>";
 
             $mail->send();
-            echo json_encode(["success" => $translator->__("Código enviado al correo.")]);
+            echo json_encode(["success" => $translator->__("Código enviado al correo."), "icon" => "success"]);
         } catch (Exception $e) {
             error_log("Error al enviar el correo: {$mail->ErrorInfo}"); // Registrar el error en el log
-            echo json_encode(["error" => $translator->__("Hubo un problema al enviar el correo. Por favor, intenta más tarde.")]);
+            echo json_encode(["error" => $translator->__("Hubo un problema al enviar el correo. Por favor, intenta más tarde."), "icon" => "error"]);
         }
         exit;
 
@@ -138,7 +138,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $contra = $_POST['contra'];
 
         if (empty($correo) || empty($contra)) {
-            echo $translator->__("Por favor, ingresa tanto el correo como la contraseña.");
+            echo json_encode(["error" => $translator->__("Por favor, ingresa tanto el correo como la contraseña."), "icon" => "warning"]);
             exit;
         }
        
@@ -159,19 +159,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     'correo'          => $usuario['correo'],
                     'perfil'          => $usuario['perfil'] // Agregar el campo perfil
                 ];
-                header("Location: ../index.php?success=" . urlencode($translator->__("Bienvenido")));
+                // En lugar de redirigir directamente, enviamos la URL en la respuesta JSON
+                echo json_encode(["success" => $translator->__("Bienvenido"), "redirect" => "../index.php", "icon" => "success"]);
                 exit();
             } else {
-                echo $translator->__("Contraseña incorrecta.");
+                echo json_encode(["error" => $translator->__("Contraseña incorrecta."), "icon" => "error"]);
+                exit;
             }
         } else {
-            echo $translator->__("Usuario no encontrado.");
+            echo json_encode(["error" => $translator->__("Usuario no encontrado."), "icon" => "error"]);
+            exit;
         }
     } elseif (isset($_POST['action']) && $_POST['action'] === 'verify') {
         $codigoIngresado = $_POST['codigo'];
 
         if (!isset($_SESSION['registro'])) {
-            echo json_encode(["error" => $translator->__("No hay datos para verificar.")]);
+            echo json_encode(["error" => $translator->__("No hay datos para verificar."), "icon" => "error"]);
             exit;
         }
 
@@ -181,14 +184,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             try {
                 $perfil = 'cliente';
                 $hashed_password = password_hash($datos['contra'], PASSWORD_DEFAULT);
+                $imagen_default = ''; // Campo imagen por defecto (vacío)
 
-                $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, primer_apellido, segundo_apellido, correo, contra, perfil) VALUES (?, ?, ?, ?, ?, ?)");
+                $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, primer_apellido, segundo_apellido, correo, contra, imagen, perfil) VALUES (?, ?, ?, ?, ?, ?, ?)");
                 $stmt->execute([
                     $datos['nombre'], 
                     $datos['primer_apellido'], 
                     $datos['segundo_apellido'], 
                     $datos['correo'], 
-                    $hashed_password, 
+                    $hashed_password,
+                    $imagen_default,
                     $perfil
                 ]);
 
@@ -201,16 +206,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 ];
 
                 unset($_SESSION['registro']);
-                echo json_encode(["success" => $translator->__("Usuario registrado correctamente.")]);
+                echo json_encode(["success" => $translator->__("Usuario registrado correctamente."), "icon" => "success"]);
             } catch (PDOException $e) {
-                echo json_encode(["error" => $translator->__("Error al registrar el usuario: ") . $e->getMessage()]);
+                echo json_encode(["error" => $translator->__("Error al registrar el usuario: ") . $e->getMessage(), "icon" => "error"]);
             }
         } else {
-            echo json_encode(["error" => $translator->__("Código incorrecto. Intenta nuevamente.")]);
+            echo json_encode(["error" => $translator->__("Código incorrecto. Intenta nuevamente."), "icon" => "error"]);
         }
         exit;
     } else {
-        echo $translator->__("Acción no reconocida.");
+        echo json_encode(["error" => $translator->__("Acción no reconocida."), "icon" => "error"]);
+        exit;
     }
 }
 ?>
@@ -225,6 +231,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="../assets/js/loggin_scripts.js" defer></script>
   <script>
     $(document).ready(function () {
@@ -235,12 +242,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           type: "POST",
           data: $(this).serialize(),
           success: function (response) {
-            const res = JSON.parse(response);
-            if (res.success) {
-              alert(res.success);
-              $("#verifyModal").show();
-            } else if (res.error) {
-              alert(res.error);
+            try {
+              const res = JSON.parse(response);
+              if (res.success) {
+                Swal.fire({
+                  title: res.success,
+                  icon: res.icon || 'success',
+                  showConfirmButton: false,
+                  timer: 2000
+                }).then(() => {
+                  $("#verifyModal").show();
+                  $(".modal").addClass("active");
+                });
+              } else if (res.error) {
+                Swal.fire({
+                  title: res.error,
+                  icon: res.icon || 'error',
+                  showConfirmButton: true
+                });
+              }
+            } catch (e) {
+              Swal.fire({
+                title: 'Error',
+                text: response,
+                icon: 'error',
+                showConfirmButton: true
+              });
             }
           },
         });
@@ -253,19 +280,94 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           type: "POST",
           data: $(this).serialize(),
           success: function (response) {
-            const res = JSON.parse(response);
-            if (res.success) {
-              alert(res.success);
-              window.location.href = "crear_publicacion.php";
-            } else if (res.error) {
-              alert(res.error);
+            try {
+              const res = JSON.parse(response);
+              if (res.success) {
+                Swal.fire({
+                  title: res.success,
+                  icon: res.icon || 'success',
+                  showConfirmButton: false,
+                  timer: 2000
+                }).then(() => {
+                  window.location.href = "../index.php";
+                });
+              } else if (res.error) {
+                Swal.fire({
+                  title: res.error,
+                  icon: res.icon || 'error',
+                  showConfirmButton: true
+                });
+              }
+            } catch (e) {
+              Swal.fire({
+                title: 'Error',
+                text: response,
+                icon: 'error',
+                showConfirmButton: true
+              });
             }
           },
         });
       });
 
+      $("#form-right").on("submit", function (e) {
+        e.preventDefault();
+        $.ajax({
+          url: "registro.php",
+          type: "POST",
+          data: $(this).serialize(),
+          success: function (response) {
+            try {
+              const res = JSON.parse(response);
+              if (res.success) {
+                Swal.fire({
+                  title: res.success,
+                  icon: res.icon || 'success',
+                  showConfirmButton: false,
+                  timer: 1500
+                }).then(() => {
+                  // Si hay una redirección, navegamos a esa URL
+                  if (res.redirect) {
+                    window.location.href = res.redirect;
+                  }
+                });
+              } else if (res.error) {
+                Swal.fire({
+                  title: res.error,
+                  icon: res.icon || 'error',
+                  showConfirmButton: true
+                });
+              }
+            } catch (e) {
+              console.error("Error parsing JSON: ", e, response);
+              Swal.fire({
+                title: 'Error',
+                text: 'Ocurrió un error al procesar la respuesta',
+                icon: 'error',
+                showConfirmButton: true
+              });
+            }
+          },
+          error: function(xhr, status, error) {
+            console.error("AJAX Error: ", status, error);
+            Swal.fire({
+              title: 'Error de conexión',
+              text: 'No se pudo conectar con el servidor',
+              icon: 'error',
+              showConfirmButton: true
+            });
+          }
+        });
+      });
+
       $(".close").on("click", function () {
         $("#verifyModal").hide();
+        $(".modal").removeClass("active");
+      });
+
+      // Animar la aparición del modal
+      $(document).on('show', '.modal', function () {
+        $(this).addClass('active');
       });
     });
   </script>
@@ -318,5 +420,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   </main>
 
   <?php include '../includes/footer.php'; ?>
+  
+  <?php if (isset($_GET['error']) || isset($_GET['success'])): ?>
+  <script>
+    $(document).ready(function(){
+      <?php if (isset($_GET['error'])): ?>
+      Swal.fire({
+        icon: 'error',
+        title: '<?= urldecode($_GET['error']) ?>',
+        showConfirmButton: false,
+        timer: 2000
+      });
+      <?php endif; ?>
+      
+      <?php if (isset($_GET['success'])): ?>
+      Swal.fire({
+        icon: 'success',
+        title: '<?= urldecode($_GET['success']) ?>',
+        showConfirmButton: false,
+        timer: 2000
+      });
+      <?php endif; ?>
+    });
+  </script>
+  <?php endif; ?>
 </body>
 </html>

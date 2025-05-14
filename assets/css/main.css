@@ -127,6 +127,12 @@ a {
   margin-bottom: 30px;
   color: #555;
   line-height: 1.7;
+  max-height: 5.1em; /* Limita a aproximadamente 3 líneas */
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
 }
 
 .hero-image {
@@ -149,7 +155,7 @@ a {
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
 }
 
-/* Featured Articles Carousel */
+/* Featured Articles Carousel - REDISEÑADO */
 .featured-articles {
   padding: 60px 0;
   background-color: #fff;
@@ -190,29 +196,43 @@ a {
   background: #719743;
 }
 
+/* Contenedor principal del carrusel */
 .carousel-container {
   position: relative;
   width: 90%;
   max-width: 1200px;
   margin: 0 auto;
-  overflow: hidden;
-  padding: 10px 0;
+  overflow: visible; /* Cambiado de hidden a visible para que los botones no se corten */
+  padding: 20px 0 60px; /* Aumentar el padding inferior para los controles */
 }
 
+/* Área de visualización del carrusel - con overflow hidden */
+.carousel-viewport {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+/* Pista del carrusel - donde se mueven las tarjetas */
 .carousel-track {
   display: flex;
   transition: transform 0.5s ease-in-out;
   gap: 30px;
 }
 
+/* Tarjetas individuales del carrusel */
 .carousel-item {
   min-width: 300px;
-  padding: 30px;
+  padding: 0; /* Quitar padding para redistribuir el espacio */
   border-radius: 20px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.12);
   background-color: #fff;
   border: 1px solid rgba(225,225,225,0.3);
   transition: all 0.5s ease;
+  height: 650px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Para asegurar que el contenido no se salga */
 }
 
 .carousel-item:hover {
@@ -220,58 +240,139 @@ a {
   box-shadow: 0 15px 35px rgba(0,0,0,0.15);
 }
 
+/* Imagen del carrusel */
 .carousel-item img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 10px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  transition: all 0.3s ease;
+  width: 100%;
+  height: 250px; /* Altura mayor para la imagen */
+  object-fit: cover;
+  margin-bottom: 0; /* Quitar margen */
+  box-shadow: none; /* Quitar sombra */
+  transition: transform 0.3s ease;
 }
 
-.carousel-item img:hover {
-  transform: scale(1.03);
+.carousel-item:hover img {
+  transform: scale(1.05);
 }
 
-.carousel-item h3 {
-  font-size: 1.6rem;
+/* Contenedor del contenido de texto */
+.carousel-item-content {
+  padding: 25px; /* Añadir padding interno */
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+/* Título de la tarjeta */
+.carousel-title {
+  font-size: 1.8rem;
   margin-bottom: 15px;
   color: #1d231e;
   font-weight: 700;
+  line-height: 1.2;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
 }
 
-.carousel-controls {
+/* Subtítulo/descripción de la tarjeta */
+.carousel-subtitle {
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  flex-grow: 1;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+}
+
+/* Botón */
+.carousel-item .btn {
+  margin: 0 25px 25px; /* Dar espacio al botón */
+  align-self: center;
+}
+
+/* Controles de navegación - SIMPLIFICADOS */
+.carousel-nav-buttons {
   position: absolute;
-  top: 210%;
-  left: 8px;
-  right: 0;
+  top: 50%;
+  left: -25px; /* Ajustado para posicionarlo fuera del contenedor */
+  width: calc(100% + 50px); /* Ampliar el ancho para incluir los botones */
+  transform: translateY(-50%);
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  transform: translateY(-50%);
+  z-index: 10;
+  pointer-events: none;
 }
 
-.carousel-prev,
-.carousel-next {
-  background-color: #1d231e;
-  color: #fff;
-  border: none;
+.carousel-button-left,
+.carousel-button-right {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  cursor: pointer;
-  font-size: 1.2rem;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  background-color: rgba(29, 35, 30, 0.8);
+  color: white;
+  border: none;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  pointer-events: auto;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-.carousel-prev:hover,
-.carousel-next:hover {
-  background-color: #719743;
+/* Eliminar los márgenes porque ya están posicionados correctamente */
+.carousel-button-left {
+  /* margin-left: -25px; */ /* Eliminado */
+}
+
+.carousel-button-right {
+  /* margin-right: -25px; */ /* Eliminado */
+}
+
+/* Ocultar los controles antiguos */
+.carousel-controls {
+  display: none;
+}
+
+/* Indicadores de posición - MEJORADOS */
+.carousel-indicators {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  z-index: 5;
+}
+
+.carousel-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: rgba(204, 204, 204, 0.8);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.carousel-indicator:hover {
+  background-color: rgba(180, 180, 180, 1);
   transform: scale(1.1);
+}
+
+.carousel-indicator.active {
+  background-color: #719743;
+  transform: scale(1.2);
+  border-color: white;
+  box-shadow: 0 2px 6px rgba(113, 151, 67, 0.5);
 }
 
 /* Information Title Section */
@@ -380,6 +481,53 @@ a {
 @media (max-width: 768px) {
   .carousel-container {
     position: relative;
+    width: 95%;
+    max-width: none;
+    overflow: hidden;
+  }
+
+  .carousel-viewport {
+    overflow: hidden;
+    touch-action: pan-y; /* Mejorar experiencia táctil */
+  }
+
+  .carousel-track {
+    display: flex;
+    transition: transform 0.3s ease-in-out;
+    gap: 15px; /* Espacio consistente entre tarjetas */
+  }
+
+  .carousel-item {
+    min-width: calc(100% - 30px); /* Ancho completo menos margen para asegurar consistencia */
+    height: 550px;
+    margin: 0; /* Quitar cualquier margen adicional */
+  }
+
+  .carousel-nav-buttons {
+    opacity: 0.7; /* Botones semi-transparentes en móvil */
+  }
+
+  /* Indicador de deslizamiento para móviles */
+  .swipe-indicator {
+    display: block;
+    position: absolute;
+    bottom: 55px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    color: #666;
+    font-size: 0.8rem;
+    animation: fadeInOut 2s infinite;
+    pointer-events: none;
+  }
+
+  @keyframes fadeInOut {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+
+  .carousel-container {
+    position: relative;
     width: 90%;
     max-width: none;
     overflow: hidden;
@@ -395,32 +543,50 @@ a {
 
   .carousel-item {
     min-width: 280px;
-    padding: 20px;
-    border-radius: 18px;
-  }
-
-  .carousel-item:hover {
-    transform: none;
+    height: 550px;
   }
 
   .carousel-item img {
-    margin-bottom: 15px;
+    height: 200px;
   }
 
-  .carousel-item h3 {
+  .carousel-item-content {
+    padding: 15px;
+  }
+
+  .carousel-title {
     font-size: 1.4rem;
+    margin-bottom: 10px;
   }
 
-  .carousel-controls {
-    position: relative;
-    top: 20px;
-    padding: 0 8px;
+  .carousel-subtitle {
+    font-size: 0.9rem;
+    -webkit-line-clamp: 3;
   }
 
-  .carousel-prev,
-  .carousel-next {
+  .carousel-item .btn {
+    margin: 0 15px 15px;
+  }
+
+  .carousel-button-left,
+  .carousel-button-right {
     width: 40px;
     height: 40px;
+  }
+
+  .carousel-nav-buttons {
+    left: -15px;
+    width: calc(100% + 30px);
+  }
+
+  .carousel-indicators {
+    bottom: 15px;
+    gap: 8px;
+  }
+
+  .carousel-indicator {
+    width: 10px;
+    height: 10px;
   }
 
   .info-grid {
@@ -438,6 +604,8 @@ a {
 
   .hero-content p {
     font-size: 1rem;
+    -webkit-line-clamp: 2; /* Solo 2 líneas en móviles */
+    max-height: 3.2em;
   }
 
   .hero-image img {

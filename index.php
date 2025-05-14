@@ -28,9 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idioma'])) {
 
 // Obtener y traducir contenido dinámico
 // Consulta para el banner
-$sqlBanner = "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, i.imagen 
+$sqlBanner = "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, c.categoria as nombre_categoria, i.imagen 
               FROM entradas e 
               LEFT JOIN imagenes i ON i.id_entrada = e.id_entrada 
+              LEFT JOIN categorias c ON e.categoria = c.id_categoria
               ORDER BY e.id_entrada DESC 
               LIMIT 1";
 $resultBanner = $conn->query($sqlBanner);
@@ -43,14 +44,16 @@ if ($banner) {
 
 // Consulta para artículos
 $sqlPosts = $banner ? 
-    "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, i.imagen 
+    "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, c.categoria as nombre_categoria, i.imagen 
      FROM entradas e 
      LEFT JOIN imagenes i ON i.id_entrada = e.id_entrada 
+     LEFT JOIN categorias c ON e.categoria = c.id_categoria
      WHERE e.id_entrada <> " . $banner['id_entrada'] . " 
      ORDER BY e.id_entrada DESC" :
-    "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, i.imagen 
+    "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, c.categoria as nombre_categoria, i.imagen 
      FROM entradas e 
      LEFT JOIN imagenes i ON i.id_entrada = e.id_entrada 
+     LEFT JOIN categorias c ON e.categoria = c.id_categoria
      ORDER BY e.id_entrada DESC";
 
 $resultPosts = $conn->query($sqlPosts);
@@ -87,7 +90,7 @@ while ($row = $resultPosts->fetch_assoc()) {
         </div>
         <div class="hero-image">
             <?php if (!empty($banner['imagen'])): ?>
-            <img src="php/<?= htmlspecialchars($banner['imagen']) ?>" alt="<?= htmlspecialchars($banner['titulo']) ?>">
+            <img src="<?= htmlspecialchars($banner['imagen']) ?>" alt="<?= htmlspecialchars($banner['titulo']) ?>">
             <?php endif; ?>
         </div>
     </section>
@@ -96,29 +99,30 @@ while ($row = $resultPosts->fetch_assoc()) {
     <section class="featured-articles" id="featured-articles">
         <h2><?= $translator->__("Artículos destacados") ?></h2>
         <div class="carousel-container">
-            <div class="carousel-track">
-                <?php foreach ($articulos as $articulo): ?>
-                <article class="carousel-item" onclick="window.location.href='php/publicacion.php?id=<?= $articulo['id_entrada'] ?>';" style="cursor:pointer;">
-                    <?php if (!empty($articulo['imagen'])): ?>
-                    <img src="php/<?= htmlspecialchars($articulo['imagen']) ?>" alt="<?= htmlspecialchars($articulo['titulo']) ?>">
-                    <?php endif; ?>
-                    <h3><?= htmlspecialchars($articulo['titulo']) ?></h3>
-                    
-                    <!-- Contenido sin escapar (renderiza HTML) -->
-                    <div class="article-preview">
-                        <?= substr($articulo['contenido'], 0, 100) ?>...
-                    </div>
-
-                    <a href="php/publicacion.php?id=<?= $articulo['id_entrada'] ?>" class="btn btn-secondary">
-                        <?= $translator->__("Leer más") ?>
-                    </a>
-                </article>
-                <?php endforeach; ?>
+            <div class="carousel-nav-buttons">
+                <button class="carousel-button-left" aria-label="Anterior"><i class="fas fa-chevron-left"></i></button>
+                <button class="carousel-button-right" aria-label="Siguiente"><i class="fas fa-chevron-right"></i></button>
             </div>
-        </div>
-        <div class="carousel-controls">
-            <button class="carousel-prev"><i class="fas fa-chevron-left"></i></button>
-            <button class="carousel-next"><i class="fas fa-chevron-right"></i></button>
+            <div class="carousel-viewport">
+                <div class="carousel-track">
+                    <?php foreach ($articulos as $articulo): ?>
+                    <article class="carousel-item">
+                        <?php if (!empty($articulo['imagen'])): ?>
+                        <img src="<?= htmlspecialchars($articulo['imagen']) ?>" alt="<?= htmlspecialchars($articulo['titulo']) ?>">
+                        <?php endif; ?>
+                        <div class="carousel-item-content">
+                            <h3 class="carousel-title"><?= htmlspecialchars($articulo['titulo']) ?></h3>
+                            <p class="carousel-subtitle"><?= strip_tags(substr($articulo['contenido'], 0, 150)) ?>...</p>
+                        </div>
+                        <a href="php/publicacion.php?id=<?= $articulo['id_entrada'] ?>" class="btn btn-secondary">
+                            <?= $translator->__("Leer más") ?>
+                        </a>
+                    </article>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <!-- Simplificar el contenedor de indicadores - el JS los generará dinámicamente -->
+            <div class="carousel-indicators"></div>
         </div>
     </section>
 
@@ -159,6 +163,17 @@ while ($row = $resultPosts->fetch_assoc()) {
     </section>
 
     <?php include 'includes/footer.php'; ?>
+
+    <!-- Actualizar cualquier enlace que vaya a categorias.php o perfil.php -->
+    <!-- Por ejemplo, si hay un enlace como: -->
+    <!-- <a href="categorias.php?cat=1">Categoría 1</a> -->
+    <!-- debe cambiarse a: -->
+    <!-- <a href="php/categorias.php?cat=1">Categoría 1</a> -->
+
+    <!-- Igualmente para perfil.php: -->
+    <!-- <a href="perfil.php">Mi Perfil</a> -->
+    <!-- debe cambiarse a: -->
+    <!-- <a href="php/perfil.php">Mi Perfil</a> -->
 
     <?php $conn->close(); ?>
 </body>
