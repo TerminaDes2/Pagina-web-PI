@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idioma'])) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    include "../includes/db_config.php";
+    //include "../includes/db_config.php";
     
     try {
       $pdo = new PDO("mysql:host=" . host . ";dbname=" . dbname . ";charset=utf8", dbuser, dbpass);
@@ -62,6 +62,50 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo $translator->__("Por favor, completa todos los campos requeridos.");
             exit;
         }
+
+        $foto_perfil = NULL; //Inicializamos la variable en NULL
+
+        if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] == 0) {
+            // Obtener informacion de la imagen
+            $foto_tmp = $_FILES['imagen']['tmp_name'];
+            $foto_nombre = $_FILES['imagen']['name'];
+            $foto_tipo = $_FILES['imagen']['type'];
+            $foto_size = $_FILES['imagen']['size'];
+
+            //Validacion del tipo de archivo
+            $tipo_permitido = ['image/jpeg', 'image/png', 'image/gif'];
+
+            if (!in_array($foto_tipo, $tipo_permitido)) {
+                echo $translator->__("El archivo subido no es una imagen valida.");
+                exit;
+            }
+
+            //Validación del tamaño del archivo
+            if ($foto_size > 2 * 1024 * 1024) {
+                echo $translator->__("El archivo es demasiado grande. El tamaño permitido es 2MB.");
+                exit;
+            }
+
+            //Generar un nombre único para la imagen
+            $foto_nombre_unico = uniqid('foto_', true) . '.' . pathinfo($foto_nombre, PATHINFO_EXTENSION);
+
+            //Ruta donde guarda la foto
+            $directorio = '../uploads/perfiles/'; //Puedes cambiar esta ruta según tus necesidades
+            if (!is_dir($directorio)) {
+                mkdir($directorio, 0777, true); //Crear el directorio si no existe
+            }
+
+            //Mover el archivo a la carpeta de destino
+            $foto_ruta = $directorio . $foto_nombre_unico;
+            /*if (move_uploaded_file($foto['tmp_name'], $foto_ruta)) {
+                echo "Imagen cargada correctamente.";
+            } else {
+                echo "Error al cargar la imagen.";
+            }*/
+            move_uploaded_file($foto_tmp, $foto_ruta);
+
+            $foto_perfil = $foto_ruta; //Guardar la ruta de la imagen
+        }
         
         $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE correo = :correo");
         $stmt->bindParam(':correo', $correo);
@@ -81,7 +125,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           'segundo_apellido'  => $segundo_apellido,
           'correo'            => $correo,
           'contra'            => $contra,
-          'codigo'            => $codigo
+          'codigo'            => $codigo,
+          'imagen'            => $foto_perfil //Guardar la ruta de la imagen
         ];
 
         // Enviar correo
@@ -200,7 +245,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 
     <div class="card" id="register">
-      <form id="form-left" action="registro.php" method="POST">
+      <form id="form-left" action="registro.php" method="POST" enctype="multipart/form-data">
           <input type="hidden" name="action" value="register">
           <h1><?= $translator->__("Registro de Cuenta") ?></h1>
           <input type="text" id="nombre" name="nombre" placeholder="Nombre(s)" required>
@@ -208,6 +253,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           <input type="text" id="segundo_apellido" name="segundo_apellido" placeholder="Segundo Apellido" required>
           <input type="text" id="correo" name="correo" placeholder="Cuenta o correo" required>
           <input type="password" id="contra" name="contra" placeholder="Contraseña" required>
+          <input type="file" id="imagen" name="imagen" accept="image/*">
           <button class="btn" type="submit"><?= $translator->__(" Registrar") ?></button>
           <button class="btin" type="button" onclick="mostrarFormulario()">Iniciar sesión</button>
       </form>

@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idioma'])) {
 // Verificar que se haya pasado el id de la publicación por GET
 if (isset($_GET['id'])) {
     $id_entrada = intval($_GET['id']);
-    $sql = "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, i.imagen 
+    $sql = "SELECT e.id_entrada, e.titulo, e.contenido, e.cita, e.fecha, i.imagen 
             FROM entradas e 
             LEFT JOIN imagenes i ON i.id_entrada = e.id_entrada 
             WHERE e.id_entrada = $id_entrada";
@@ -100,7 +100,7 @@ if(isset($_POST['comentar']) && isset($_SESSION['usuario']) && isset($_GET['id']
 }
 
 /* Mostrar comentarios comenzando desde el mas reciente */
-$sql = "SELECT c.descripcion, c.fecha, u.nombre, u.primer_apellido, u.segundo_apellido
+$sql = "SELECT c.descripcion, c.fecha, u.nombre, u.primer_apellido, u.segundo_apellido, u.imagen
         FROM comentarios c
         INNER JOIN usuarios u ON c.id_usuario = u.id_usuario
         WHERE c.id_entrada = ?
@@ -187,34 +187,90 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
         <div>
           <?php echo $contenidoConAnchors; ?>
         </div>
+
+        <?php if (!empty($entrada['cita'])): ?> 
+        <!-- Si el campo de referencias no está vacío, entonces se muestra el bloque -->
+          <div class="mt-4">
+            <h5>Referencias</h5>
+            <ul>
+              <?php 
+                $lineas = explode("\n", $entrada['cita']); 
+                // Separa las referencias por cada salto de línea, creando un array        
+                foreach ($lineas as $ref): 
+                  $ref = trim($ref); 
+                  // Quita espacios en blanco al inicio y al final de cada línea
+                  if (!empty($ref)): 
+                  // Solo si la línea no está vacía
+                    if (filter_var($ref, FILTER_VALIDATE_URL)) {
+                    // Si la línea es una URL válida...
+                    $host = parse_url($ref, PHP_URL_HOST);
+                    // Obtiene el dominio del enlace (por ejemplo: www.ejemplo.com)
+                    $nombreSitio = ucfirst(str_replace('www.', '', $host));
+                    // Elimina el "www." si existe y pone la primera letra en mayúscula
+                    echo "<li>$nombreSitio. (s.f.). Recuperado de <a href=\"$ref\" target=\"_blank\">$ref</a></li>";
+                    // Muestra la referencia con formato APA básico para sitios web
+                    } else {
+                    echo "<li>" . htmlspecialchars($ref) . "</li>";
+                    // Si no es un enlace, se imprime tal cual el texto de la referencia, protegido con htmlspecialchars
+                    }
+                  endif;
+                endforeach;
+              ?>
+            </ul>
+          </div>
+        <?php endif; ?>
       </article>
 
       <div class="men_container">
         <h2 class="men_titulo">Comentarios</h2>
         <?php if(isset($_SESSION['usuario'])): ?>
-          <button class="btn_comen">Comentar</button>
-          <?php
-            if ($result->num_rows > 0) {
-              while ($row = $result->fetch_assoc()) {
-                  $nombre_completo = $row['nombre'] . ' ' . $row['primer_apellido'] . ' ' . $row['segundo_apellido'];
-                  $fecha = $row['fecha'];
-                  $descripcion = htmlspecialchars($row['descripcion']);
-                  echo "
-                  <div class='comentario-container'>
-                    <div class='comentario'>
-                      <div>
-                        <strong>$nombre_completo</strong><br>
-                        <span class='fecha'>$fecha</span>
+          <!-- Comentarios -->
+
+          <form action="publicacion.php?id=<?= $id_entrada ?>" method="POST" class="comen_container">
+            <div class="comen">
+              <label class="comen_title">
+                <?= $datos['nombre'] . ' ' . $datos['primer_apellido'] . ' ' . $datos['segundo_apellido'] ?>
+              </label>
+
+              <div class="comen_group">
+                <label class="comen_comen">Comentario:</label>
+                <textarea class="comen_paragraph" id="descripcion" name="descripcion" rows="5" maxlength="255" placeholder="Escribe tu comentario..."></textarea>
+              </div>
+                
+              <div class="button_comen">
+                <button type="submit" id="comentar" name="comentar" class="btn_comen">Publicar</button>
+              </div>
+            </div>
+          </form>
+          <button type="button" class="btn_comen" id="btn_comen">Ver comentarios</button>
+          <div id="contenedor-comentarios" class="ocultar">
+            <?php
+              if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    $nombre_completo = $row['nombre'] . ' ' . $row['primer_apellido'] . ' ' . $row['segundo_apellido'];
+                    $fecha = $row['fecha'];
+                    $descripcion = htmlspecialchars($row['descripcion']);
+                    $imagen = $row['imagen'];
+                    echo "
+                    <div class='comentario-container'>
+                      <div class='comentario'>
+                        <div class='usuario-info'>
+                          <img src='$imagen' alt='avatar' class='avatar'>
+                          <div>
+                            <strong>$nombre_completo</strong><br>
+                            <span class='fecha'>$fecha</span>
+                          </div>
+                        </div>
+                        <p class='comentario-texto'>$descripcion</p>
                       </div>
-                      <p class='comentario-texto'>$descripcion</p>
                     </div>
-                  </div>
-                  ";
+                    ";
+                }
+              } else {
+                  echo "<p class = 'men_err'>No hay comentarios aún.</p>";
               }
-            } else {
-                echo "<p class = 'men_err'>No hay comentarios aún.</p>";
-            }
-          ?>
+            ?>
+          </div>
         <?php elseif(isset($_GET['error'])): ?>
           <p class="men_err"><?= htmlspecialchars($_GET['error']) ?></p>
         <?php endif; ?>
@@ -238,27 +294,6 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
       }
       ?>
     </aside>
-
-    <!-- Comentarios -->
-    <div>
-      <form action="publicacion.php?id=<?= $id_entrada ?>" method="POST" class="modal">
-        <div class="modal_container">
-          <label class="modal_title">
-            <?= $datos['nombre'] . ' ' . $datos['primer_apellido'] . ' ' . $datos['segundo_apellido'] ?>
-          </label>
-
-          <div class="modal_group">
-            <label class="modal_comen">Comentario:</label>
-            <textarea class="modal_paragraph" id="descripcion" name="descripcion" rows="5" maxlength="255" placeholder="Escribe tu comentario..."></textarea>
-          </div>
-          
-          <div class="modal_button">
-            <button type="button" class="modal_close">Cancelar</button>
-            <button type="submit" id="comentar" name="comentar" class="modal_publi">Publicar</button>
-          </div>
-        </div>
-      </form>
-    </div>
   </main>
 
   <?php include '../includes/footer.php'; ?>

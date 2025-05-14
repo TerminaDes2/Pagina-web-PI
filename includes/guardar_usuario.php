@@ -18,8 +18,8 @@
         $perfil = 'cliente';
         $hashed_password = password_hash($datos['contra'], PASSWORD_DEFAULT);
 
-        $stmt = $conn->prepare("INSERT INTO usuarios (nombre, primer_apellido, segundo_apellido, correo, contra, perfil) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("ssssss", $datos['nombre'], $datos['primer_apellido'], $datos['segundo_apellido'], $datos['correo'], $hashed_password, $perfil);
+        $stmt = $conn->prepare("INSERT INTO usuarios (nombre, primer_apellido, segundo_apellido, correo, contra, imagen, perfil) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssssss", $datos['nombre'], $datos['primer_apellido'], $datos['segundo_apellido'], $datos['correo'], $hashed_password, $datos['imagen'], $perfil);
         $stmt->execute();
         $stmt->close();
         $conn->close();
