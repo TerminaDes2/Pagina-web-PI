@@ -61,6 +61,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bind_param("i", $id_entrada);
             $stmt->execute();
             $stmt->close();
+            
+            // Si se está eliminando desde la vista de usuario, redirigir allí
+            if (isset($_POST['vista_usuario']) && isset($_POST['id_usuario_vista'])) {
+                $id_usuario_vista = intval($_POST['id_usuario_vista']);
+                header("Location: gestor_usuarios.php?ver_usuario=" . $id_usuario_vista);
+                exit();
+            }
+        }
+    }
+    
+    // Manejar acciones de comentarios
+    if (isset($_POST['accion']) && isset($_POST['id_comentario'])) {
+        $id_comentario = intval($_POST['id_comentario']);
+        if ($_POST['accion'] === 'eliminar_comentario') {
+            $stmt = $conn->prepare("DELETE FROM comentarios WHERE id_comentario = ?");
+            $stmt->bind_param("i", $id_comentario);
+            $stmt->execute();
+            $stmt->close();
+            
+            // Redirigir de vuelta a la vista de usuario
+            if (isset($_POST['id_usuario_vista'])) {
+                $id_usuario_vista = intval($_POST['id_usuario_vista']);
+                header("Location: gestor_usuarios.php?ver_usuario=" . $id_usuario_vista . "#tab-usuario-comentarios");
+                exit();
+            }
         }
     }
 }
@@ -78,8 +103,11 @@ if (isset($_GET['ver_usuario'])) {
     $stmt->fetch();
     $stmt->close();
 
-    // Obtener publicaciones del usuario seleccionado
-    $stmtPublicaciones = $conn->prepare("SELECT id_entrada, titulo, categoria, fecha FROM entradas WHERE id_usuario = ?");
+    // Obtener publicaciones del usuario seleccionado con categorías
+    $stmtPublicaciones = $conn->prepare("SELECT e.id_entrada, e.titulo, c.categoria AS nombre_categoria, e.fecha 
+                                        FROM entradas e 
+                                        LEFT JOIN categorias c ON e.categoria = c.id_categoria
+                                        WHERE e.id_usuario = ?");
     $stmtPublicaciones->bind_param("i", $id_usuario_seleccionado);
     $stmtPublicaciones->execute();
     $resultPublicacionesUsuario = $stmtPublicaciones->get_result();
@@ -87,12 +115,12 @@ if (isset($_GET['ver_usuario'])) {
     $stmtPublicaciones->close();
 
     // Obtener comentarios del usuario seleccionado
-    $stmtComentarios = $conn->prepare("SELECT c.id_comentario, c.descripcion AS contenido, c.fecha, e.titulo AS publicacion 
-                                        FROM comentarios c 
-                                        JOIN entradas e ON c.id_entrada = e.id_entrada 
-                                        WHERE c.id_usuario = ?");
+    $stmtComentarios = $conn->prepare("SELECT c.id_comentario, c.descripcion AS contenido, c.fecha, e.titulo AS publicacion, e.id_entrada 
+                                       FROM comentarios c 
+                                       JOIN entradas e ON c.id_entrada = e.id_entrada 
+                                       WHERE c.id_usuario = ?");
     if (!$stmtComentarios) {
-        die("Error en la consulta de comentarios: " . $conn->error); // Depuración para mostrar el error
+        die("Error en la consulta de comentarios: " . $conn->error);
     }
     $stmtComentarios->bind_param("i", $id_usuario_seleccionado);
     $stmtComentarios->execute();
@@ -109,8 +137,11 @@ $stmt->execute();
 $resultUsuarios = $stmt->get_result();
 $stmt->close();
 
-// Obtener publicaciones
-$resultPublicaciones = $conn->query("SELECT id_entrada, titulo, categoria, fecha FROM entradas");
+// Obtener publicaciones con categorías
+$resultPublicaciones = $conn->query("SELECT e.id_entrada, e.titulo, c.categoria AS nombre_categoria, e.fecha 
+                                     FROM entradas e
+                                     LEFT JOIN categorias c ON e.categoria = c.id_categoria
+                                     ORDER BY e.id_entrada DESC");
 ?>
 
 <!DOCTYPE html>
@@ -120,6 +151,9 @@ $resultPublicaciones = $conn->query("SELECT id_entrada, titulo, categoria, fecha
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $translator->__("Gestor de Admin") ?></title>
     <link rel="stylesheet" href="../assets/css/admin.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <script>
         function cambiarPestaña(pestaña) {
             // Ocultar todas las secciones
@@ -165,6 +199,114 @@ $resultPublicaciones = $conn->query("SELECT id_entrada, titulo, categoria, fecha
             if (document.querySelector('.admin-tab-usuario')) {
                 cambiarPestañaUsuario('tab-usuario-publicaciones');
             }
+            
+            // Agregar confirmación para eliminar usuario
+            document.querySelectorAll('button[value="eliminar_usuario"]').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const form = this.form;
+                    const userId = form.querySelector('input[name="id_usuario"]').value;
+                    
+                    // Obtener el nombre del usuario
+                    const row = this.closest('tr');
+                    const userName = row.querySelector('td:nth-child(2)').textContent;
+                    
+                    Swal.fire({
+                        title: '<?= $translator->__("¿Estás seguro?") ?>',
+                        html: `<?= $translator->__("¿Realmente deseas eliminar al usuario") ?> <strong>${userName}</strong> (ID: ${userId})?<br><?= $translator->__("Esta acción no se puede deshacer.") ?>`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: '<?= $translator->__("Sí, eliminar") ?>',
+                        cancelButtonText: '<?= $translator->__("Cancelar") ?>'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
+            
+            // Agregar confirmación para eliminar publicación
+            document.querySelectorAll('button[value="eliminar_publicacion"]').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const form = this.form;
+                    const postId = form.querySelector('input[name="id_entrada"]').value;
+                    
+                    // Obtener el título de la publicación
+                    const row = this.closest('tr');
+                    const postTitle = row.querySelector('td:nth-child(2)').textContent;
+                    
+                    Swal.fire({
+                        title: '<?= $translator->__("¿Estás seguro?") ?>',
+                        html: `<?= $translator->__("¿Realmente deseas eliminar la publicación") ?> <strong>${postTitle}</strong> (ID: ${postId})?<br><?= $translator->__("Esta acción no se puede deshacer.") ?>`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: '<?= $translator->__("Sí, eliminar") ?>',
+                        cancelButtonText: '<?= $translator->__("Cancelar") ?>'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
+            
+            // Agregar confirmación para eliminar comentario
+            document.querySelectorAll('button[value="eliminar_comentario"]').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const form = this.form;
+                    const commentId = form.querySelector('input[name="id_comentario"]').value;
+                    
+                    // Obtener el contenido del comentario
+                    const row = this.closest('tr');
+                    const commentContent = row.querySelector('td:nth-child(2)').textContent;
+                    
+                    Swal.fire({
+                        title: '<?= $translator->__("¿Estás seguro?") ?>',
+                        html: `<?= $translator->__("¿Realmente deseas eliminar el comentario") ?> <strong>${commentContent}</strong> (ID: ${commentId})?<br><?= $translator->__("Esta acción no se puede deshacer.") ?>`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: '<?= $translator->__("Sí, eliminar") ?>',
+                        cancelButtonText: '<?= $translator->__("Cancelar") ?>'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
+            
+            // Agregar alerta antes de editar
+            document.querySelectorAll('a[href*="editar_publicacion.php"]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const postId = new URL(this.href).searchParams.get('id');
+                    const postTitle = this.closest('tr').querySelector('td:nth-child(2)').textContent;
+                    
+                    Swal.fire({
+                        title: '<?= $translator->__("Editar publicación") ?>',
+                        html: `<?= $translator->__("Vas a editar la publicación") ?> <strong>${postTitle}</strong> (ID: ${postId})`,
+                        icon: 'info',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: '<?= $translator->__("Continuar") ?>',
+                        cancelButtonText: '<?= $translator->__("Cancelar") ?>'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = this.href;
+                        }
+                    });
+                });
+            });
         });
     </script>
 </head>
@@ -176,9 +318,18 @@ $resultPublicaciones = $conn->query("SELECT id_entrada, titulo, categoria, fecha
         <h1><?= $translator->__("Gestor de Administración") ?></h1>
         
         <div class="admin-tabs">
-            <button class="admin-tab" data-tab="tab-usuarios" onclick="cambiarPestaña('tab-usuarios')"><?= $translator->__("Usuarios") ?></button>
-            <button class="admin-tab" data-tab="tab-publicaciones" onclick="cambiarPestaña('tab-publicaciones')"><?= $translator->__("Publicaciones") ?></button>
-            <a href="crear_publicacion.php" class="admin-tab crear-publicacion"><?= $translator->__("Crear Publicación") ?></a>
+            <button class="admin-tab" data-tab="tab-usuarios" onclick="cambiarPestaña('tab-usuarios')">
+                <i class="fas fa-users"></i> <?= $translator->__("Usuarios") ?>
+            </button>
+            <button class="admin-tab" data-tab="tab-publicaciones" onclick="cambiarPestaña('tab-publicaciones')">
+                <i class="fas fa-newspaper"></i> <?= $translator->__("Publicaciones") ?>
+            </button>
+            <a href="crear_publicacion.php" class="admin-tab crear-publicacion">
+                <i class="fas fa-plus-circle"></i> <?= $translator->__("Crear Publicación") ?>
+            </a>
+            <a href="gestor_categorias.php" class="admin-tab">
+                <i class="fas fa-tags"></i> <?= $translator->__("Gestionar Categorías") ?>
+            </a>
         </div>
 
         <div id="tab-usuarios" class="tab-content">
@@ -186,17 +337,19 @@ $resultPublicaciones = $conn->query("SELECT id_entrada, titulo, categoria, fecha
                 <section class="admin-section">
                     <div class="usuario-header">
                         <h2><?= $translator->__("Usuario") ?>: <?= htmlspecialchars($nombreUsuarioSeleccionado) ?></h2>
-                        <a href="gestor_usuarios.php" class="admin-button"><?= $translator->__("Volver a la lista") ?></a>
+                        <a href="gestor_usuarios.php" class="admin-button">
+                            <i class="fas fa-arrow-left"></i> <?= $translator->__("Volver a la lista") ?>
+                        </a>
                     </div>
                     
                     <div class="admin-tabs-usuario">
                         <button class="admin-tab-usuario active" data-tab="tab-usuario-publicaciones" 
                                 onclick="cambiarPestañaUsuario('tab-usuario-publicaciones')">
-                            <?= $translator->__("Publicaciones") ?> (<?= count($publicacionesUsuario) ?>)
+                            <i class="fas fa-newspaper"></i> <?= $translator->__("Publicaciones") ?> (<?= count($publicacionesUsuario) ?>)
                         </button>
                         <button class="admin-tab-usuario" data-tab="tab-usuario-comentarios" 
                                 onclick="cambiarPestañaUsuario('tab-usuario-comentarios')">
-                            <?= $translator->__("Comentarios") ?> (<?= count($comentariosUsuario) ?>)
+                            <i class="fas fa-comments"></i> <?= $translator->__("Comentarios") ?> (<?= count($comentariosUsuario) ?>)
                         </button>
                     </div>
                     
@@ -208,20 +361,37 @@ $resultPublicaciones = $conn->query("SELECT id_entrada, titulo, categoria, fecha
                                     <th><?= $translator->__("Título") ?></th>
                                     <th><?= $translator->__("Categoría") ?></th>
                                     <th><?= $translator->__("Fecha") ?></th>
+                                    <th><?= $translator->__("Acciones") ?></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php if (empty($publicacionesUsuario)): ?>
                                     <tr>
-                                        <td colspan="4" class="no-data"><?= $translator->__("Este usuario no tiene publicaciones") ?></td>
+                                        <td colspan="5" class="no-data"><?= $translator->__("Este usuario no tiene publicaciones") ?></td>
                                     </tr>
                                 <?php else: ?>
                                     <?php foreach ($publicacionesUsuario as $publicacion): ?>
                                     <tr>
                                         <td><?= $publicacion['id_entrada'] ?></td>
                                         <td><?= htmlspecialchars($publicacion['titulo']) ?></td>
-                                        <td><?= htmlspecialchars($publicacion['categoria']) ?></td>
+                                        <td><?= htmlspecialchars($publicacion['nombre_categoria']) ?></td>
                                         <td><?= $publicacion['fecha'] ?></td>
+                                        <td>
+                                            <a class="admin-link" href="../php/publicacion.php?id=<?= $publicacion['id_entrada'] ?>" target="_blank">
+                                                <i class="fas fa-external-link-alt"></i> <?= $translator->__("Visitar") ?>
+                                            </a>
+                                            <a class="admin-link" href="editar_publicacion.php?id=<?= $publicacion['id_entrada'] ?>">
+                                                <i class="fas fa-edit"></i> <?= $translator->__("Editar") ?>
+                                            </a>
+                                            <form method="POST" style="display:inline;">
+                                                <input type="hidden" name="id_entrada" value="<?= $publicacion['id_entrada'] ?>">
+                                                <input type="hidden" name="vista_usuario" value="1">
+                                                <input type="hidden" name="id_usuario_vista" value="<?= $id_usuario_seleccionado ?>">
+                                                <button class="admin-button" type="submit" name="accion" value="eliminar_publicacion">
+                                                    <i class="fas fa-trash-alt"></i> <?= $translator->__("Eliminar") ?>
+                                                </button>
+                                            </form>
+                                        </td>
                                     </tr>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
@@ -237,12 +407,13 @@ $resultPublicaciones = $conn->query("SELECT id_entrada, titulo, categoria, fecha
                                     <th><?= $translator->__("Contenido") ?></th>
                                     <th><?= $translator->__("Fecha") ?></th>
                                     <th><?= $translator->__("Publicación") ?></th>
+                                    <th><?= $translator->__("Acciones") ?></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php if (empty($comentariosUsuario)): ?>
                                     <tr>
-                                        <td colspan="4" class="no-data"><?= $translator->__("Este usuario no tiene comentarios") ?></td>
+                                        <td colspan="5" class="no-data"><?= $translator->__("Este usuario no tiene comentarios") ?></td>
                                     </tr>
                                 <?php else: ?>
                                     <?php foreach ($comentariosUsuario as $comentario): ?>
@@ -251,6 +422,18 @@ $resultPublicaciones = $conn->query("SELECT id_entrada, titulo, categoria, fecha
                                         <td><?= htmlspecialchars($comentario['contenido']) ?></td>
                                         <td><?= $comentario['fecha'] ?></td>
                                         <td><?= htmlspecialchars($comentario['publicacion']) ?></td>
+                                        <td>
+                                            <a class="admin-link" href="../php/publicacion.php?id=<?= $comentario['id_entrada'] ?>#comentario-<?= $comentario['id_comentario'] ?>" target="_blank">
+                                                <i class="fas fa-external-link-alt"></i> <?= $translator->__("Visitar") ?>
+                                            </a>
+                                            <form method="POST" style="display:inline;">
+                                                <input type="hidden" name="id_comentario" value="<?= $comentario['id_comentario'] ?>">
+                                                <input type="hidden" name="id_usuario_vista" value="<?= $id_usuario_seleccionado ?>">
+                                                <button class="admin-button" type="submit" name="accion" value="eliminar_comentario">
+                                                    <i class="fas fa-trash-alt"></i> <?= $translator->__("Eliminar") ?>
+                                                </button>
+                                            </form>
+                                        </td>
                                     </tr>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
@@ -279,21 +462,29 @@ $resultPublicaciones = $conn->query("SELECT id_entrada, titulo, categoria, fecha
                                 <td><?= htmlspecialchars($usuario['correo']) ?></td>
                                 <td><?= htmlspecialchars($usuario['perfil']) ?></td>
                                 <td>
-                                    <a class="admin-link" href="?ver_usuario=<?= $usuario['id_usuario'] ?>"><?= $translator->__("Ver Publicaciones y Comentarios") ?></a>
+                                    <a class="admin-link" href="?ver_usuario=<?= $usuario['id_usuario'] ?>">
+                                        <i class="fas fa-eye"></i> <?= $translator->__("Ver Publicaciones y Comentarios") ?>
+                                    </a>
                                     <?php if ($usuario['perfil'] !== 'admin'): ?>
                                     <form method="POST" style="display:inline;">
                                         <input type="hidden" name="id_usuario" value="<?= $usuario['id_usuario'] ?>">
-                                        <button class="admin-button" type="submit" name="accion" value="hacer_admin"><?= $translator->__("Hacer Admin") ?></button>
+                                        <button class="admin-button" type="submit" name="accion" value="hacer_admin">
+                                            <i class="fas fa-user-shield"></i> <?= $translator->__("Hacer Admin") ?>
+                                        </button>
                                     </form>
                                     <?php else: ?>
                                     <form method="POST" style="display:inline;">
                                         <input type="hidden" name="id_usuario" value="<?= $usuario['id_usuario'] ?>">
-                                        <button class="admin-button" type="submit" name="accion" value="quitar_admin"><?= $translator->__("Quitar Admin") ?></button>
+                                        <button class="admin-button" type="submit" name="accion" value="quitar_admin">
+                                            <i class="fas fa-user-minus"></i> <?= $translator->__("Quitar Admin") ?>
+                                        </button>
                                     </form>
                                     <?php endif; ?>
                                     <form method="POST" style="display:inline;">
                                         <input type="hidden" name="id_usuario" value="<?= $usuario['id_usuario'] ?>">
-                                        <button class="admin-button" type="submit" name="accion" value="eliminar_usuario"><?= $translator->__("Eliminar") ?></button>
+                                        <button class="admin-button" type="submit" name="accion" value="eliminar_usuario">
+                                            <i class="fas fa-trash-alt"></i> <?= $translator->__("Eliminar") ?>
+                                        </button>
                                     </form>
                                 </td>
                             </tr>
@@ -322,13 +513,17 @@ $resultPublicaciones = $conn->query("SELECT id_entrada, titulo, categoria, fecha
                         <tr>
                             <td><?= $publicacion['id_entrada'] ?></td>
                             <td><?= htmlspecialchars($publicacion['titulo']) ?></td>
-                            <td><?= htmlspecialchars($publicacion['categoria']) ?></td>
+                            <td><?= htmlspecialchars($publicacion['nombre_categoria']) ?></td>
                             <td><?= $publicacion['fecha'] ?></td>
                             <td>
-                                <a class="admin-link" href="editar_publicacion.php?id=<?= $publicacion['id_entrada'] ?>"><?= $translator->__("Editar") ?></a>
+                                <a class="admin-link" href="editar_publicacion.php?id=<?= $publicacion['id_entrada'] ?>">
+                                    <i class="fas fa-edit"></i> <?= $translator->__("Editar") ?>
+                                </a>
                                 <form method="POST" style="display:inline;">
                                     <input type="hidden" name="id_entrada" value="<?= $publicacion['id_entrada'] ?>">
-                                    <button class="admin-button" type="submit" name="accion" value="eliminar_publicacion"><?= $translator->__("Eliminar") ?></button>
+                                    <button class="admin-button" type="submit" name="accion" value="eliminar_publicacion">
+                                        <i class="fas fa-trash-alt"></i> <?= $translator->__("Eliminar") ?>
+                                    </button>
                                 </form>
                             </td>
                         </tr>
