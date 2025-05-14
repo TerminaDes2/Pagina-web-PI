@@ -36,7 +36,7 @@ if ($result_categorias && $result_categorias->num_rows > 0) {
                     <div class="hf-contenido-categorias">
                         <?php if (!empty($categorias_menu)): ?>
                             <?php foreach ($categorias_menu as $cat): ?>
-                                <a href="/Pagina-web-PI/categorias.php?cat=<?= $cat['id_categoria'] ?>"><?= htmlspecialchars($cat['categoria']) ?></a>
+                                <a href="/Pagina-web-PI/php/categorias.php?cat=<?= $cat['id_categoria'] ?>"><?= htmlspecialchars($cat['categoria']) ?></a>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <a href="#"><?= $translator->__("No hay categorías disponibles") ?></a>
@@ -44,10 +44,10 @@ if ($result_categorias && $result_categorias->num_rows > 0) {
                     </div>
                 </li>
                 <li>
-                    <a href="/Pagina-web-PI/contacto.php"><?= $translator->__("Contacto") ?></a>
+                    <a href="/Pagina-web-PI/templates/Contacto.html"><?= $translator->__("Contacto") ?></a>
                 </li>
                 <li>
-                    <a href="/Pagina-web-PI/acerca.php"><?= $translator->__("Acerca de") ?></a>
+                    <a href="/Pagina-web-PI/templates/Acerca-de-nosotros.html"><?= $translator->__("Acerca de") ?></a>
                 </li>
             </ul>
         </nav>

@@ -85,18 +85,24 @@ while ($row = $resultPosts->fetch_assoc()) {
         <div class="hero-content">
             <h1><?= $banner['titulo'] ?></h1>
             <div class="banner-content">
-                <?= $banner['contenido'] ?> <!-- Aquí se renderizará el HTML -->
+                <?php 
+                $contenido_limpio = strip_tags($banner['contenido']);
+                $palabras = explode(' ', $contenido_limpio);
+                $resumen = implode(' ', array_slice($palabras, 0, 20)) . '...';
+                echo $resumen;
+                ?>
             </div>
         </div>
         <div class="hero-image">
             <?php if (!empty($banner['imagen'])): ?>
-            <img src="<?= htmlspecialchars($banner['imagen']) ?>" alt="<?= htmlspecialchars($banner['titulo']) ?>">
+            <img src="php/<?= htmlspecialchars($banner['imagen']) ?>" alt="<?= htmlspecialchars($banner['titulo']) ?>">
             <?php endif; ?>
         </div>
     </section>
     <?php endif; ?>
 
     <section class="featured-articles" id="featured-articles">
+        <div class="bg-circle"></div> <!-- Elemento decorativo circular -->
         <h2><?= $translator->__("Artículos destacados") ?></h2>
         <div class="carousel-container">
             <div class="carousel-nav-buttons">
@@ -108,11 +114,15 @@ while ($row = $resultPosts->fetch_assoc()) {
                     <?php foreach ($articulos as $articulo): ?>
                     <article class="carousel-item">
                         <?php if (!empty($articulo['imagen'])): ?>
-                        <img src="<?= htmlspecialchars($articulo['imagen']) ?>" alt="<?= htmlspecialchars($articulo['titulo']) ?>">
+                        <img src="php/<?= htmlspecialchars($articulo['imagen']) ?>" alt="<?= htmlspecialchars($articulo['titulo']) ?>">
                         <?php endif; ?>
                         <div class="carousel-item-content">
                             <h3 class="carousel-title"><?= htmlspecialchars($articulo['titulo']) ?></h3>
-                            <p class="carousel-subtitle"><?= strip_tags(substr($articulo['contenido'], 0, 150)) ?>...</p>
+                            <?php 
+                            $contenido_limpio = strip_tags($articulo['contenido']); 
+                            $resumen = !empty($contenido_limpio) ? substr($contenido_limpio, 0, 150) . '...' : '';
+                            ?>
+                            <p class="carousel-subtitle"><?= $resumen ?></p>
                         </div>
                         <a href="php/publicacion.php?id=<?= $articulo['id_entrada'] ?>" class="btn btn-secondary">
                             <?= $translator->__("Leer más") ?>
@@ -163,17 +173,6 @@ while ($row = $resultPosts->fetch_assoc()) {
     </section>
 
     <?php include 'includes/footer.php'; ?>
-
-    <!-- Actualizar cualquier enlace que vaya a categorias.php o perfil.php -->
-    <!-- Por ejemplo, si hay un enlace como: -->
-    <!-- <a href="categorias.php?cat=1">Categoría 1</a> -->
-    <!-- debe cambiarse a: -->
-    <!-- <a href="php/categorias.php?cat=1">Categoría 1</a> -->
-
-    <!-- Igualmente para perfil.php: -->
-    <!-- <a href="perfil.php">Mi Perfil</a> -->
-    <!-- debe cambiarse a: -->
-    <!-- <a href="php/perfil.php">Mi Perfil</a> -->
 
     <?php $conn->close(); ?>
 </body>
