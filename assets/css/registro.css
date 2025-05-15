@@ -186,6 +186,103 @@ main form p {
   border-color: #aaa;
 }
 
+/* Estilos para los contenedores de input con iconos */
+.input-container {
+  position: relative;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.input-container i {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-90%);
+  color: #719743;
+  font-size: 18px;
+}
+
+.input-container input {
+  padding-left: 45px !important; /* Espacio para el icono */
+}
+
+/* Ajustar padding del input para dar espacio al botón */
+.input-container input[type="password"] {
+  padding-right: 45px !important;
+}
+
+/* Estilo especial para el input de tipo file */
+.file-container {
+  display: flex;
+  align-items: center;
+}
+
+.file-container i {
+  position: static;
+  margin-right: 10px;
+  transform: none;
+  color: #719743;
+  font-size: 18px;
+}
+
+.file-container input {
+  padding-left: 15px !important;
+}
+
+/* Estilo para el input de tipo file personalizado */
+.custom-file-upload {
+  position: relative;
+  width: 100%;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.custom-file-upload i {
+  position: absolute;
+  left: 15px;
+  top: 15px;
+  color: #719743;
+  font-size: 18px;
+}
+
+.custom-file-upload label {
+  background-color: #e2e6ea;
+  color: #41502f;
+  padding: 12px 15px 12px 45px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 16px;
+  width: 100%;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  border: 1px solid #e2e6ea;
+}
+
+.custom-file-upload label:hover {
+  background-color: #d1d5d9;
+  border-color: #aaa;
+}
+
+.custom-file-upload .file-input {
+  position: absolute;
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.custom-file-upload .file-name {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #6c757d;
+  font-style: italic;
+  word-break: break-all;
+}
+
 /* Hover en botones */
 button:hover {
   cursor: pointer;
@@ -304,6 +401,62 @@ button:hover {
   transform: rotate(45deg);
 }
 
+/* Estilos para el botón de mostrar/ocultar contraseña */
+.toggle-password {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #719743;
+  padding: 0;
+  font-size: 16px;
+  z-index: 10; /* Asegurar que el botón esté por encima del input */
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.toggle-password:hover {
+  color: #187424;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: none;
+}
+
+.toggle-password:focus {
+  outline: none;
+}
+
+.toggle-password:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+/* Ajustar padding del input para dar espacio al botón */
+.input-container input[type="password"] {
+  padding-right: 45px !important;
+}
+
+/* Estilo para mensaje de coincidencia de contraseñas */
+.password-match-message {
+  font-size: 12px;
+  margin-top: -10px;
+  margin-bottom: 15px;
+  display: block;
+}
+
+.password-match-success {
+  color: #28a745;
+}
+
+.password-match-error {
+  color: #dc3545;
+}
+
 /* Establecer altura completa para html y body */
 html,
 body {
@@ -387,9 +540,54 @@ body {
     min-width: unset;
     width: 100%;
   }
+  .custom-file-upload label {
+    font-size: 14px;
+    padding: 10px 15px 10px 40px;
+  }
+  
+  .custom-file-upload i {
+    font-size: 16px;
+    top: 12px;
+  }
+  .terms-checkbox label {
+    font-size: 13px;
+  }
 }
 
 /* Adicional: Toggle para password */
 .password-toggle {
   border: none;
+}
+
+/* Estilos para los checkboxes de términos y condiciones */
+.terms-checkbox {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+.terms-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
+  min-width: 18px;
+}
+
+.terms-checkbox label {
+  font-size: 14px;
+  font-weight: 400;
+  margin-bottom: 0;
+}
+
+.terms-checkbox a {
+  color: #719743;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.terms-checkbox a:hover {
+  text-decoration: underline;
+  color: #187424;
 }

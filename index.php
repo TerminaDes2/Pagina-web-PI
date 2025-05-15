@@ -166,34 +166,61 @@ while ($row = $resultPosts->fetch_assoc()) {
         <h2><?= $translator->__("Información relevante") ?></h2>
     </section>
 
+    <?php
+    // Obtener IDs de categorías para los bloques de información
+    $categorias_info = [
+        'economia' => ["Indicadores Económicos", "Economía", "Indicadores"],
+        'derechos' => ["Derechos Laborales", "Derechos", "Laboral"],
+        'inclusion' => ["Inclusión Laboral", "Inclusión", "Diversidad"],
+        'global' => ["Trabajo Global", "Global", "Internacional"]
+    ];
+
+    $ids_categorias = [];
+    foreach ($categorias_info as $clave => $nombres) {
+        $ids_categorias[$clave] = 0; // Valor por defecto
+        
+        foreach ($nombres as $nombre) {
+            // Escapar el nombre para la consulta SQL
+            $nombre_escaped = $conn->real_escape_string($nombre);
+            $sql = "SELECT id_categoria FROM categorias WHERE categoria LIKE '%$nombre_escaped%' LIMIT 1";
+            $result = $conn->query($sql);
+            
+            if ($result && $result->num_rows > 0) {
+                $ids_categorias[$clave] = $result->fetch_assoc()['id_categoria'];
+                break; // Salir del bucle si encontramos coincidencia
+            }
+        }
+    }
+    ?>
+
     <section class="info-blocks">
         <div class="info-grid">
             <div class="info-block">
                 <i class="fas fa-chart-line"></i>
                 <h3><?= $translator->__("Indicadores Económicos") ?></h3>
                 <p><?= $translator->__("Datos y estadísticas sobre el crecimiento económico y el empleo.") ?></p>
-                <a href="#" class="btn btn-tertiary"><?= $translator->__("Ver más") ?></a>
+                <a href="php/categorias.php?cat=<?= $ids_categorias['economia'] ?>" class="btn btn-tertiary"><?= $translator->__("Ver más") ?></a>
             </div>
             
             <div class="info-block">
                 <i class="fas fa-briefcase"></i>
                 <h3><?= $translator->__("Derechos Laborales") ?></h3>
                 <p><?= $translator->__("Información sobre los derechos y las responsabilidades de los trabajadores.") ?></p>
-                <a href="#" class="btn btn-tertiary"><?= $translator->__("Ver más") ?></a>
+                <a href="php/categorias.php?cat=<?= $ids_categorias['derechos'] ?>" class="btn btn-tertiary"><?= $translator->__("Ver más") ?></a>
             </div>
 
             <div class="info-block">
                 <i class="fas fa-users"></i>
                 <h3><?= $translator->__("Inclusión Laboral") ?></h3>
                 <p><?= $translator->__("Estrategias para promover la diversidad y la inclusión en el trabajo.") ?></p>
-                <a href="#" class="btn btn-tertiary"><?= $translator->__("Ver más") ?></a>
+                <a href="php/categorias.php?cat=<?= $ids_categorias['inclusion'] ?>" class="btn btn-tertiary"><?= $translator->__("Ver más") ?></a>
             </div>
 
             <div class="info-block">
                 <i class="fas fa-globe"></i>
                 <h3><?= $translator->__("Trabajo Global") ?></h3>
                 <p><?= $translator->__("Análisis de las tendencias y los desafíos del mercado laboral a nivel mundial.") ?></p>
-                <a href="#" class="btn btn-tertiary"><?= $translator->__("Ver más") ?></a>
+                <a href="php/categorias.php?cat=<?= $ids_categorias['global'] ?>" class="btn btn-tertiary"><?= $translator->__("Ver más") ?></a>
             </div>
         </div>
     </section>

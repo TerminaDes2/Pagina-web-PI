@@ -275,9 +275,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
+  <!-- Agregamos Font Awesome para los iconos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <!-- Añadir objeto de traducciones para JavaScript -->
+  <script>
+    // Objeto global de traducciones para usar en JavaScript
+    window.translations = {
+      'attention': '<?= $translator->__("Atención") ?>',
+      'privacy_terms_required': '<?= $translator->__("Debes aceptar la Política de Privacidad y los Términos de Uso para continuar.") ?>',
+      'understood': '<?= $translator->__("Entendido") ?>',
+      'error': '<?= $translator->__("Error") ?>',
+      'passwords_match': '<?= $translator->__("¡Las contraseñas coinciden!") ?>',
+      'passwords_dont_match': '<?= $translator->__("Las contraseñas no coinciden") ?>',
+      'no_file_selected': '<?= $translator->__("Ningún archivo seleccionado") ?>'
+    };
+  </script>
+  
+  <!-- Cargar el archivo JS después de definir las traducciones -->
   <script src="../assets/js/loggin_scripts.js" defer></script>
+  
   <script>
     $(document).ready(function () {
       $("#form-left").on("submit", function (e) {
@@ -414,6 +433,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       $(document).on('show', '.modal', function () {
         $(this).addClass('active');
       });
+
+      // Mostrar el nombre del archivo seleccionado
+      $(".file-input").on("change", function () {
+        const fileName = this.files[0] ? this.files[0].name : window.translations['no_file_selected'];
+        $(this).siblings(".file-name").text(fileName);
+      });
+
+      // Script para manejar la selección de archivos
+      $("#imagen").on("change", function() {
+        var fileName = $(this).val().split("\\").pop();
+        if(fileName) {
+          $(this).siblings(".file-name").html(fileName);
+        } else {
+          $(this).siblings(".file-name").html(window.translations['no_file_selected']);
+        }
+      });
     });
   </script>
 </head>
@@ -426,8 +461,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           <input type="hidden" name="action" value="login">
           <h1><?= $translator->__("Inicio de Sesión") ?></h1>
           <p><?= $translator->__("Bienvenido de vuelta! Inicia sesión en tu cuenta para registrar las asistencias de tu club.") ?></p>
-          <input type="text" id="correo" name="correo" placeholder="<?= $translator->__("Cuenta o correo") ?>" required>
-          <input type="password" id="contra" name="contra" placeholder="<?= $translator->__("Contraseña") ?>" required>
+          
+          <div class="input-container">
+            <i class="fa fa-user"></i>
+            <input type="text" id="correo" name="correo" placeholder="<?= $translator->__("Cuenta o correo") ?>" required>
+          </div>
+          
+          <div class="input-container">
+            <i class="fa fa-lock"></i>
+            <input type="password" id="contra_login" name="contra" placeholder="<?= $translator->__("Contraseña") ?>" required>
+            <button type="button" class="toggle-password" onclick="togglePassword('contra_login')">
+              <i class="fa fa-eye"></i>
+            </button>
+          </div>
+          
           <button type="submit" class="btn"><?= $translator->__("Iniciar Sesión") ?></button>
           <button class="btin" type="button" onclick="mostrarFormulario2()"><?= $translator->__("Crear una cuenta nueva") ?></button>
       </form>
@@ -437,15 +484,63 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <form id="form-left" action="registro.php" method="POST" enctype="multipart/form-data">
           <input type="hidden" name="action" value="register">
           <h1><?= $translator->__("Registro de Cuenta") ?></h1>
-          <input type="text" id="nombre" name="nombre" placeholder="<?= $translator->__("Name") ?>" required>
-          <input type="text" id="primer_apellido" name="primer_apellido" placeholder="<?= $translator->__("Primer Apellido") ?>" required>
-          <input type="text" id="segundo_apellido" name="segundo_apellido" placeholder="<?= $translator->__("Segundo Apellido") ?>" required>
-          <input type="text" id="correo" name="correo" placeholder="<?= $translator->__("Cuenta o correo") ?>" required>
-          <input type="password" id="contra" name="contra" placeholder="<?= $translator->__("Contraseña") ?>" required>
-          <input type="file" id="imagen" name="imagen" accept="image/*">
+          
+          <div class="input-container">
+            <i class="fa fa-user"></i>
+            <input type="text" id="nombre" name="nombre" placeholder="<?= $translator->__("Name") ?>" required>
+          </div>
+          
+          <div class="input-container">
+            <i class="fa fa-user"></i>
+            <input type="text" id="primer_apellido" name="primer_apellido" placeholder="<?= $translator->__("Primer Apellido") ?>" required>
+          </div>
+          
+          <div class="input-container">
+            <i class="fa fa-user"></i>
+            <input type="text" id="segundo_apellido" name="segundo_apellido" placeholder="<?= $translator->__("Segundo Apellido") ?>" required>
+          </div>
+          
+          <div class="input-container">
+            <i class="fa fa-envelope"></i>
+            <input type="text" id="correo" name="correo" placeholder="<?= $translator->__("Cuenta o correo") ?>" required>
+          </div>
+          
+          <div class="input-container">
+            <i class="fa fa-lock"></i>
+            <input type="password" id="contra" name="contra" placeholder="<?= $translator->__("Contraseña") ?>" required>
+            <button type="button" class="toggle-password" onclick="togglePassword('contra')">
+              <i class="fa fa-eye"></i>
+            </button>
+          </div>
+          
+          <div class="input-container">
+            <i class="fa fa-lock"></i>
+            <input type="password" id="confirma_contra" name="confirma_contra" placeholder="<?= $translator->__("Confirmar Contraseña") ?>" required>
+            <button type="button" class="toggle-password" onclick="togglePassword('confirma_contra')">
+              <i class="fa fa-eye"></i>
+            </button>
+          </div>
+          <span id="mensaje-coincidencia" class="password-match-message"></span>
+          
+          <div class="custom-file-upload">
+            <i class="fa fa-image"></i>
+            <label for="imagen"><?= $translator->__("Seleccionar imagen de perfil") ?></label>
+            <input type="file" id="imagen" name="imagen" accept="image/*" class="file-input">
+            <span class="file-name"><?= $translator->__("Ningún archivo seleccionado") ?></span>
+          </div>
+          
+          <div class="terms-checkbox">
+            <input type="checkbox" id="accept-privacy" name="accept-privacy" required>
+            <label for="accept-privacy"><?= $translator->__("He leído y acepto la") ?> <a href="../templates/politicas-privacidad.php" target="_blank"><?= $translator->__("Política de Privacidad") ?></a></label>
+          </div>
+
+          <div class="terms-checkbox">
+            <input type="checkbox" id="accept-terms" name="accept-terms" required>
+            <label for="accept-terms"><?= $translator->__("He leído y acepto los") ?> <a href="../templates/terminos-uso.php" target="_blank"><?= $translator->__("Términos de Uso") ?></a></label>
+          </div>
+          
           <button class="btn" type="submit"><?= $translator->__("Crear cuenta") ?></button> 
           <button class="btin" type="button" onclick="mostrarFormulario()"><?= $translator->__("Iniciar sesión") ?></button>
-
       </form>
     </div>
 
@@ -457,15 +552,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <form id="verifyForm" action="registro.php" method="POST">
             <input type="hidden" name="action" value="verify">
             <p><?= $translator->__("Código enviado a tu correo:") ?></p>
-            <input type="text" name="codigo" required>
-            <br><br>
+            
+            <div class="input-container">
+              <i class="fa fa-key"></i>
+              <input type="text" name="codigo" required>
+            </div>
+            
+            <br>
             <button type="submit"><?= $translator->__("Verificar y Registrar") ?></button>
             </form>
         </div>
     </div>
-
   </main>
-
+  
   <?php include '../includes/footer.php'; ?>
   
   <?php if (isset($_GET['error']) || isset($_GET['success'])): ?>

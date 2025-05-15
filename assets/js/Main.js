@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function initCarousel() {
     // Seleccionar elementos del DOM
     const carouselTrack = document.querySelector('.carousel-track');
-    const carouselItems = document.querySelectorAll('.carousel-item');
+    const allCarouselItems = document.querySelectorAll('.carousel-item');
     const buttonLeft = document.querySelector('.carousel-button-left');
     const buttonRight = document.querySelector('.carousel-button-right');
     const indicators = document.querySelectorAll('.carousel-indicator');
@@ -29,7 +29,21 @@ function initCarousel() {
     const carouselContainer = document.querySelector('.carousel-container');
     
     // Salir si no hay elementos necesarios
-    if (!carouselTrack || !carouselItems.length) return;
+    if (!carouselTrack || !allCarouselItems.length) return;
+    
+    // Limitar el carrusel a un máximo de 6 elementos
+    const MAX_CAROUSEL_ITEMS = 6;
+    let carouselItems = Array.from(allCarouselItems);
+    
+    if (carouselItems.length > MAX_CAROUSEL_ITEMS) {
+        // Ocultar elementos adicionales
+        carouselItems.slice(MAX_CAROUSEL_ITEMS).forEach(item => {
+            item.style.display = 'none';
+        });
+        
+        // Usar solo los primeros 6 elementos
+        carouselItems = carouselItems.slice(0, MAX_CAROUSEL_ITEMS);
+    }
     
     // Detección de dispositivo móvil basado en el ancho de pantalla
     const isMobile = window.innerWidth <= 768;
@@ -119,7 +133,7 @@ function initCarousel() {
         });
     }
     
-    // Navegación con botones - Ahora considera el modo móvil
+    // Navegación con botones - Ahora considera el modo móvil y el límite de 6 tarjetas
     if (buttonLeft) {
         buttonLeft.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -165,7 +179,7 @@ function initCarousel() {
         indicatorsContainer.innerHTML = '';
         
         if (isMobile) {
-            // En móvil, crear un indicador por tarjeta
+            // En móvil, crear un indicador por tarjeta (hasta el máximo)
             for (let i = 0; i < carouselItems.length; i++) {
                 const indicator = document.createElement('span');
                 indicator.classList.add('carousel-indicator');
@@ -203,7 +217,10 @@ function initCarousel() {
     setupIndicators();
     
     // Re-sincronización después de que todas las imágenes carguen
-    Promise.all(Array.from(document.querySelectorAll('.carousel-item img')).map(img => {
+    Promise.all(Array.from(document.querySelectorAll('.carousel-item img')).filter(img => {
+        // Solo procesar imágenes de elementos visibles (no más de 6)
+        return img.closest('.carousel-item').style.display !== 'none';
+    }).map(img => {
         if (img.complete) return Promise.resolve();
         return new Promise(resolve => {
             img.onload = resolve;
