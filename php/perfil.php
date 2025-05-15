@@ -105,6 +105,11 @@ if(isset($_GET['msg'])){
                     enlace.classList.add('active');
                 }
             });
+            
+            // Forzar repintado para mejorar la nitidez
+            setTimeout(() => {
+                window.dispatchEvent(new Event('resize'));
+            }, 10);
         }
         
         function mostrarVistaPrevia() {
@@ -124,8 +129,15 @@ if(isset($_GET['msg'])){
         }
         
         document.addEventListener('DOMContentLoaded', function() {
-            // Iniciar en la pestaña de perfil
-            mostrarPestana('perfil-info');
+            // Iniciamos en la pestaña de perfil y optimizamos el renderizado
+            setTimeout(() => {
+                mostrarPestana('perfil-info');
+                
+                // Aplicamos clase para mejorar nitidez
+                document.querySelectorAll('input, select, textarea').forEach(el => {
+                    el.classList.add('sharp-text');
+                });
+            }, 100);
             
             // Mostrar mensaje si existe
             <?php if (!empty($message)): ?>

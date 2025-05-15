@@ -340,8 +340,13 @@ body {
     padding: 30px;
     animation: fadeIn 0.5s ease;
     position: relative;
-    transform-style: preserve-3d;
-    perspective: 1000px;
+    /* Quitamos estos efectos 3D que pueden causar borrosidad */
+    transform-style: flat;
+    perspective: none;
+    backface-visibility: visible;
+    /* Mejoramos el renderizado */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .perfil-contenido h2 {
@@ -387,6 +392,8 @@ body {
     animation: form-item-appear 0.5s ease forwards;
     opacity: 0;
     transform: translateY(20px);
+    /* Agregamos propiedad para mejorar la nitidez */
+    will-change: transform, opacity;
 }
 
 /* Staggered animation for form groups */
@@ -403,7 +410,10 @@ body {
 }
 
 .form-group:hover {
-    transform: translateX(8px) translateZ(5px);
+    /* Quitamos el efecto 3D que puede causar desenfoque */
+    transform: translateX(5px);
+    /* Eliminamos el efecto Z que causa borrosidad */
+    /* transform: translateX(8px) translateZ(5px); */
     z-index: 1;
 }
 
@@ -432,6 +442,9 @@ body {
     font-size: 16px;
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     box-shadow: 0 2px 5px rgba(0,0,0,0.05) inset;
+    /* Mejoramos la nitidez del texto */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .form-group input:focus {
@@ -845,9 +858,12 @@ body {
     background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M4 22a8 8 0 1 1 16 0h-2a6 6 0 1 0-12 0H4zm8-9c-3.315 0-6-2.685-6-6s2.685-6 6-6 6 2.685 6 6-2.685 6-6 6zm0-2c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z" fill="rgba(113,151,67,0.03)"/></svg>');
     background-repeat: no-repeat;
     background-size: contain;
-    opacity: 0.3;
+    opacity: 0.2; /* Reducimos la opacidad */
     pointer-events: none;
     transform: rotate(-15deg);
+    /* Eliminar efectos que puedan causar blur */
+    filter: none;
+    z-index: -1; /* Aseguramos que esté debajo del contenido */
 }
 
 /* Efecto scanner para campos de formulario */
