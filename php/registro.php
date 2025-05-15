@@ -39,7 +39,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idioma'])) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    //include "../includes/db_config.php";
     
     try {
         $pdo = new PDO("mysql:host=" . host . ";dbname=" . dbname . ";charset=utf8", dbuser, dbpass);
@@ -166,7 +165,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                  <p>" . $translator->__("Ingresa este código en el formulario de verificación para activar tu cuenta.") . "</p>
                  <p>" . $translator->__("Si no has solicitado este registro, puedes ignorar este mensaje.") . "</p>
                  <p>" . $translator->__("¡Bienvenido a nuestra comunidad!") . "</p>
-                 <p>" . $translator->__("El equipo de [Nombre de tu página]") . "</p>
+                 <p>" . $translator->__("El equipo de POALCE") . "</p>
                  <a href='localhost/pagina-web-pi/templates/verificar.html'>" . $translator->__("Verifica aquí") . "</a>";
 
             $mail->send();
@@ -259,6 +258,86 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo json_encode(["error" => $translator->__("Código incorrecto. Intenta nuevamente."), "icon" => "error"]);
         }
         exit;
+    } else if(isset($_POST['action']) && $_POST['action'] === 'change') {
+
+      $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+
+      if (!$email) {
+        echo json_encode(["error" => "Correo inválido.", "icon" => "error"]);
+        exit;
+      }
+
+      $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE correo = :email");
+      $stmt->bindParam(':email', $email);
+      $stmt->execute();
+
+      if ($stmt->rowCount() > 0) {
+
+        $codigo = rand(100000, 999999);
+        $_SESSION['change'] = [
+          'email' => $email,
+          'codigo' => $codigo
+      ];
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $nombre = $row['nombre'];
+        $primer_apellido = $row['primer_apellido'];
+        $segundo_apellido = $row['segundo_apellido'];
+
+        // Enviar correo
+        $mail = new PHPMailer(true);
+
+        try {
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'ballatomario1105@gmail.com';
+            $mail->Password = 'sbeu lcaj evzk bysk';
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Cambiar a constante recomendada
+            $mail->Port = 587;
+
+            $mail->SMTPOptions = [
+                'ssl' => [
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                    'allow_self_signed' => true,
+                ],
+            ];
+
+            $mail->CharSet = 'UTF-8';
+            $mail->Encoding = 'base64';
+
+            $mail->setFrom('ballatomario1105@gmail.com', 'Restaurar acceso a tu cuenta');
+            $mail->addAddress($email, "$nombre $primer_apellido");
+
+            $mail->isHTML(true);
+            $mail->Subject = $translator->__('Restablecimiento de contraseña de tu cuenta');
+            $mail->Body =
+                "<h2>" . $translator->__("¡Gracias por ponerte en contacto con nosotros!") . "</h2>
+                 <p>" . $translator->__("Hola") . " {$nombre} {$primer_apellido} {$segundo_apellido}</p>
+                 <p>" . $translator->__("Hemos recibido una solicitud para restablecer la contraseña de tu cuenta.") . "</p>
+                 <p>" . $translator->__("Si realizaste esta solicitud, utiliza el siguiente código para continuar con el proceso de restablecimiento:") . "</p>
+                 <h3>" . $translator->__("Código de verificación:") . " </h3><h3 style='color: red;'>{$codigo}</h3>
+                 <p>" . $translator->__("Este código es válido por un tiempo limitado por motivos de seguridad.") . "</p>
+                 <p>" . $translator->__("Si no solicitaste este cambio, puedes ignorar este mensaje.") . "</p>
+                 <p>" . $translator->__("Tu contraseña actual seguirá siendo válida y no se realizarán cambios en tu cuenta.") . "</p>
+                 <p>" . $translator->__("Gracias por confiar en nosotros") . "</p>
+                 <p>" . $translator->__("Atentamente: ") . "</p>
+                 <p>" . $translator->__("El equipo de POALCE") . "</p>
+                 <a href='localhost/pagina-web-pi/templates/verificar.html'>" . $translator->__("Verifica aquí") . "</a>";
+
+            $mail->send();
+            echo json_encode(["success" => $translator->__("Código enviado al correo."), "icon" => "success"]);
+        } catch (Exception $e) {
+            error_log("Error al enviar el correo: {$mail->ErrorInfo}"); // Registrar el error en el log
+            echo json_encode(["error" => $translator->__("Hubo un problema al enviar el correo. Por favor, intenta más tarde."), "icon" => "error"]);
+        }
+        exit;
+      } else {
+        echo json_encode(["error" => $translator->__("Correo electrónico no encontrado."), "icon" => "error"]);
+        exit;
+      }
+
     } else {
         echo json_encode(["error" => $translator->__("Acción no reconocida."), "icon" => "error"]);
         exit;
@@ -405,8 +484,57 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         });
       });
 
+      $("#changePassword").on("click", function (e) {
+        e.preventDefault();
+        $("#changeModal").show();
+        $(".modal").addClass("active");
+      });
+
+
+      $("#changeForm").on("submit", function (e) {
+        e.preventDefault();
+        $.ajax({
+          url: "registro.php",
+          type: "POST",
+          data: $(this).serialize(),
+          success: function (response) {
+            try {
+              const res = JSON.parse(response);
+              if (res.success) {
+                Swal.fire({
+                  title: res.success,
+                  icon: res.icon || 'success' ,
+                  showConfirmButton: false,
+                  timer: 2000
+                }).then(() => {
+                  window.location.href = "../includes/cambio_contraseña.php";
+                });
+              } else if (res.error) {
+                Swal.fire({
+                  title: res.error,
+                  icon: res.icon || 'error',
+                  showConfirmButton: true
+                });
+              }
+            } catch (e) {
+              Swal.fire({
+                title: 'Error',
+                text: response,
+                icon: 'error',
+                showConfirmButton: true
+              });
+            }
+          },
+        });
+      });
+
       $(".close").on("click", function () {
         $("#verifyModal").hide();
+        $(".modal").removeClass("active");
+      });
+
+      $(".close").on("click", function() {
+        $(this).closest(".modal").hide();
         $(".modal").removeClass("active");
       });
 
@@ -428,6 +556,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           <p><?= $translator->__("Bienvenido de vuelta! Inicia sesión en tu cuenta para registrar las asistencias de tu club.") ?></p>
           <input type="text" id="correo" name="correo" placeholder="<?= $translator->__("Cuenta o correo") ?>" required>
           <input type="password" id="contra" name="contra" placeholder="<?= $translator->__("Contraseña") ?>" required>
+          <a href="#" id="changePassword"><?= $translator->__("¿Olvidaste tu contraseña?") ?></a>
           <button type="submit" class="btn"><?= $translator->__("Iniciar Sesión") ?></button>
           <button class="btin" type="button" onclick="mostrarFormulario2()"><?= $translator->__("Crear una cuenta nueva") ?></button>
       </form>
@@ -437,7 +566,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <form id="form-left" action="registro.php" method="POST" enctype="multipart/form-data">
           <input type="hidden" name="action" value="register">
           <h1><?= $translator->__("Registro de Cuenta") ?></h1>
-          <input type="text" id="nombre" name="nombre" placeholder="<?= $translator->__("Name") ?>" required>
+          <input type="text" id="nombre" name="nombre" placeholder="<?= $translator->__("Nombre") ?>" required>
           <input type="text" id="primer_apellido" name="primer_apellido" placeholder="<?= $translator->__("Primer Apellido") ?>" required>
           <input type="text" id="segundo_apellido" name="segundo_apellido" placeholder="<?= $translator->__("Segundo Apellido") ?>" required>
           <input type="text" id="correo" name="correo" placeholder="<?= $translator->__("Cuenta o correo") ?>" required>
@@ -445,25 +574,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           <input type="file" id="imagen" name="imagen" accept="image/*">
           <button class="btn" type="submit"><?= $translator->__("Crear cuenta") ?></button> 
           <button class="btin" type="button" onclick="mostrarFormulario()"><?= $translator->__("Iniciar sesión") ?></button>
-
       </form>
     </div>
 
     <!-- Modal de verificación -->
     <div id="verifyModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2><?= $translator->__("Ingresa tu código de verificación") ?></h2>
-            <form id="verifyForm" action="registro.php" method="POST">
-            <input type="hidden" name="action" value="verify">
-            <p><?= $translator->__("Código enviado a tu correo:") ?></p>
-            <input type="text" name="codigo" required>
-            <br><br>
-            <button type="submit"><?= $translator->__("Verificar y Registrar") ?></button>
-            </form>
-        </div>
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2><?= $translator->__("Ingresa tu código de verificación") ?></h2>
+        <form id="verifyForm" action="registro.php" method="POST">
+          <input type="hidden" name="action" value="verify">
+          <p><?= $translator->__("Código enviado a tu correo:") ?></p>
+          <input type="text" name="codigo" required>
+          <br><br>
+          <button type="submit"><?= $translator->__("Verificar y Registrar") ?></button>
+        </form>
+      </div>
     </div>
 
+    <!-- Modal envio de correo -->
+    <div id="changeModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2><?= $translator->__("Restablecer contraseña") ?></h2>
+        <form id="changeForm" action="registro.php" method="POST">
+          <input type="hidden" name="action" value="change">
+          <p><?= $translator->__("Correo electrónico:") ?></p>    
+          <input type="text" name="email" required>
+          <br><br>
+          <button type="submit"><?= $translator->__("Enviar") ?></button>      
+        </form>
+      </div>
+    </div>
   </main>
 
   <?php include '../includes/footer.php'; ?>
