@@ -28,10 +28,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idioma'])) {
 
 // Obtener y traducir contenido dinámico
 // Consulta para el banner
-$sqlBanner = "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, c.categoria as nombre_categoria, i.imagen 
+$sqlBanner = "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, u.nombre as autor, 
+              c.categoria as nombre_categoria, i.imagen 
               FROM entradas e 
               LEFT JOIN imagenes i ON i.id_entrada = e.id_entrada 
               LEFT JOIN categorias c ON e.categoria = c.id_categoria
+              LEFT JOIN usuarios u ON e.id_usuario = u.id_usuario
               ORDER BY e.id_entrada DESC 
               LIMIT 1";
 $resultBanner = $conn->query($sqlBanner);
@@ -44,16 +46,20 @@ if ($banner) {
 
 // Consulta para artículos
 $sqlPosts = $banner ? 
-    "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, c.categoria as nombre_categoria, i.imagen 
+    "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, u.nombre as autor,
+     c.categoria as nombre_categoria, i.imagen 
      FROM entradas e 
      LEFT JOIN imagenes i ON i.id_entrada = e.id_entrada 
      LEFT JOIN categorias c ON e.categoria = c.id_categoria
+     LEFT JOIN usuarios u ON e.id_usuario = u.id_usuario
      WHERE e.id_entrada <> " . $banner['id_entrada'] . " 
      ORDER BY e.id_entrada DESC" :
-    "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, c.categoria as nombre_categoria, i.imagen 
+    "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, u.nombre as autor,
+     c.categoria as nombre_categoria, i.imagen 
      FROM entradas e 
      LEFT JOIN imagenes i ON i.id_entrada = e.id_entrada 
      LEFT JOIN categorias c ON e.categoria = c.id_categoria
+     LEFT JOIN usuarios u ON e.id_usuario = u.id_usuario
      ORDER BY e.id_entrada DESC";
 
 $resultPosts = $conn->query($sqlPosts);
@@ -84,9 +90,19 @@ while ($row = $resultPosts->fetch_assoc()) {
     <section class="hero-section" onclick="window.location.href='php/publicacion.php?id=<?= $banner['id_entrada'] ?>';" style="cursor:pointer;">
         <div class="hero-content">
             <h1><?= $banner['titulo'] ?></h1>
+            <div class="post-meta">
+                <?php if (!empty($banner['autor'])): ?>
+                <span class="author"><i class="fas fa-user"></i> <?= htmlspecialchars($banner['autor']) ?></span>
+                <?php endif; ?>
+                <?php if (!empty($banner['fecha'])): ?>
+                <span class="date"><i class="far fa-calendar-alt"></i> <?= date('d/m/Y', strtotime($banner['fecha'])) ?></span>
+                <?php endif; ?>
+            </div>
             <div class="banner-content">
                 <?php 
-                $contenido_limpio = strip_tags($banner['contenido']);
+                // Eliminar etiquetas h2 y su contenido antes de crear el extracto
+                $contenido_limpio = preg_replace('/<h2>.*?<\/h2>/is', '', $banner['contenido']);
+                $contenido_limpio = strip_tags($contenido_limpio);
                 $palabras = explode(' ', $contenido_limpio);
                 $resumen = implode(' ', array_slice($palabras, 0, 20)) . '...';
                 echo $resumen;
@@ -118,8 +134,18 @@ while ($row = $resultPosts->fetch_assoc()) {
                         <?php endif; ?>
                         <div class="carousel-item-content">
                             <h3 class="carousel-title"><?= htmlspecialchars($articulo['titulo']) ?></h3>
+                            <div class="post-meta">
+                                <?php if (!empty($articulo['autor'])): ?>
+                                <span class="author"><i class="fas fa-user"></i> <?= htmlspecialchars($articulo['autor']) ?></span>
+                                <?php endif; ?>
+                                <?php if (!empty($articulo['fecha'])): ?>
+                                <span class="date"><i class="far fa-calendar-alt"></i> <?= date('d/m/Y', strtotime($articulo['fecha'])) ?></span>
+                                <?php endif; ?>
+                            </div>
                             <?php 
-                            $contenido_limpio = strip_tags($articulo['contenido']); 
+                            // Eliminar etiquetas h2 y su contenido antes de crear el extracto
+                            $contenido_limpio = preg_replace('/<h2>.*?<\/h2>/is', '', $articulo['contenido']); 
+                            $contenido_limpio = strip_tags($contenido_limpio);
                             $resumen = !empty($contenido_limpio) ? substr($contenido_limpio, 0, 150) . '...' : '';
                             ?>
                             <p class="carousel-subtitle"><?= $resumen ?></p>

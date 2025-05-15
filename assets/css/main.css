@@ -170,7 +170,7 @@ a {
 }
 
 .banner-content {
-  margin-top: 25px;
+  margin-top: 15px;
 }
 
 .banner-content p {
@@ -464,25 +464,23 @@ a {
   transform: scaleX(1);
 }
 
-/* Imagen del carrusel - MEJORADA */
+/* Imagen del carrusel - ESTANDARIZADA */
 .carousel-item img {
   width: 100%;
-  height: 280px;
-  object-fit: cover;
+  height: 280px; /* Altura fija para todas las imágenes */
+  object-fit: cover; /* Mantener proporciones recortando si es necesario */
+  object-position: center; /* Centrar la imagen */
   margin-bottom: 0;
   box-shadow: none;
   transition: all 0.5s ease;
   filter: brightness(0.95);
-}
-
-.carousel-item:hover img {
-  transform: scale(1.05) translateY(-5px);
-  filter: brightness(1.05);
+  aspect-ratio: 16/9; /* Proporción fija */
+  display: block; /* Elimina espacio adicional debajo de la imagen */
 }
 
 /* Contenedor del contenido de texto - MEJORADO */
 .carousel-item-content {
-  padding: 30px 25px;
+  padding: 25px 20px;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -511,6 +509,7 @@ a {
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   text-overflow: ellipsis;
   position: relative;
@@ -538,6 +537,7 @@ a {
   color: #555;
   line-height: 1.6;
   margin-bottom: 25px;
+  margin-top: 5px;
   flex-grow: 1;
   overflow: hidden;
   display: -webkit-box;
@@ -726,7 +726,8 @@ a {
   }
   
   .carousel-item img {
-    height: 220px;
+    height: 200px; /* Unificamos a un solo valor para móviles */
+    aspect-ratio: 16/9;
   }
   
   .carousel-item-content {
@@ -867,6 +868,97 @@ a {
   color: #555;
 }
 
+/* Ocultar h2 en tarjetas */
+.hero-section h2,
+.carousel-item h2,
+.info-block h2 {
+    display: none;
+}
+
+/* Estilos para metadatos de publicación (autor y fecha) */
+.post-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 12px;
+  opacity: 0.9;
+  gap: 15px;
+}
+
+.post-meta .author, 
+.post-meta .date {
+  display: inline-flex;
+  align-items: center;
+}
+
+.post-meta i {
+  margin-right: 5px;
+  color: #719743;
+  font-size: 0.85rem;
+}
+
+/* Ajustes específicos para el banner */
+.hero-content .post-meta {
+  margin-top: 5px;
+  margin-bottom: 18px;
+  font-weight: 500;
+}
+
+.hero-content .post-meta .author,
+.hero-content .post-meta .date {
+  padding: 4px 12px;
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 15px;
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+}
+
+.hero-content .post-meta .author:hover,
+.hero-content .post-meta .date:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+/* Ajustes específicos para las tarjetas del carrusel */
+.carousel-item-content .post-meta {
+  margin-bottom: 15px;
+  font-size: 0.8rem;
+}
+
+.carousel-item-content .post-meta .author,
+.carousel-item-content .post-meta .date {
+  background-color: #f3f5f7;
+  padding: 3px 8px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.carousel-item-content .post-meta .author:hover,
+.carousel-item-content .post-meta .date:hover {
+  background-color: #e7eaee;
+}
+
+/* Media queries para dispositivos móviles */
+@media (max-width: 768px) {
+  .hero-content .post-meta {
+    justify-content: center;
+    margin-bottom: 15px;
+    font-size: 0.8rem;
+  }
+  
+  .carousel-item-content .post-meta {
+    justify-content: center;
+    font-size: 0.75rem;
+    gap: 8px;
+  }
+  
+  .post-meta .author, 
+  .post-meta .date {
+    padding: 2px 6px;
+  }
+}
+
 /* Media Queries */
 @media (max-width: 768px) {
   .carousel-container {
@@ -938,7 +1030,8 @@ a {
   }
 
   .carousel-item img {
-    height: 200px;
+    height: 200px; /* Confirmamos el mismo valor en todas las media queries */
+    aspect-ratio: 16/9;
   }
 
   .carousel-item-content {

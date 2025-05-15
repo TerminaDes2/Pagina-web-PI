@@ -33,7 +33,7 @@ if ($result_categorias && $result_categorias->num_rows > 0) {
             <ul class="hf-main-menu" id="mainMenu">
                 <li><a href="/Pagina-web-PI/index.php"><?= $translator->__("Inicio") ?></a></li>
                 <li class="hf-menu-categorias">
-                    <a href="#" class="hf-categoria-toggle"><?= $translator->__("Noticias") ?> <i class="fas fa-chevron-down"></i></a>
+                    <a href="/Pagina-web-PI/php/noticias.php"><?= $translator->__("Noticias") ?></a>
                     <div class="hf-contenido-categorias">
                         <?php if (!empty($categorias_menu)): ?>
                             <?php foreach ($categorias_menu as $cat): ?>
@@ -45,17 +45,19 @@ if ($result_categorias && $result_categorias->num_rows > 0) {
                     </div>
                 </li>
                 <li>
-                    <a href="/Pagina-web-PI/templates/Contacto.html"><?= $translator->__("Contacto") ?></a>
+                    <a href="/Pagina-web-PI/templates/Contacto.php"><?= $translator->__("Contacto") ?></a>
                 </li>
                 <li>
-                    <a href="/Pagina-web-PI/templates/Acerca-de-nosotros.html"><?= $translator->__("Acerca de") ?></a>
+                    <a href="/Pagina-web-PI/templates/Acerca-de-nosotros.php"><?= $translator->__("Acerca de") ?></a>
                 </li>
             </ul>
         </nav>
         <div class="hf-header-actions">
             <div class="hf-search-box">
-                <input type="text" placeholder="<?= $translator->__("Buscar...") ?>">
-                <button><i class="fas fa-search"></i></button>
+                <form action="/Pagina-web-PI/php/buscar.php" method="GET">
+                    <input type="text" name="q" placeholder="<?= $translator->__("Buscar...") ?>">
+                    <button type="submit"><i class="fas fa-search"></i></button>
+                </form>
             </div>
             <div class="hf-social-icons">
                 <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>

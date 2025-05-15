@@ -158,13 +158,19 @@
   border-color: rgba(255, 255, 255, 0.3);
 }
 
+.hf-search-box form {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+}
+
 .hf-search-box input[type="text"] {
   padding: 5px 10px;
   border: none;
   border-radius: 20px;
-  margin-right: 5px;
   height: 30px;
-  width: 150px;
+  flex: 1;
   background: transparent;
   color: #fff;
   outline: none;
@@ -177,7 +183,6 @@
 
 .hf-search-box input[type="text"]:focus {
   background: rgba(255, 255, 255, 0.2);
-  width: 180px;
 }
 
 .hf-search-box button {
@@ -193,6 +198,7 @@
   justify-content: center;
   padding: 0;
   font-size: 1rem;
+  margin-left: 5px;
 }
 
 .hf-search-box button:hover {

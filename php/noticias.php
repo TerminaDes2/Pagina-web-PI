@@ -6,14 +6,6 @@ if (!isset($_SESSION['idioma'])) {
     $_SESSION['idioma'] = 'es'; // Idioma predeterminado
 }
 
-// Verificar que se haya especificado una categoría
-if (!isset($_GET['cat']) || !is_numeric($_GET['cat'])) {
-    header("Location: ../index.php");
-    exit();
-}
-
-$id_categoria = intval($_GET['cat']);
-
 // Conexión a la base de datos
 include "../includes/db_config.php";
 
@@ -30,33 +22,34 @@ $translator = new Translator($conn);
 // Manejar cambio de idioma
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idioma'])) {
     $translator->cambiarIdioma($_POST['idioma']);
-    header("Location: " . $_SERVER['PHP_SELF'] . "?cat=" . $id_categoria);
+    header("Location: " . $_SERVER['PHP_SELF']);
     exit();
 }
 
-// Obtener el nombre de la categoría
-$stmt = $conn->prepare("SELECT categoria FROM categorias WHERE id_categoria = ?");
-$stmt->bind_param("i", $id_categoria);
-$stmt->execute();
-$stmt->bind_result($nombre_categoria);
-$categoria_existe = $stmt->fetch();
-$stmt->close();
+// Paginación
+$articulos_por_pagina = 10;
+$pagina_actual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
+$inicio = ($pagina_actual - 1) * $articulos_por_pagina;
 
-if (!$categoria_existe) {
-    header("Location: ../index.php");
-    exit();
-}
+// Contar total de artículos para la paginación
+$sql_total = "SELECT COUNT(*) as total FROM entradas";
+$result_total = $conn->query($sql_total);
+$fila_total = $result_total->fetch_assoc();
+$total_articulos = $fila_total['total'];
+$total_paginas = ceil($total_articulos / $articulos_por_pagina);
 
-// Consulta para publicaciones de esta categoría
-$sqlPosts = "SELECT e.id_entrada, e.titulo, e.contenido, e.cita, e.fecha, u.nombre as autor, i.imagen 
+// Consulta para obtener todas las publicaciones con paginación
+$sqlPosts = "SELECT e.id_entrada, e.titulo, e.contenido, e.cita, e.fecha, e.categoria, 
+             u.nombre as autor, i.imagen, c.categoria as nombre_categoria
              FROM entradas e 
              LEFT JOIN imagenes i ON i.id_entrada = e.id_entrada 
              LEFT JOIN usuarios u ON e.id_usuario = u.id_usuario
-             WHERE e.categoria = ? 
-             ORDER BY e.fecha DESC";
+             LEFT JOIN categorias c ON e.categoria = c.id_categoria
+             ORDER BY e.fecha DESC
+             LIMIT ?, ?";
 
 $stmt = $conn->prepare($sqlPosts);
-$stmt->bind_param("i", $id_categoria);
+$stmt->bind_param("ii", $inicio, $articulos_por_pagina);
 $stmt->execute();
 $resultPosts = $stmt->get_result();
 $articulos = [];
@@ -75,21 +68,54 @@ $stmt->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($nombre_categoria) ?> - Voces del Proceso</title>
+    <title><?= $translator->__("Todas las Noticias") ?> - Voces del Proceso</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/main.css">
     <link rel="stylesheet" href="../assets/css/categorias.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .paginacion {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .paginacion a, .paginacion span {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 0 5px;
+            border: 1px solid #ddd;
+            color: #333;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        .paginacion a:hover {
+            background-color: #f5f5f5;
+        }
+        .paginacion .actual {
+            background-color: #719743;
+            color: white;
+            border-color: #719743;
+        }
+        .categoria-tag {
+            display: inline-block;
+            background-color: #e8f4d9;
+            color: #5e7f37;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
     <?php include '../includes/header.php'; ?>
 
     <section class="categoria-header">
         <div class="container">
-            <h1><?= htmlspecialchars($nombre_categoria) ?></h1>
-            <p><?= $translator->__("Artículos en la categoría") ?> "<?= htmlspecialchars($nombre_categoria) ?>"</p>
+            <h1><?= $translator->__("Todas las Noticias") ?></h1>
+            <p><?= $translator->__("Descubre todas nuestras publicaciones") ?></p>
         </div>
     </section>
 
@@ -97,13 +123,13 @@ $stmt->close();
         <div class="container">
             <?php if (empty($articulos)): ?>
                 <div class="no-articulos">
-                    <p><?= $translator->__("No hay artículos disponibles en esta categoría.") ?></p>
+                    <p><?= $translator->__("No hay artículos disponibles.") ?></p>
                 </div>
             <?php else: ?>
-                <div class="grid-articulos">
+                <div class="grid-articulos" style="grid-template-columns: 1fr;">
                     <?php foreach ($articulos as $articulo): ?>
-                    <article class="articulo-card">
-                        <div class="articulo-imagen">
+                    <article class="articulo-card" style="display: flex; flex-direction: row;">
+                        <div class="articulo-imagen" style="width: 30%; height: 250px;">
                             <?php if (!empty($articulo['imagen'])): ?>
                                 <a href="publicacion.php?id=<?= $articulo['id_entrada'] ?>">
                                     <img src="<?= htmlspecialchars($articulo['imagen']) ?>" alt="<?= htmlspecialchars($articulo['titulo']) ?>">
@@ -114,8 +140,11 @@ $stmt->close();
                                 </div>
                             <?php endif; ?>
                         </div>
-                        <div class="articulo-contenido">
-                            <h2><a href="publicacion.php?id=<?= $articulo['id_entrada'] ?>"><?= htmlspecialchars($articulo['titulo']) ?></a></h2>
+                        <div class="articulo-contenido" style="width: 70%; padding: 25px;">
+                            <?php if (!empty($articulo['nombre_categoria'])): ?>
+                                <span class="categoria-tag"><?= htmlspecialchars($articulo['nombre_categoria']) ?></span>
+                            <?php endif; ?>
+                            <h2 style="display: block; margin-bottom: 15px; font-size: 1.6em;"><a href="publicacion.php?id=<?= $articulo['id_entrada'] ?>"><?= htmlspecialchars($articulo['titulo']) ?></a></h2>
                             <div class="post-meta">
                                 <?php if (!empty($articulo['autor'])): ?>
                                 <span class="author"><i class="fas fa-user"></i> <?= htmlspecialchars($articulo['autor']) ?></span>
@@ -138,6 +167,41 @@ $stmt->close();
                         </div>
                     </article>
                     <?php endforeach; ?>
+                </div>
+                
+                <!-- Paginación -->
+                <div class="paginacion">
+                    <?php if ($pagina_actual > 1): ?>
+                        <a href="?pagina=<?= $pagina_actual - 1 ?>"><i class="fas fa-chevron-left"></i></a>
+                    <?php endif; ?>
+                    
+                    <?php
+                    // Mostrar un número limitado de enlaces a páginas
+                    $inicio_rango = max(1, $pagina_actual - 2);
+                    $fin_rango = min($total_paginas, $pagina_actual + 2);
+                    
+                    if ($inicio_rango > 1) {
+                        echo '<a href="?pagina=1">1</a>';
+                        if ($inicio_rango > 2) echo '<span>...</span>';
+                    }
+                    
+                    for ($i = $inicio_rango; $i <= $fin_rango; $i++) {
+                        if ($i == $pagina_actual) {
+                            echo '<span class="actual">' . $i . '</span>';
+                        } else {
+                            echo '<a href="?pagina=' . $i . '">' . $i . '</a>';
+                        }
+                    }
+                    
+                    if ($fin_rango < $total_paginas) {
+                        if ($fin_rango < $total_paginas - 1) echo '<span>...</span>';
+                        echo '<a href="?pagina=' . $total_paginas . '">' . $total_paginas . '</a>';
+                    }
+                    ?>
+                    
+                    <?php if ($pagina_actual < $total_paginas): ?>
+                        <a href="?pagina=<?= $pagina_actual + 1 ?>"><i class="fas fa-chevron-right"></i></a>
+                    <?php endif; ?>
                 </div>
             <?php endif; ?>
         </div>
