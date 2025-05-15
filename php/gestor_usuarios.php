@@ -142,6 +142,45 @@ $resultPublicaciones = $conn->query("SELECT e.id_entrada, e.titulo, c.categoria 
                                      FROM entradas e
                                      LEFT JOIN categorias c ON e.categoria = c.id_categoria
                                      ORDER BY e.id_entrada DESC");
+
+// Función para determinar si usar vista móvil basada en el ancho de pantalla
+function agregarScriptDeteccionMovil() {
+    return "
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        function aplicarVistaTablasMoviles() {
+            if (window.innerWidth <= 480) {
+                document.querySelectorAll('.admin-table').forEach(table => {
+                    table.classList.add('admin-table-mobile-view');
+                    
+                    // Añadir atributos data-label a cada celda td basado en el encabezado
+                    table.querySelectorAll('tbody tr').forEach(row => {
+                        const headerCells = row.closest('table').querySelectorAll('thead th');
+                        const dataCells = row.querySelectorAll('td');
+                        
+                        dataCells.forEach((cell, index) => {
+                            if (headerCells[index]) {
+                                cell.setAttribute('data-label', headerCells[index].textContent);
+                            }
+                        });
+                    });
+                });
+            } else {
+                document.querySelectorAll('.admin-table').forEach(table => {
+                    table.classList.remove('admin-table-mobile-view');
+                });
+            }
+        }
+        
+        // Aplicar al cargar
+        aplicarVistaTablasMoviles();
+        
+        // Aplicar al cambiar el tamaño de la ventana
+        window.addEventListener('resize', aplicarVistaTablasMoviles);
+    });
+    </script>
+    ";
+}
 ?>
 
 <!DOCTYPE html>
@@ -154,6 +193,7 @@ $resultPublicaciones = $conn->query("SELECT e.id_entrada, e.titulo, c.categoria 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <?= agregarScriptDeteccionMovil() ?>
     <script>
         function cambiarPestaña(pestaña) {
             // Ocultar todas las secciones
@@ -325,10 +365,10 @@ $resultPublicaciones = $conn->query("SELECT e.id_entrada, e.titulo, c.categoria 
                 <i class="fas fa-newspaper"></i> <?= $translator->__("Publicaciones") ?>
             </button>
             <a href="crear_publicacion.php" class="admin-tab crear-publicacion">
-                <i class="fas fa-plus-circle"></i> <?= $translator->__("Crear Publicación") ?>
+                <i class="fas fa-plus-circle"></i> <?= $translator->__("Crear") ?>
             </a>
             <a href="gestor_categorias.php" class="admin-tab">
-                <i class="fas fa-tags"></i> <?= $translator->__("Gestionar Categorías") ?>
+                <i class="fas fa-tags"></i> <?= $translator->__("Categorías") ?>
             </a>
         </div>
 

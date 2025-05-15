@@ -26,6 +26,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idioma'])) {
     exit();
 }
 
+// Consulta para obtener una cita aleatoria
+$sqlCita = "SELECT id, texto, autor FROM citas ORDER BY RAND() LIMIT 1";
+$resultCita = $conn->query($sqlCita);
+$cita = ($resultCita && $resultCita->num_rows > 0) ? $resultCita->fetch_assoc() : null;
+
+if ($cita) {
+    $cita['texto'] = $translator->traducirTexto($cita['texto']);
+    $cita['autor'] = $translator->traducirTexto($cita['autor']);
+}
+
 // Obtener y traducir contenido dinámico
 // Consulta para el banner
 $sqlBanner = "SELECT e.id_entrada, e.titulo, e.contenido, e.fecha, u.nombre as autor, 
@@ -117,6 +127,25 @@ while ($row = $resultPosts->fetch_assoc()) {
     </section>
     <?php endif; ?>
 
+    <!-- Sección de call to action después del banner -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2><?= $translator->__("Únete al movimiento por el trabajo digno") ?></h2>
+                <p><?= $translator->__("Conoce las propuestas, acciones y testimonios que promueven el crecimiento económico inclusivo y el trabajo decente para todos.") ?></p>
+                <div class="cta-buttons">
+                    <a href="php/explorar.php?modo=categorias" class="btn btn-primary"><?= $translator->__("Explorar categorías") ?></a>
+                    <a href="#featured-articles" class="btn btn-secondary"><?= $translator->__("Artículos destacados") ?></a>
+                </div>
+            </div>
+        </div>
+        <div class="cta-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+        </div>
+    </section>
+
     <section class="featured-articles" id="featured-articles">
         <div class="bg-circle"></div> <!-- Elemento decorativo circular -->
         <h2><?= $translator->__("Artículos destacados") ?></h2>
@@ -162,6 +191,65 @@ while ($row = $resultPosts->fetch_assoc()) {
         </div>
     </section>
 
+    <!-- Sección de estadísticas clave -->
+    <section class="key-stats">
+        <div class="container">
+            <h2><?= $translator->__("Datos clave sobre trabajo y economía") ?></h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="stat-number" data-target="190">0</div>
+                    <div class="stat-label"><?= $translator->__("Millones de desempleados globalmente") ?></div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                    <div class="stat-number" data-target="61">0</div>
+                    <div class="stat-label"><?= $translator->__("% de trabajadores en empleo informal") ?></div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="stat-number" data-target="2">0</div>
+                    <div class="stat-label"><?= $translator->__("$ diarios - Umbral de pobreza extrema") ?></div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-venus-mars"></i>
+                    </div>
+                    <div class="stat-number" data-target="23">0</div>
+                    <div class="stat-label"><?= $translator->__("% Brecha salarial de género") ?></div>
+                </div>
+            </div>
+            <div class="stats-note">
+                <p><?= $translator->__("Fuente: Organización Internacional del Trabajo, 2023") ?></p>
+            </div>
+        </div>
+    </section>
+
+    <?php if ($cita): ?>
+    <!-- Sección de cita inspiradora -->
+    <section class="quote-section">
+        <div class="container">
+            <div class="quote-content">
+                <i class="fas fa-quote-left quote-icon"></i>
+                <blockquote>
+                    <?= htmlspecialchars($cita['texto']) ?>
+                    <cite>— <?= htmlspecialchars($cita['autor']) ?></cite>
+                </blockquote>
+                <i class="fas fa-quote-right quote-icon"></i>
+            </div>
+        </div>
+    </section>
+    <?php endif; ?>
+
     <section class="info-title-section">
         <h2><?= $translator->__("Información relevante") ?></h2>
     </section>
@@ -199,33 +287,87 @@ while ($row = $resultPosts->fetch_assoc()) {
                 <i class="fas fa-chart-line"></i>
                 <h3><?= $translator->__("Indicadores Económicos") ?></h3>
                 <p><?= $translator->__("Datos y estadísticas sobre el crecimiento económico y el empleo.") ?></p>
-                <a href="php/categorias.php?cat=<?= $ids_categorias['economia'] ?>" class="btn btn-tertiary"><?= $translator->__("Ver más") ?></a>
+                <a href="php/explorar.php?modo=categorias&cat=<?= $ids_categorias['economia'] ?>" class="btn btn-tertiary"><?= $translator->__("Ver más") ?></a>
             </div>
             
             <div class="info-block">
                 <i class="fas fa-briefcase"></i>
                 <h3><?= $translator->__("Derechos Laborales") ?></h3>
                 <p><?= $translator->__("Información sobre los derechos y las responsabilidades de los trabajadores.") ?></p>
-                <a href="php/categorias.php?cat=<?= $ids_categorias['derechos'] ?>" class="btn btn-tertiary"><?= $translator->__("Ver más") ?></a>
+                <a href="php/explorar.php?modo=categorias&cat=<?= $ids_categorias['derechos'] ?>" class="btn btn-tertiary"><?= $translator->__("Ver más") ?></a>
             </div>
 
             <div class="info-block">
                 <i class="fas fa-users"></i>
                 <h3><?= $translator->__("Inclusión Laboral") ?></h3>
                 <p><?= $translator->__("Estrategias para promover la diversidad y la inclusión en el trabajo.") ?></p>
-                <a href="php/categorias.php?cat=<?= $ids_categorias['inclusion'] ?>" class="btn btn-tertiary"><?= $translator->__("Ver más") ?></a>
+                <a href="php/explorar.php?modo=categorias&cat=<?= $ids_categorias['inclusion'] ?>" class="btn btn-tertiary"><?= $translator->__("Ver más") ?></a>
             </div>
 
             <div class="info-block">
                 <i class="fas fa-globe"></i>
                 <h3><?= $translator->__("Trabajo Global") ?></h3>
                 <p><?= $translator->__("Análisis de las tendencias y los desafíos del mercado laboral a nivel mundial.") ?></p>
-                <a href="php/categorias.php?cat=<?= $ids_categorias['global'] ?>" class="btn btn-tertiary"><?= $translator->__("Ver más") ?></a>
+                <a href="php/explorar.php?modo=categorias&cat=<?= $ids_categorias['global'] ?>" class="btn btn-tertiary"><?= $translator->__("Ver más") ?></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de boletín informativo -->
+    <section class="newsletter-section">
+        <div class="container">
+            <div class="newsletter-content">
+                <h2><?= $translator->__("Mantente informado") ?></h2>
+                <p><?= $translator->__("Suscríbete a nuestro boletín para recibir actualizaciones sobre trabajo decente y crecimiento económico") ?></p>
+                <form class="newsletter-form" action="php/suscribir.php" method="POST">
+                    <input type="email" name="email" placeholder="<?= $translator->__("Tu correo electrónico") ?>" required>
+                    <button type="submit" class="btn btn-primary"><?= $translator->__("Suscribirse") ?></button>
+                </form>
             </div>
         </div>
     </section>
 
     <?php include 'includes/footer.php'; ?>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animación de contadores para estadísticas
+        const statNumbers = document.querySelectorAll('.stat-number');
+        
+        const animateStats = (entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counter = entry.target;
+                    const target = parseInt(counter.dataset.target);
+                    const duration = 2000;
+                    const step = target / (duration / 16);
+                    let current = 0;
+                    
+                    const updateCounter = () => {
+                        current += step;
+                        if (current < target) {
+                            counter.textContent = Math.ceil(current);
+                            requestAnimationFrame(updateCounter);
+                        } else {
+                            counter.textContent = target;
+                        }
+                    };
+                    
+                    updateCounter();
+                    observer.unobserve(counter);
+                }
+            });
+        };
+        
+        const statsObserver = new IntersectionObserver(animateStats, {
+            threshold: 0.5
+        });
+        
+        statNumbers.forEach(stat => {
+            statsObserver.observe(stat);
+        });
+    });
+    </script>
 
     <?php $conn->close(); ?>
 </body>

@@ -68,6 +68,29 @@
   background-color: #f5f5f5;
 }
 
+/* Estilos para la columna de acciones */
+.admin-table td:last-child {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  min-width: 180px; /* Asegura espacio mínimo para botones */
+}
+
+.admin-table td:last-child .admin-button,
+.admin-table td:last-child .admin-link,
+.admin-table td:last-child form {
+  margin: 3px 5px;
+  vertical-align: middle;
+}
+
+/* Contenedor flexible para acciones */
+.acciones-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  justify-content: flex-start;
+}
+
 /* Botones específicos de admin */
 .admin-button, 
 .admin-container button, 
@@ -109,6 +132,7 @@
 
 .admin-container button[value="hacer_admin"] {
   background-color: #2196F3;
+  min-width: 140px; /* Aumenta el ancho mínimo del botón */
 }
 
 .admin-container button[value="hacer_admin"]:hover {
@@ -321,11 +345,15 @@
   
   .admin-tabs {
     gap: 5px;
+    flex-wrap: wrap;
   }
   
   .admin-tab {
     padding: 10px 15px;
     font-size: 0.9rem;
+    flex: 1 1 45%;
+    text-align: center;
+    margin-bottom: 5px;
   }
   
   .admin-button i,
@@ -333,5 +361,140 @@
   .admin-tab i,
   .admin-link i {
     margin-right: 4px;
+  }
+  
+  /* Mejoras móviles - Pestañas de usuario */
+  .admin-tabs-usuario {
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  
+  .admin-tab-usuario {
+    flex: 1 1 100%;
+    text-align: center;
+    border-radius: 8px;
+  }
+  
+  /* Mejoras móviles - Cabecera de usuario */
+  .usuario-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .usuario-header .admin-button {
+    align-self: center;
+    width: 100%;
+    text-align: center;
+  }
+  
+  /* Mejoras para la columna de acciones en tablet */
+  .admin-table td:last-child {
+    padding: 10px;
+    min-width: 160px;
+  }
+  
+  .acciones-container {
+    justify-content: center;
+  }
+}
+
+/* Nuevos estilos para móviles más pequeños */
+@media (max-width: 480px) {
+  .admin-container {
+    padding: 10px 5px;
+    margin-top: 60px;
+  }
+  
+  /* Vista de tarjeta para tablas en móviles muy pequeños */
+  .admin-table-mobile-view thead {
+    display: none;
+  }
+  
+  .admin-table-mobile-view tr {
+    display: block;
+    margin-bottom: 15px;
+    border: 1px solid #e2e6ea;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  
+  .admin-table-mobile-view td {
+    display: block;
+    padding: 8px 5px;
+    text-align: right;
+    position: relative;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .admin-table-mobile-view td:last-child {
+    border-bottom: none;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    background-color: #f9f9f9;
+    border-radius: 0 0 8px 8px;
+    margin-top: 5px;
+  }
+  
+  .admin-table-mobile-view td:before {
+    content: attr(data-label);
+    position: absolute;
+    left: 5px;
+    font-weight: 600;
+    text-align: left;
+    color: #555;
+    padding-right: 10px;
+  }
+  
+  /* Separación extra para la etiqueta 'Acciones' en móvil */
+  .admin-table-mobile-view td:last-child:before {
+    position: relative;
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    text-align: center;
+    font-weight: 700;
+    color: #333;
+    border-bottom: 1px dashed #ddd;
+    padding-bottom: 8px;
+  }
+  
+  /* Botones más grandes y fáciles de tocar */
+  .admin-table-mobile-view .admin-button,
+  .admin-table-mobile-view button,
+  .admin-table-mobile-view .admin-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    min-width: 44px;
+    margin: 3px;
+    padding: 8px 15px;
+    width: calc(50% - 10px);
+    box-sizing: border-box;
+    text-align: center;
+  }
+  
+  .admin-table-mobile-view td:last-child .admin-link {
+    text-align: center;
+    margin: 3px;
+    flex: 1 1 45%;
+    justify-content: center;
+  }
+  
+  /* Ajustes de formulario en línea para móviles */
+  .admin-table-mobile-view form[style="display:inline;"] {
+    display: inline-flex !important;
+    margin: 3px;
+    flex: 1 1 45%;
+    justify-content: center;
+  }
+  
+  .admin-table-mobile-view form button {
+    width: 100%;
   }
 }

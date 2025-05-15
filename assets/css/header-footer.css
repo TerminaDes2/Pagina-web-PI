@@ -731,8 +731,38 @@
     display: none;
   }
   
-  .hf-header-actions .hf-login-btn {
+  /* Eliminar la regla que oculta el botón de inicio de sesión */
+  /* .hf-header-actions .hf-login-btn {
     display: none;
+  } */
+  
+  /* Nuevo estilo para el botón de inicio de sesión en móvil */
+  .hf-header-actions .hf-login-btn {
+    display: flex;
+    align-items: center;
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    margin-left: 5px;
+  }
+  
+  /* Ocultar el texto y mostrar solo el icono en pantallas muy pequeñas */
+  @media (max-width: 370px) {
+    .hf-header-actions .hf-login-btn span {
+      display: none;
+    }
+    
+    .hf-header-actions .hf-login-btn {
+      width: 35px;
+      height: 35px;
+      justify-content: center;
+      padding: 0;
+      border-radius: 50%;
+    }
+    
+    .hf-header-actions .hf-login-btn i {
+      margin-right: 0;
+    }
   }
 
   .hf-menu-toggle {

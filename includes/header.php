@@ -33,11 +33,11 @@ if ($result_categorias && $result_categorias->num_rows > 0) {
             <ul class="hf-main-menu" id="mainMenu">
                 <li><a href="/Pagina-web-PI/index.php"><?= $translator->__("Inicio") ?></a></li>
                 <li class="hf-menu-categorias">
-                    <a href="/Pagina-web-PI/php/noticias.php"><?= $translator->__("Noticias") ?></a>
+                    <a href="/Pagina-web-PI/php/explorar.php?modo=noticias"><?= $translator->__("Noticias") ?></a>
                     <div class="hf-contenido-categorias">
                         <?php if (!empty($categorias_menu)): ?>
                             <?php foreach ($categorias_menu as $cat): ?>
-                                <a href="/Pagina-web-PI/php/categorias.php?cat=<?= $cat['id_categoria'] ?>"><?= htmlspecialchars($cat['categoria']) ?></a>
+                                <a href="/Pagina-web-PI/php/explorar.php?modo=categorias&cat=<?= $cat['id_categoria'] ?>"><?= htmlspecialchars($cat['categoria']) ?></a>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <a href="#"><?= $translator->__("No hay categorías disponibles") ?></a>
@@ -54,7 +54,8 @@ if ($result_categorias && $result_categorias->num_rows > 0) {
         </nav>
         <div class="hf-header-actions">
             <div class="hf-search-box">
-                <form action="/Pagina-web-PI/php/buscar.php" method="GET">
+                <form action="/Pagina-web-PI/php/explorar.php" method="GET">
+                    <input type="hidden" name="modo" value="buscar">
                     <input type="text" name="q" placeholder="<?= $translator->__("Buscar...") ?>">
                     <button type="submit"><i class="fas fa-search"></i></button>
                 </form>
@@ -75,7 +76,7 @@ if ($result_categorias && $result_categorias->num_rows > 0) {
                 <div class="hf-user-menu">
                     <a href="#" class="hf-profile-circle" title="<?= $translator->__("Mi perfil") ?>">
                         <?php if (isset($_SESSION['usuario']['imagen']) && !empty($_SESSION['usuario']['imagen'])): ?>
-                            <img src="/Pagina-web-PI/<?= $_SESSION['usuario']['imagen'] ?>" alt="<?= $translator->__("Foto de perfil") ?>">
+                            <img src="/Pagina-web-PI/<?= ltrim($_SESSION['usuario']['imagen'], '/') ?>" alt="<?= $translator->__("Foto de perfil") ?>">
                         <?php else: ?>
                             <i class="fas fa-user"></i>
                         <?php endif; ?>
@@ -90,7 +91,7 @@ if ($result_categorias && $result_categorias->num_rows > 0) {
                 </div>
             <?php else: ?>
                 <a href="/Pagina-web-PI/php/registro.php" class="hf-login-btn">
-                    <i class="fas fa-user"></i> <?= $translator->__("Iniciar sesión") ?>
+                    <i class="fas fa-user"></i> <span><?= $translator->__("Iniciar sesión") ?></span>
                 </a>
             <?php endif; ?>
         </div>
