@@ -1010,7 +1010,7 @@ body {
 
 /* Mejoras para el menú desplegable en móviles */
 .hf-menu-desplegable {
-  display: none; /* Oculto por defecto */
+  display: block; /* Cambiar a block para que exista en el DOM */
   position: fixed;
   top: 0;
   left: -100%; /* Fuera de pantalla */
@@ -1024,23 +1024,13 @@ body {
   overflow-x: hidden;
   transition: all 0.4s cubic-bezier(0.77, 0, 0.175, 1);
   border-right: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.hf-menu-desplegable::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100" fill="none"><rect width="100" height="100" fill="none"/><path d="M10 10L90 90M90 10L10 90" stroke="rgba(255,255,255,0.03)" stroke-width="2"/></svg>');
-  background-size: 30px 30px;
-  pointer-events: none;
+  visibility: hidden; /* Oculto pero en el DOM */
 }
 
 .hf-menu-desplegable.active {
   left: 0;
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+  visibility: visible; /* Hacerlo visible cuando está activo */
 }
 
 /* Botón para cerrar el menú */
@@ -1248,8 +1238,6 @@ body {
     right: -25px;
   }
 }
-
-/* ...existing code... */
 
 /* Sobrescribir estilos predeterminados de enlaces */
 .hf-main-header a:-webkit-any-link {

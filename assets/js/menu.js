@@ -48,7 +48,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // Evento para categorías
         const categoriaToggles = document.querySelectorAll('.hf-categoria-toggle');
         categoriaToggles.forEach(toggle => {
-            toggle.addEventListener('click', handleCategoriaToggle);
+            toggle.addEventListener('click', function(e) {
+                // Llamar a la función con el contexto correcto
+                handleCategoriaToggle.call(this, e);
+            });
         });
         
         // Evento para el menú de usuario
@@ -93,37 +96,33 @@ document.addEventListener('DOMContentLoaded', function() {
      * @param {Event} e - El evento click
      */
     function handleCategoriaToggle(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        // Solo manejar el toggle en móvil (en desktop usamos hover)
-        const isMobile = window.innerWidth <= 768;
-        
-        if (!isMobile) {
-            return;
-        }
-        
-        // Obtener el submenú de categorías relacionado con este toggle
-        const parent = this.parentElement;
-        const submenu = parent.querySelector('.hf-contenido-categorias');
-        
-        if (!submenu) return;
-        
-        // Cerrar otros submenús de categorías
-        const allCategorias = document.querySelectorAll('.hf-contenido-categorias');
-        allCategorias.forEach(menu => {
-            if (menu !== submenu && menu.classList.contains('visible')) {
-                menu.classList.remove('visible');
+        // Prevenir navegación solo en dispositivos móviles
+        if (window.innerWidth <= 768) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Obtener el submenú de categorías relacionado con este toggle
+            const parent = this.closest('.hf-menu-categorias');
+            const submenu = parent.querySelector('.hf-contenido-categorias');
+            
+            if (!submenu) return;
+            
+            // Cerrar otros submenús de categorías
+            const allCategorias = document.querySelectorAll('.hf-contenido-categorias');
+            allCategorias.forEach(menu => {
+                if (menu !== submenu && menu.classList.contains('visible')) {
+                    menu.classList.remove('visible');
+                }
+            });
+            
+            // Alternar el submenú actual de categorías
+            submenu.classList.toggle('visible');
+            
+            // Rotar el icono
+            const icon = this.querySelector('.hf-dropdown-arrow');
+            if (icon) {
+                icon.style.transform = submenu.classList.contains('visible') ? 'rotate(180deg)' : '';
             }
-        });
-        
-        // Alternar el submenú actual de categorías
-        submenu.classList.toggle('visible');
-        
-        // Rotar el icono
-        const icon = this.querySelector('i');
-        if (icon) {
-            icon.style.transform = submenu.classList.contains('visible') ? 'rotate(180deg)' : '';
         }
     }
     
@@ -255,6 +254,11 @@ document.addEventListener('DOMContentLoaded', function() {
             // Añadir al DOM
             header.appendChild(mobileMenu);
             mobileMenuCreated = true;
+            
+            // Asegurarse de que el menú esté inicialmente oculto
+            setTimeout(() => {
+                mobileMenu.style.display = 'block';
+            }, 100);
         }
     }
     
@@ -271,10 +275,18 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Aplicar estado al menú
         if (mobileMenu) {
+            console.log("Toggling menu to:", menuVisible ? "visible" : "hidden");
+            
+            // Añadir o quitar clase activa
             mobileMenu.classList.toggle('active', menuVisible);
             
             // Prevenir scroll cuando el menú está abierto
             document.body.style.overflow = menuVisible ? 'hidden' : '';
+            
+            // Forzar repintado del DOM para asegurar que la transición funcione
+            if (menuVisible) {
+                mobileMenu.style.visibility = 'visible';
+            }
             
             // Actualizar ícono del botón
             const icon = menuBtn.querySelector('i');
@@ -287,8 +299,21 @@ document.addEventListener('DOMContentLoaded', function() {
                     icon.classList.remove('fa-times');
                     icon.classList.add('fa-bars');
                     menuBtn.setAttribute('aria-expanded', 'false');
+                    
+                    // Dar tiempo para la transición antes de ocultar
+                    setTimeout(() => {
+                        if (!menuVisible) {
+                            mobileMenu.style.visibility = 'hidden';
+                        }
+                    }, 400); // Tiempo igual a la duración de la transición
                 }
             }
+        } else {
+            console.error("El menú móvil no está disponible");
+            // Crear el menú si no existe
+            checkAndCreateMobileMenu();
+            // Intentar de nuevo después de crearlo
+            setTimeout(() => toggleMenu(null, menuVisible), 100);
         }
     }
     
