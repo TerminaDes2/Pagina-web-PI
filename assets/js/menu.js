@@ -270,31 +270,47 @@ document.addEventListener('DOMContentLoaded', function() {
         menuVisible = force !== undefined ? force : !menuVisible;
         
         // Aplicar estado al menú
-        mobileMenu.classList.toggle('active', menuVisible);
-        
-        // Actualizar ícono del botón
-        const icon = menuBtn.querySelector('i');
-        if (icon) {
-            if (menuVisible) {
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-times');
-            } else {
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
+        if (mobileMenu) {
+            mobileMenu.classList.toggle('active', menuVisible);
+            
+            // Prevenir scroll cuando el menú está abierto
+            document.body.style.overflow = menuVisible ? 'hidden' : '';
+            
+            // Actualizar ícono del botón
+            const icon = menuBtn.querySelector('i');
+            if (icon) {
+                if (menuVisible) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                    menuBtn.setAttribute('aria-expanded', 'true');
+                } else {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                    menuBtn.setAttribute('aria-expanded', 'false');
+                }
             }
         }
-        
-        // Prevenir scroll cuando el menú está abierto
-        document.body.style.overflow = menuVisible ? 'hidden' : '';
     }
     
     /**
      * Maneja el cambio de tamaño de la ventana
      */
     function handleWindowResize() {
+        const isMobile = window.innerWidth <= 768;
+        
         // Si la ventana es grande y el menú está visible, cerrarlo
-        if (window.innerWidth > 768 && menuVisible) {
+        if (!isMobile && menuVisible) {
             toggleMenu(null, false);
+        }
+        
+        // Asegurar que el botón del menú solo aparece en móvil
+        if (menuBtn) {
+            menuBtn.style.display = isMobile ? 'flex' : 'none';
+        }
+        
+        // Si estamos en vista móvil, asegurar que el menú móvil está creado
+        if (isMobile && !mobileMenuCreated) {
+            checkAndCreateMobileMenu();
         }
     }
 });
