@@ -1084,6 +1084,37 @@ body {
   border-radius: 3px;
 }
 
+/* Estilos para elementos del menú móvil */
+.hf-mobile-menu-extras {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Espacio entre elementos */
+  margin-top: 30px; /* Espacio desde el menú */
+  padding: 15px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hf-mobile-search {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.hf-mobile-language {
+  align-self: center;
+  margin-top: 15px; /* Espacio adicional después de la búsqueda */
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  width: 80%;
+}
+
+/* Ajustar selector de idioma en menú móvil */
+.hf-mobile-language select {
+  width: 100%;
+  text-align: center;
+  padding: 10px;
+  font-size: 1.1rem;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   html, body {
