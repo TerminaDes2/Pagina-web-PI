@@ -218,7 +218,7 @@ if ($result) {
             <button onclick="mostrarFormCrear()" class="admin-button">
                 <i class="fas fa-plus"></i> <?= $translator->__("Nueva Categoría") ?>
             </button>
-            <a href="gestor_usuarios.php" class="admin-button">
+            <a href="admin.php" class="admin-button">
                 <i class="fas fa-arrow-left"></i> <?= $translator->__("Volver al Panel") ?>
             </a>
         </div>

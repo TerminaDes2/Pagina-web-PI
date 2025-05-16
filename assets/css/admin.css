@@ -877,6 +877,49 @@
     box-shadow: 0 1px 4px rgba(0,0,0,0.05);
   }
   
+  /* Arreglo para la imagen y título que se superponen */
+  .admin-table-mobile-view td[data-label="Título"] div,
+  .admin-table-mobile-view td[data-label="Title"] div {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .admin-table-mobile-view td[data-label="Título"] img,
+  .admin-table-mobile-view td[data-label="Title"] img {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 10px;
+    margin-left: 0;
+    border-radius: 8px;
+  }
+  
+  .admin-table-mobile-view td[data-label="Título"] span,
+  .admin-table-mobile-view td[data-label="Title"] span {
+    display: inline-block;
+    margin-top: 5px;
+    font-weight: 600;
+  }
+  
+  /* Arreglo para nombres de usuario que se superponen con la etiqueta */
+  .admin-table-mobile-view td[data-label="Nombre"],
+  .admin-table-mobile-view td[data-label="Name"] {
+    padding-top: 28px; /* Más espacio superior para la etiqueta */
+    min-height: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+  
+  .admin-table-mobile-view td[data-label="Nombre"] img,
+  .admin-table-mobile-view td[data-label="Name"] img {
+    margin-top: 8px;
+    align-self: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
   .admin-table-mobile-view td {
     display: block;
     padding: 8px 5px;
