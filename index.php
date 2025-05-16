@@ -92,6 +92,8 @@ while ($row = $resultPosts->fetch_assoc()) {
     <link rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="assets/js/Main.js" defer></script>
+    <link rel="stylesheet" href="assets/css/dark-mode.css">
+    <script src="assets/js/dark-mode.js" defer></script>
 </head>
 <body>
     <?php include 'includes/header.php'; ?>

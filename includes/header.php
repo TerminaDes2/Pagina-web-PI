@@ -4,6 +4,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Roboto+Slab:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <script src="/Pagina-web-PI/assets/js/menu.js" defer></script>
+
 <?php
 // Obtener categorías dinámicamente para el menú
 $categorias_menu = [];
@@ -74,6 +75,12 @@ if ($result_categorias && $result_categorias->num_rows > 0) {
                     <option value="es" <?= $_SESSION['idioma'] == 'es' ? 'selected' : '' ?>><?= $translator->__("Español") ?></option>
                 </select>
             </form>
+            <div class="hf-dark-mode-toggle">
+                <button id="darkModeToggle" class="dark-mode-btn" title="<?= $translator->__("Cambiar modo") ?>">
+                    <i class="fas fa-moon"></i>
+                    <i class="fas fa-sun"></i>
+                </button>
+            </div>
             <?php if (isset($_SESSION['usuario'])): ?>
                 <div class="hf-user-menu">
                     <a href="#" class="hf-profile-circle" title="<?= $translator->__("Mi perfil") ?>">
