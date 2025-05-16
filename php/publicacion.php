@@ -71,7 +71,7 @@ if ($resultAds->num_rows > 0) {
 /* Ingresa comentarios */
 if(!isset($_SESSION['usuario'])) {
   if(!isset($_GET['error'])) {
-    $id_entrada = $_GET['id'] ?? 0;
+    $id_entrada = isset($_GET['id']) ? $_GET['id'] : 0;
     $error = urlencode("Es necesario iniciar sesión para poder realizar comentarios.");
     header("Location: publicacion.php?id=$id_entrada&error=$error");
     exit();
@@ -187,7 +187,6 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
         ?>
         <p><strong><?= $translator->__("Fecha:") ?></strong> <?php echo $entrada['fecha']; ?></p>
         <p><strong><?= $translator->__("Categoría:") ?></strong> <?php echo $entrada['nombre_categoria']; ?></p>
-        <blockquote><?php echo $entrada['cita']; ?></blockquote>
         <div>
           <?php echo $contenidoConAnchors; ?>
         </div>
