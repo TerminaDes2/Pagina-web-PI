@@ -40,6 +40,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idioma'])) {
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
   <!-- Agregamos Font Awesome para los iconos -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <!-- Agregar soporte para modo oscuro -->
+  <link rel="stylesheet" href="../assets/css/dark-mode.css">
+  <script src="../assets/js/dark-mode.js" defer></script>
 </head>
 <body>
   <?php include '../includes/header.php'; ?>
