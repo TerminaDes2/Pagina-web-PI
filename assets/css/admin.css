@@ -793,6 +793,17 @@
     font-size: 0.8rem;
   }
   
+  /* Aumentar tamaño de celdas con nombre */
+  .admin-table td[data-label="Nombre"],
+  .admin-table td[data-label="Name"] {
+    height: auto;
+    min-height: 60px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    line-height: 0;
+    font-size: 1.0em;
+  }
+  
   .admin-container h1 {
     font-size: 1.8rem;
   }
@@ -898,26 +909,6 @@
     display: inline-block;
     margin-top: 5px;
     font-weight: 600;
-  }
-  
-  /* Arreglo para nombres de usuario que se superponen con la etiqueta */
-  .admin-table-mobile-view td[data-label="Nombre"],
-  .admin-table-mobile-view td[data-label="Name"] {
-    padding-top: 28px; /* Más espacio superior para la etiqueta */
-    min-height: 70px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-  }
-  
-  .admin-table-mobile-view td[data-label="Nombre"] img,
-  .admin-table-mobile-view td[data-label="Name"] img {
-    margin-top: 8px;
-    align-self: center;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
   }
   
   .admin-table-mobile-view td {
