@@ -32,7 +32,11 @@
         </nav>
         <div class="hf-header-actions">
             <div class="hf-search-box">
-                <?php include $_SERVER['DOCUMENT_ROOT'] . '/Pagina-web-PI/php/buscador.php'; ?>
+                <!-- Buscador visible en cada archivo -->
+                <form action="/Pagina-web-PI/php/buscador.php" method="get">
+                    <input type="text" name="busqueda" placeholder="Buscador">
+                    <input type="submit" name="enviar" value="?">
+                </form>
             </div>
             <div class="hf-social-icons">
                 <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>

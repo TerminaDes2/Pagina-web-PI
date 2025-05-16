@@ -87,7 +87,7 @@ while ($row = $resultPosts->fetch_assoc()) {
         </div>
         <div class="hero-image">
             <?php if (!empty($banner['imagen'])): ?>
-            <img src="php/<?= htmlspecialchars($banner['imagen']) ?>" alt="<?= htmlspecialchars($banner['titulo']) ?>">
+            <img src="/Pagina-web-PI/imagenes/<?= htmlspecialchars($banner['imagen']) ?>" alt="<?= htmlspecialchars($banner['titulo']) ?>">
             <?php endif; ?>
         </div>
     </section>
@@ -100,7 +100,7 @@ while ($row = $resultPosts->fetch_assoc()) {
                 <?php foreach ($articulos as $articulo): ?>
                 <article class="carousel-item" onclick="window.location.href='php/publicacion.php?id=<?= $articulo['id_entrada'] ?>';" style="cursor:pointer;">
                     <?php if (!empty($articulo['imagen'])): ?>
-                    <img src="php/<?= htmlspecialchars($articulo['imagen']) ?>" alt="<?= htmlspecialchars($articulo['titulo']) ?>">
+                    <img src="/Pagina-web-PI/imagenes/<?= htmlspecialchars($articulo['imagen']) ?>" alt="<?= htmlspecialchars($articulo['titulo']) ?>">
                     <?php endif; ?>
                     <h3><?= htmlspecialchars($articulo['titulo']) ?></h3>
                     
