@@ -62,6 +62,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit;
         }
 
+        // Validar formato del correo electrónico
+        if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+            echo json_encode(["error" => $translator->__("Por favor, ingresa una dirección de correo electrónico válida."), "icon" => "warning"]);
+            exit;
+        }
+
+        // Verificar si el correo ya está en proceso de verificación
+        if (isset($_SESSION['registro']) && $_SESSION['registro']['correo'] === $correo) {
+            echo json_encode([
+                "info" => $translator->__("Ya hemos enviado un código de verificación a este correo. Por favor, verifica tu bandeja de entrada."),
+                "showVerify" => true,
+                "icon" => "info"
+            ]);
+            exit;
+        }
+
         $foto_perfil = NULL; //Inicializamos la variable en NULL
 
         if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] == 0) {
@@ -75,35 +91,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $tipo_permitido = ['image/jpeg', 'image/png', 'image/gif'];
 
             if (!in_array($foto_tipo, $tipo_permitido)) {
-                echo $translator->__("El archivo subido no es una imagen valida.");
+                echo json_encode(["error" => $translator->__("El archivo subido no es una imagen válida."), "icon" => "error"]);
                 exit;
             }
 
             //Validación del tamaño del archivo
             if ($foto_size > 2 * 1024 * 1024) {
-                echo $translator->__("El archivo es demasiado grande. El tamaño permitido es 2MB.");
+                echo json_encode(["error" => $translator->__("El archivo es demasiado grande. El tamaño permitido es 2MB."), "icon" => "error"]);
                 exit;
             }
 
             //Generar un nombre único para la imagen
             $foto_nombre_unico = uniqid('foto_', true) . '.' . pathinfo($foto_nombre, PATHINFO_EXTENSION);
 
-            //Ruta donde guarda la foto
-            $directorio = '../uploads/perfiles/'; //Puedes cambiar esta ruta según tus necesidades
+            //Ruta donde guarda la foto - crear directorio específico para usuarios
+            $directorio = '../uploads/usuarios/';
             if (!is_dir($directorio)) {
                 mkdir($directorio, 0777, true); //Crear el directorio si no existe
             }
 
             //Mover el archivo a la carpeta de destino
             $foto_ruta = $directorio . $foto_nombre_unico;
-            /*if (move_uploaded_file($foto['tmp_name'], $foto_ruta)) {
-                echo "Imagen cargada correctamente.";
+            if (move_uploaded_file($foto_tmp, $foto_ruta)) {
+                $foto_perfil = 'uploads/usuarios/' . $foto_nombre_unico; // Guardar ruta relativa para la BD
             } else {
-                echo "Error al cargar la imagen.";
-            }*/
-            move_uploaded_file($foto_tmp, $foto_ruta);
-
-            $foto_perfil = $foto_ruta; //Guardar la ruta de la imagen
+                echo json_encode(["error" => $translator->__("Error al subir la imagen. Inténtalo de nuevo."), "icon" => "error"]);
+                exit;
+            }
         }
         
         $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE correo = :correo");
@@ -123,9 +137,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           'primer_apellido'   => $primer_apellido,
           'segundo_apellido'  => $segundo_apellido,
           'correo'            => $correo,
-          'contra'            => $contra,
+          'contra'            => $hashed_password, // Almacenar la contraseña ya hasheada
           'codigo'            => $codigo,
-          'imagen'            => $foto_perfil //Guardar la ruta de la imagen
+          'imagen'            => $foto_perfil, //Guardar la ruta de la imagen
+          'timestamp'         => time() // Añadir timestamp para control de expiración
         ];
 
         // Enviar correo
@@ -172,7 +187,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo json_encode(["success" => $translator->__("Código enviado al correo."), "icon" => "success"]);
         } catch (Exception $e) {
             error_log("Error al enviar el correo: {$mail->ErrorInfo}"); // Registrar el error en el log
-            echo json_encode(["error" => $translator->__("Hubo un problema al enviar el correo. Por favor, intenta más tarde."), "icon" => "error"]);
+            
+            // Verificar si es un problema con el correo electrónico
+            if (strpos($mail->ErrorInfo, 'could not be resolved') !== false || 
+                strpos($mail->ErrorInfo, 'domain not found') !== false) {
+                echo json_encode(["error" => $translator->__("El correo electrónico proporcionado parece no existir o no es válido. Por favor, verifica e intenta nuevamente."), "icon" => "error"]);
+            } else {
+                echo json_encode(["error" => $translator->__("Hubo un problema al enviar el correo. Por favor, intenta más tarde."), "icon" => "error"]);
+            }
         }
         exit;
 
@@ -183,6 +205,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if (empty($correo) || empty($contra)) {
             echo json_encode(["error" => $translator->__("Por favor, ingresa tanto el correo como la contraseña."), "icon" => "warning"]);
+            exit;
+        }
+        
+        // Validar formato del correo electrónico
+        if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+            echo json_encode(["error" => $translator->__("Por favor, ingresa una dirección de correo electrónico válida."), "icon" => "warning"]);
             exit;
         }
        
@@ -227,26 +255,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($codigoIngresado == $datos['codigo']) {
             try {
                 $perfil = 'cliente';
-                $hashed_password = password_hash($datos['contra'], PASSWORD_DEFAULT);
-                $imagen_default = ''; // Campo imagen por defecto (vacío)
-
+                
+                // Usar la imagen guardada en la sesión o dejar vacío
+                $imagen = !empty($datos['imagen']) ? $datos['imagen'] : '';
+                
                 $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, primer_apellido, segundo_apellido, correo, contra, imagen, perfil) VALUES (?, ?, ?, ?, ?, ?, ?)");
                 $stmt->execute([
                     $datos['nombre'], 
                     $datos['primer_apellido'], 
                     $datos['segundo_apellido'], 
                     $datos['correo'], 
-                    $hashed_password,
-                    $imagen_default,
+                    $datos['contra'],
+                    $imagen,
                     $perfil
                 ]);
 
+                // Obtener el ID del usuario recién registrado
+                $user_id = $pdo->lastInsertId();
+
                 // Iniciar sesión automáticamente
                 $_SESSION['usuario'] = [
+                    'id_usuario'      => $user_id,
                     'nombre'          => $datos['nombre'],
                     'primer_apellido' => $datos['primer_apellido'],
                     'segundo_apellido'=> $datos['segundo_apellido'],
-                    'correo'          => $datos['correo']
+                    'correo'          => $datos['correo'],
+                    'perfil'          => $perfil,
+                    'imagen'          => $imagen // Incluir la imagen en la sesión
                 ];
 
                 unset($_SESSION['registro']);
@@ -380,6 +415,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $(document).ready(function () {
       $("#form-left").on("submit", function (e) {
         e.preventDefault();
+        
+        // Deshabilitar el botón de registro para evitar múltiples clics
+        const submitBtn = $(this).find('button[type="submit"]');
+        submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> ' + 
+          '<?= $translator->__("Procesando...") ?>');
+        
         $.ajax({
           url: "registro.php",
           type: "POST",
@@ -393,6 +434,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                   icon: res.icon || 'success',
                   showConfirmButton: false,
                   timer: 2000
+                }).then(() => {
+                  $("#verifyModal").show();
+                  $(".modal").addClass("active");
+                });
+              } else if (res.info && res.showVerify) {
+                // Si el usuario ya tiene un código pendiente
+                Swal.fire({
+                  title: res.info,
+                  icon: res.icon || 'info',
+                  showConfirmButton: true
                 }).then(() => {
                   $("#verifyModal").show();
                   $(".modal").addClass("active");
@@ -412,12 +463,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 showConfirmButton: true
               });
             }
+            // Reactivar el botón
+            submitBtn.prop('disabled', false).html('<?= $translator->__("Crear cuenta") ?>');
           },
+          error: function() {
+            Swal.fire({
+              title: '<?= $translator->__("Error de conexión") ?>',
+              text: '<?= $translator->__("Hubo un problema al procesar tu solicitud. Inténtalo más tarde.") ?>',
+              icon: 'error',
+              showConfirmButton: true
+            });
+            // Reactivar el botón
+            submitBtn.prop('disabled', false).html('<?= $translator->__("Crear cuenta") ?>');
+          }
         });
       });
 
+      // Mismo tratamiento para el formulario de verificación
       $("#verifyForm").on("submit", function (e) {
         e.preventDefault();
+        const submitBtn = $(this).find('button[type="submit"]');
+        submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> ' +
+          '<?= $translator->__("Verificando...") ?>');
+        
         $.ajax({
           url: "registro.php",
           type: "POST",
@@ -449,7 +517,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 showConfirmButton: true
               });
             }
+            // Reactivar el botón
+            submitBtn.prop('disabled', false).html('<?= $translator->__("Verificar y Registrar") ?>');
           },
+          error: function() {
+            Swal.fire({
+              title: '<?= $translator->__("Error de conexión") ?>',
+              text: '<?= $translator->__("Hubo un problema al procesar tu solicitud. Inténtalo más tarde.") ?>',
+              icon: 'error',
+              showConfirmButton: true
+            });
+            // Reactivar el botón
+            submitBtn.prop('disabled', false).html('<?= $translator->__("Verificar y Registrar") ?>');
+          }
         });
       });
 

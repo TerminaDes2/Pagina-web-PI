@@ -86,7 +86,7 @@ if ($result_categorias && $result_categorias->num_rows > 0) {
                     <div class="hf-user-dropdown">
                         <a href="/Pagina-web-PI/php/perfil.php"><?= $translator->__("Mi Perfil") ?></a>
                         <?php if ($_SESSION['usuario']['perfil'] === 'admin'): ?>
-                            <a href="/Pagina-web-PI/php/gestor_usuarios.php"><?= $translator->__("Panel Admin") ?></a>
+                            <a href="/Pagina-web-PI/php/admin.php"><?= $translator->__("Panel Admin") ?></a>
                         <?php endif; ?>
                         <a href="/Pagina-web-PI/includes/cerrarsesion.php"><?= $translator->__("Cerrar sesión") ?></a>
                     </div>
