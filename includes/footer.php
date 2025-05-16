@@ -29,8 +29,8 @@
             <h3><?= $translator->__("Síguenos") ?></h3>
             <div class="hf-social-icons-container">
                 <a href="#" class="hf-social-icon facebook"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" class="hf-social-icon twitter"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="hf-social-icon instagram"><i class="fab fa-instagram"></i></a>
+                <a href="https://x.com/POALCE1" class="hf-social-icon twitter"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.instagram.com/poalse5/" class="hf-social-icon instagram"><i class="fab fa-instagram"></i></a>
             </div>
         </div>
         <div class="hf-footer-copyright">

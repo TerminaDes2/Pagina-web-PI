@@ -64,8 +64,8 @@ if ($result_categorias && $result_categorias->num_rows > 0) {
             </div>
             <div class="hf-social-icons">
                 <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
-                <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="https://x.com/POALCE1" title="Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.instagram.com/poalse5/" title="Instagram"><i class="fab fa-instagram"></i></a>
             </div>
             <form method="POST" class="language-form">
                 <select name="idioma" onchange="this.form.submit()">

@@ -27,6 +27,9 @@ if (isset($_POST['idioma'])) {
     <title><?= $translator->__("Contacto - POALCE") ?></title>
     <link rel="stylesheet" href="/Pagina-web-PI/assets/css/Contacto.css">
     <script src="/Pagina-web-PI/assets/js/Contacto.js" defer></script>
+    <!-- Agregar jQuery y SweetAlert2 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <?php include(__DIR__ . '/../includes/header.php'); ?>
@@ -39,7 +42,7 @@ if (isset($_POST['idioma'])) {
             <div>
                 <h2><?= $translator->__("Información") ?></h2>
                 <p><strong><?= $translator->__("Dirección:") ?></strong> <?= $translator->__("Facultad de Ingeniería Electromecánica, Universidad de Colima, Manzanillo, Colima, México.") ?></p>
-                <p><strong><?= $translator->__("Email:") ?></strong> POALCE@gmail.com</p>
+                <p><strong><?= $translator->__("Email:") ?></strong> contactopoalce@gmail.com</p>
                 <p><strong><?= $translator->__("Horario:") ?></strong> <?= $translator->__("Lunes a Viernes de 7 am a 2:30 pm") ?></p>
             </div>
             <div class="mapa">
@@ -76,7 +79,7 @@ if (isset($_POST['idioma'])) {
 
         <div class="formulario">
             <h2><?= $translator->__("Cualquier duda o aclaración. Envíanos un mensaje:") ?></h2>
-            <form action="/Pagina-web-PI/includes/Contacto.php" method="POST">
+            <form id="formulario-contacto" method="POST">
                 <label for="nombre"><?= $translator->__("Nombre:") ?></label>
                 <input type="text" name="nombre" id="nombre" required>
 
@@ -131,10 +134,78 @@ if (isset($_POST['idioma'])) {
         
         document.getElementById("subirArriba").addEventListener("click", subirArriba);
         
-        // Asegurarnos de que el formulario de contacto funcione con el editor de texto
-        document.querySelector('form').addEventListener('submit', function() {
-            document.querySelector('textarea[name="mensaje-hidden"]').value = 
-                document.getElementById('mensaje').innerHTML;
+        // Manejar envío del formulario de contacto usando AJAX y SweetAlert2
+        $(document).ready(function() {
+            $("#formulario-contacto").on("submit", function(e) {
+                e.preventDefault();
+                
+                // Comprobar que el mensaje no está vacío
+                const mensajeContenido = document.getElementById('mensaje').innerHTML.trim();
+                if (!mensajeContenido) {
+                    Swal.fire({
+                        title: '<?= $translator->__("Por favor escribe un mensaje") ?>',
+                        icon: 'warning',
+                        showConfirmButton: true
+                    });
+                    return;
+                }
+                
+                // Copiar el contenido del editor al campo oculto
+                $("textarea[name='mensaje-hidden']").val(mensajeContenido);
+                
+                // Deshabilitar el botón de enviar durante el proceso
+                const submitBtn = $(this).find('button[type="submit"]');
+                submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> <?= $translator->__("Enviando...") ?>');
+                
+                // Serializar los datos del formulario
+                const formData = $(this).serialize();
+                console.log("Datos a enviar:", formData);
+                
+                $.ajax({
+                    url: "/Pagina-web-PI/includes/Contacto.php",
+                    type: "POST",
+                    data: formData,
+                    dataType: "json",
+                    success: function(response) {
+                        console.log("Respuesta del servidor:", response);
+                        
+                        if (response.success) {
+                            Swal.fire({
+                                title: response.success,
+                                icon: response.icon || 'success',
+                                showConfirmButton: true
+                            }).then(() => {
+                                // Limpiar el formulario después de éxito
+                                $("#formulario-contacto")[0].reset();
+                                document.getElementById('mensaje').innerHTML = '';
+                            });
+                        } else if (response.error) {
+                            Swal.fire({
+                                title: response.error,
+                                icon: response.icon || 'error',
+                                text: response.details || '',
+                                showConfirmButton: true
+                            });
+                        }
+                        
+                        // Reactivar el botón de envío
+                        submitBtn.prop('disabled', false).html('<?= $translator->__("Enviar") ?>');
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error AJAX:", status, error, xhr.responseText);
+                        
+                        Swal.fire({
+                            title: '<?= $translator->__("Error de conexión") ?>',
+                            text: '<?= $translator->__("No se pudo procesar tu solicitud. Inténtalo más tarde.") ?>',
+                            icon: 'error',
+                            showConfirmButton: true
+                        });
+                        
+                        // Reactivar el botón de envío
+                        submitBtn.prop('disabled', false).html('<?= $translator->__("Enviar") ?>');
+                    }
+                });
+            });
         });
     </script>
 </body>

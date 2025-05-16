@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idioma'])) {
       <p><?= $translator->__('Estos Términos se rigen por las leyes de México. Para cualquier controversia, los tribunales de Ciudad de México serán competentes.') ?></p>
 
       <h2>10. <?= $translator->__('Contacto') ?></h2>
-      <p><?= $translator->__('Para dudas o reclamaciones, escríbenos a support@vocesdelproceso.com.') ?></p>
+      <p><?= $translator->__('Para dudas o reclamaciones, escríbenos a contactopoalce@gmail.com.') ?></p>
 
       <p><em><?= $translator->__('Última actualización:') ?> <?= date('d/m/Y') ?></em></p>
     </div>
