@@ -3,5 +3,5 @@
 if (!defined('host')) define('host', 'localhost');
 if (!defined('dbname')) define('dbname', 'blog');
 if (!defined('dbuser')) define('dbuser', 'root');
-if (!defined('dbpass')) define('dbpass', '');
+if (!defined('dbpass')) define('dbpass', 'administrador');
 ?>

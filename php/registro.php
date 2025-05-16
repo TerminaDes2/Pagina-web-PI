@@ -150,8 +150,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mail->isSMTP();
             $mail->Host = 'smtp.gmail.com';
             $mail->SMTPAuth = true;
-            $mail->Username = 'ballatomario1105@gmail.com';
-            $mail->Password = 'sbeu lcaj evzk bysk';
+            $mail->Username = 'contactopoalce@gmail.com';
+            $mail->Password = 'umrv wpyz taio bgwu';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Cambiar a constante recomendada
             $mail->Port = 587;
 
@@ -166,7 +166,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mail->CharSet = 'UTF-8';
             $mail->Encoding = 'base64';
 
-            $mail->setFrom('ballatomario1105@gmail.com', 'Registro');
+            $mail->setFrom('contactopoalce@gmail.com', 'Registro');
             $mail->addAddress($correo, "$nombre $primer_apellido");
 
             $mail->isHTML(true);
@@ -326,8 +326,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mail->isSMTP();
             $mail->Host = 'smtp.gmail.com';
             $mail->SMTPAuth = true;
-            $mail->Username = 'ballatomario1105@gmail.com';
-            $mail->Password = 'sbeu lcaj evzk bysk';
+            $mail->Username = 'contactopoalce@gmail.com';
+            $mail->Password = 'umrv wpyz taio bgwu';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Cambiar a constante recomendada
             $mail->Port = 587;
 
@@ -342,7 +342,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mail->CharSet = 'UTF-8';
             $mail->Encoding = 'base64';
 
-            $mail->setFrom('ballatomario1105@gmail.com', 'Restaurar acceso a tu cuenta');
+            $mail->setFrom('contactopoalce@gmail.com', 'Restaurar acceso a tu cuenta');
             $mail->addAddress($email, "$nombre $primer_apellido");
 
             $mail->isHTML(true);
