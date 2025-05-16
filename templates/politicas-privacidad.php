@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idioma'])) {
     <div class="noticia">
       <h2>1. <?= $translator->__('Responsable del tratamiento') ?></h2>
       <p><strong><?= $translator->__('Titular:') ?></strong> Voces del Proceso</p>
-      <p><strong><?= $translator->__('Correo de contacto:') ?></strong> privacy@vocesdelproceso.com</p>
+      <p><strong><?= $translator->__('Correo de contacto:') ?></strong> contactopoalce@gmail.com</p>
 
       <h2>2. <?= $translator->__('Datos que recopilamos') ?></h2>
       <p><strong><?= $translator->__('Registro de usuario:') ?></strong> <?= $translator->__('nombre de usuario, correo electrónico, contraseña (almacenada cifrada).') ?></p>
@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idioma'])) {
       <p><strong><?= $translator->__('Comentarios y logs:') ?></strong> <?= $translator->__('hasta 3 años para cumplimiento legal y seguridad.') ?></p>
 
       <h2>7. <?= $translator->__('Derechos de los usuarios') ?></h2>
-      <p><?= $translator->__('Puedes ejercer los derechos de acceso, rectificación, supresión, oposición y portabilidad enviando un correo a privacy@vocesdelproceso.com.') ?></p>
+      <p><?= $translator->__('Puedes ejercer los derechos de acceso, rectificación, supresión, oposición y portabilidad enviando un correo a contactopoalce@gmail.com.') ?></p>
 
       <h2>8. <?= $translator->__('Seguridad') ?></h2>
       <p><?= $translator->__('Implementamos medidas técnicas (cifrado de contraseñas, HTTPS, firewalls) y organizativas para proteger tus datos.') ?></p>
