@@ -288,6 +288,9 @@ if ($result) {
                                         <i class="fas fa-trash-alt"></i> <?= $translator->__("Eliminar") ?>
                                     </button>
                                 </form>
+                                <a href="../php/explorar.php?modo=categorias&cat=<?= $cat['id_categoria'] ?>" class="admin-button" target="_blank">
+                                    <i class="fas fa-eye"></i> <?= $translator->__("Ver") ?>
+                                </a>
                             </td>
                         </tr>
                         <?php endforeach; ?>

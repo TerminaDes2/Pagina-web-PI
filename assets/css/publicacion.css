@@ -436,6 +436,7 @@ main img:hover {
 /* Mostrar comentarios */
 .comentario-container {
   margin-top: 20px;
+  width: 100%;
 }
 
 .comentario {
@@ -445,25 +446,42 @@ main img:hover {
   padding: 15px;
   margin-bottom: 15px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
 }
 
 .usuario-info {
-  
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .avatar {
-  
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
 }
 
 .fecha {
   font-size: 0.85em;
   color: #777;
+  display: block;
 }
 
 .comentario-texto {
   font-size: 1em;
   color: #333;
   line-height: 1.4;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
 }
 
 /* Ocultar comentarios */
@@ -510,6 +528,49 @@ main img:hover {
   .titulo {
     padding: 25px 15px;
     border-radius: 18px;
+  }
+}
+
+/* Mejorar compatibilidad con móviles para comentarios */
+@media (max-width: 600px) {
+  .usuario-info {
+    flex-direction: row;
+    gap: 8px;
+  }
+  
+  .avatar {
+    width: 35px;
+    height: 35px;
+    margin-right: 8px;
+  }
+  
+  .comentario {
+    padding: 12px;
+  }
+  
+  .comentario-texto {
+    font-size: 0.95em;
+  }
+  
+  .comen_paragraph {
+    min-height: 80px;
+  }
+  
+  .btn_comen {
+    padding: 10px 20px;
+    font-size: 14px;
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+  }
+  
+  .comen_title {
+    font-size: 1.1rem;
+  }
+  
+  .men_titulo {
+    font-size: 1.2em;
+    text-align: center;
   }
 }
 
