@@ -800,36 +800,34 @@
     min-height: 60px;
     padding-top: 15px;
     padding-bottom: 15px;
-    line-height: 0;
-    font-size: 1.0em;
+    line-height: 1.4;
+    font-size: 1.05em;
+    display: flex;
+    align-items: center;
+    padding-left: 120px; /* Aumentar espacio para la etiqueta */
   }
   
-  .admin-container h1 {
-    font-size: 1.8rem;
+  /* Mejorar la visualización de fotos de perfil */
+  .admin-table td[data-label="Nombre"] img,
+  .admin-table td[data-label="Name"] img {
+    width: 45px !important;
+    height: 45px !important;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #719743;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+    transition: all 0.3s ease;
+    margin-right: 10px; /* Espacio entre foto y nombre */
+    margin-left: 10px;  /* Aumentar margen izquierdo */
   }
   
-  .admin-container h2 {
-    font-size: 1.3rem;
-  }
-  
-  .admin-tabs {
-    gap: 5px;
-    flex-wrap: wrap;
-  }
-  
-  .admin-tab {
-    padding: 10px 15px;
-    font-size: 0.9rem;
-    flex: 1 1 45%;
-    text-align: center;
-    margin-bottom: 5px;
-  }
-  
-  .admin-button i,
-  .admin-container button i,
-  .admin-tab i,
-  .admin-link i {
-    margin-right: 4px;
+  .admin-table td[data-label="Nombre"]:before,
+  .admin-table td[data-label="Name"]:before {
+    width: 90px; /* Ancho fijo mayor para la etiqueta */
+    text-align: left;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 15px; /* Mover etiqueta más a la izquierda */
   }
   
   /* Mejoras móviles - Pestañas de usuario */
