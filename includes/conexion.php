@@ -1,17 +1,15 @@
 <?php
-// Incluir el archivo de configuración si aún no ha sido incluido
-if (!defined('host')) {
-    require_once __DIR__ . '/db_config.php';
-}
+// Incluye la configuración de base de datos
+require_once __DIR__ . '/db_config.php';
 
-// Establecer la conexión a la base de datos
+// Crea la conexión
 $conn = new mysqli(host, dbuser, dbpass, dbname);
 
-// Verificar la conexión
+// Verifica conexión
 if ($conn->connect_error) {
-    die("Error en la conexión: " . $conn->connect_error);
+    die("Error de conexión: " . $conn->connect_error);
 }
 
-// Establecer la codificación de caracteres
+// Establece la codificación UTF-8
 $conn->set_charset("utf8");
 ?>

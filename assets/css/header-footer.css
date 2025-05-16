@@ -238,6 +238,8 @@ body {
   margin-left: 5px;
   font-size: 0.7rem;
   transition: var(--transition-normal);
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .hf-menu-categorias:hover .hf-dropdown-arrow {
@@ -1101,18 +1103,145 @@ body {
 
 .hf-mobile-language {
   align-self: center;
-  margin-top: 15px; /* Espacio adicional después de la búsqueda */
+  margin-top: 15px; 
   padding-top: 15px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   width: 80%;
 }
 
-/* Ajustar selector de idioma en menú móvil */
 .hf-mobile-language select {
   width: 100%;
   text-align: center;
   padding: 10px;
-  font-size: 1.1rem;
+  font-size: 1rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+}
+
+/* Mejorar la apariencia de las opciones del selector */
+.hf-mobile-language select option {
+  font-size: 0.9rem;
+  padding: 8px;
+  background-color: var(--secondary-color); /* Color de fondo consistente */
+}
+
+/* Evitar que las opciones sean demasiado grandes */
+@media (max-width: 768px) {
+  select {
+    font-size: 16px !important; /* Tamaño de fuente estándar para evitar zoom en iOS */
+  }
+  
+  select option {
+    font-size: 16px !important;
+    padding: 5px !important;
+  }
+  
+  /* Estilizar el contenedor del menú desplegable para mejorar la separación */
+  .hf-mobile-menu-extras {
+    gap: 25px;
+    padding: 20px 0;
+  }
+  
+  /* Asegurar que los elementos del menú móvil sean clicables */
+  .hf-menu-desplegable a.hf-menu-link {
+    display: block;
+    width: 100%;
+    padding: 12px 15px;
+  }
+  
+  /* Hacer que la flecha sea un elemento distintivo y clicable */
+  .hf-dropdown-arrow {
+    padding: 8px;
+    margin-left: auto;
+    position: relative;
+  }
+}
+
+/* Ajustes para el menú desplegable móvil */
+.hf-menu-desplegable .hf-menu-categorias {
+  position: relative;
+  width: 100%;
+}
+
+.hf-menu-desplegable .hf-contenido-categorias {
+  position: static;
+  display: none;
+  opacity: 1;
+  transform: none;
+  background: transparent;
+  box-shadow: none;
+  border: none;
+  border-radius: 0;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 5px 0;
+}
+
+.hf-menu-desplegable .hf-contenido-categorias.visible {
+  display: block;
+  margin-left: 15px; /* Sangría para indicar jerarquía */
+  padding: 5px 0;
+}
+
+.hf-menu-desplegable .hf-contenido-categorias::before {
+  display: none; /* Quitar decoraciones innecesarias */
+}
+
+.hf-menu-desplegable .hf-contenido-categorias a {
+  padding: 10px 20px;
+  font-size: 0.95em;
+  border-left: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Ajustes para el botón de categorías */
+.hf-menu-desplegable .hf-categoria-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hf-menu-desplegable .hf-dropdown-arrow {
+  margin-left: 8px;
+  padding: 5px;
+  transition: transform 0.3s ease;
+  pointer-events: auto; /* Asegurar que es clicable */
+}
+
+/* Clase para controlar la rotación de la flecha */
+.hf-menu-desplegable .hf-dropdown-arrow.rotated {
+  transform: rotate(180deg);
+}
+
+/* Estilo para cuando el menú está activo */
+.hf-menu-desplegable .hf-categoria-toggle.active {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-left: 3px solid var(--accent-color);
+}
+
+@media (max-width: 768px) {
+  
+  /* Asegurar que los elementos del menú móvil son clicables */
+  .hf-menu-desplegable .hf-menu-link {
+    width: 100%;
+    padding: 12px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  /* Hacer el botón de flecha más grande y distintivo */
+  .hf-menu-desplegable .hf-dropdown-arrow {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+  }
 }
 
 /* Responsive */
@@ -1279,4 +1408,33 @@ body {
 
 .hf-main-header a:hover {
   text-decoration: underline;
+}
+
+/* Mejoras para alinear el texto y el ícono en el menú de Noticias */
+.hf-categoria-toggle {
+  display: flex !important;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.hf-categoria-toggle .hf-menu-icon {
+  margin-right: 8px;
+}
+
+.hf-categoria-toggle .hf-dropdown-arrow {
+  margin-left: 5px;
+}
+
+/* Ajustes específicos para el menú móvil */
+.hf-menu-desplegable .hf-categoria-toggle {
+  display: flex !important;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.hf-menu-desplegable .hf-categoria-toggle .hf-dropdown-arrow {
+  position: relative;
+  right: 0;
+  margin-left: auto;
 }
