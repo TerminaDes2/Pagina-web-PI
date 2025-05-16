@@ -255,7 +255,8 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
                     $nombre_completo = $row['nombre'] . ' ' . $row['primer_apellido'] . ' ' . $row['segundo_apellido'];
                     $fecha = $row['fecha'];
                     $descripcion = htmlspecialchars($row['descripcion']);
-                    $imagen = $row['imagen'];
+                    // Corregir la ruta de la imagen
+                    $imagen = !empty($row['imagen']) ? '/Pagina-web-PI/' . $row['imagen'] : '/Pagina-web-PI/assets/img/default-avatar.png';
                     echo "
                     <div class='comentario-container'>
                       <div class='comentario'>
