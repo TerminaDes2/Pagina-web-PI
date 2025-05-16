@@ -27,6 +27,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idioma'])) {
     exit();
 }
 
+// Agregar manejo de mensajes y errores
+$mensaje = '';
+$error = '';
+
+if (isset($_GET['mensaje'])) {
+    $mensaje = htmlspecialchars($_GET['mensaje']);
+}
+
+if (isset($_GET['error'])) {
+    $error = htmlspecialchars($_GET['error']);
+}
+
 // Manejar acciones de usuarios
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['accion']) && isset($_POST['id_usuario'])) {
@@ -41,15 +53,77 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($_POST['accion'] === 'hacer_admin') {
             $stmt = $conn->prepare("UPDATE usuarios SET perfil = 'admin' WHERE id_usuario = ?");
-        } elseif ($_POST['accion'] === 'quitar_admin') {
-            $stmt = $conn->prepare("UPDATE usuarios SET perfil = 'usuario' WHERE id_usuario = ?");
-        } elseif ($_POST['accion'] === 'eliminar_usuario') {
-            $stmt = $conn->prepare("DELETE FROM usuarios WHERE id_usuario = ?");
-        }
-        if (isset($stmt)) {
             $stmt->bind_param("i", $id_usuario);
             $stmt->execute();
             $stmt->close();
+        } elseif ($_POST['accion'] === 'quitar_admin') {
+            $stmt = $conn->prepare("UPDATE usuarios SET perfil = 'usuario' WHERE id_usuario = ?");
+            $stmt->bind_param("i", $id_usuario);
+            $stmt->execute();
+            $stmt->close();
+        } elseif ($_POST['accion'] === 'eliminar_usuario') {
+            $conn->begin_transaction();
+            try {
+                // 1. Eliminar los comentarios del usuario
+                $stmt = $conn->prepare("DELETE FROM comentarios WHERE id_usuario = ?");
+                if (!$stmt) throw new Exception("Error al preparar borrado de comentarios: " . $conn->error);
+                $stmt->bind_param("i", $id_usuario);
+                if (!$stmt->execute()) throw new Exception("Error al borrar comentarios: " . $stmt->error);
+                $stmt->close();
+
+                // 2. Obtener todas las entradas del usuario
+                $stmt = $conn->prepare("SELECT id_entrada FROM entradas WHERE id_usuario = ?");
+                if (!$stmt) throw new Exception("Error al preparar consulta de entradas: " . $conn->error);
+                $stmt->bind_param("i", $id_usuario);
+                if (!$stmt->execute()) throw new Exception("Error al consultar entradas: " . $stmt->error);
+                $result = $stmt->get_result();
+                $entradas = [];
+                while ($row = $result->fetch_assoc()) {
+                    $entradas[] = $row['id_entrada'];
+                }
+                $stmt->close();
+
+                // 3. Para cada entrada, eliminar comentarios e imágenes asociadas
+                foreach ($entradas as $id_entrada) {
+                    $stmt = $conn->prepare("DELETE FROM comentarios WHERE id_entrada = ?");
+                    if (!$stmt) throw new Exception("Error al preparar borrado de comentarios de entrada: " . $conn->error);
+                    $stmt->bind_param("i", $id_entrada);
+                    if (!$stmt->execute()) throw new Exception("Error al borrar comentarios de entrada: " . $stmt->error);
+                    $stmt->close();
+
+                    $stmt = $conn->prepare("DELETE FROM imagenes WHERE id_entrada = ?");
+                    if (!$stmt) throw new Exception("Error al preparar borrado de imágenes: " . $conn->error);
+                    $stmt->bind_param("i", $id_entrada);
+                    if (!$stmt->execute()) throw new Exception("Error al borrar imágenes: " . $stmt->error);
+                    $stmt->close();
+                }
+
+                // 4. Eliminar todas las entradas del usuario
+                if (count($entradas) > 0) {
+                    $stmt = $conn->prepare("DELETE FROM entradas WHERE id_usuario = ?");
+                    if (!$stmt) throw new Exception("Error al preparar borrado de entradas: " . $conn->error);
+                    $stmt->bind_param("i", $id_usuario);
+                    if (!$stmt->execute()) throw new Exception("Error al borrar entradas: " . $stmt->error);
+                    $stmt->close();
+                }
+
+                // 5. Finalmente, eliminar el usuario
+                $stmt = $conn->prepare("DELETE FROM usuarios WHERE id_usuario = ?");
+                if (!$stmt) throw new Exception("Error al preparar borrado de usuario: " . $conn->error);
+                $stmt->bind_param("i", $id_usuario);
+                if (!$stmt->execute()) throw new Exception("Error al borrar usuario: " . $stmt->error);
+                $stmt->close();
+
+                // Confirmar la transacción
+                $conn->commit();
+                header("Location: gestor_usuarios.php?mensaje=Usuario+eliminado+correctamente");
+                exit();
+            } catch (Exception $e) {
+                $conn->rollback();
+                // Redirigir con el error para que siempre se muestre en la interfaz
+                header("Location: gestor_usuarios.php?error=" . urlencode("Error al eliminar usuario: " . $e->getMessage()));
+                exit();
+            }
         }
     }
 
@@ -57,15 +131,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['accion']) && isset($_POST['id_entrada'])) {
         $id_entrada = intval($_POST['id_entrada']);
         if ($_POST['accion'] === 'eliminar_publicacion') {
-            $stmt = $conn->prepare("DELETE FROM entradas WHERE id_entrada = ?");
-            $stmt->bind_param("i", $id_entrada);
-            $stmt->execute();
-            $stmt->close();
+            // Iniciar transacción
+            $conn->begin_transaction();
             
-            // Si se está eliminando desde la vista de usuario, redirigir allí
-            if (isset($_POST['vista_usuario']) && isset($_POST['id_usuario_vista'])) {
-                $id_usuario_vista = intval($_POST['id_usuario_vista']);
-                header("Location: gestor_usuarios.php?ver_usuario=" . $id_usuario_vista);
+            try {
+                // 1. Primero eliminar los comentarios asociados a la entrada
+                $stmt = $conn->prepare("DELETE FROM comentarios WHERE id_entrada = ?");
+                $stmt->bind_param("i", $id_entrada);
+                $stmt->execute();
+                $stmt->close();
+                
+                // 2. Eliminar las imágenes asociadas a la entrada
+                $stmt = $conn->prepare("DELETE FROM imagenes WHERE id_entrada = ?");
+                $stmt->bind_param("i", $id_entrada);
+                $stmt->execute();
+                $stmt->close();
+                
+                // 3. Finalmente eliminar la entrada
+                $stmt = $conn->prepare("DELETE FROM entradas WHERE id_entrada = ?");
+                $stmt->bind_param("i", $id_entrada);
+                $stmt->execute();
+                $stmt->close();
+                
+                // Confirmar la transacción
+                $conn->commit();
+                
+                // Si se está eliminando desde la vista de usuario, redirigir allí
+                if (isset($_POST['vista_usuario']) && isset($_POST['id_usuario_vista'])) {
+                    $id_usuario_vista = intval($_POST['id_usuario_vista']);
+                    header("Location: gestor_usuarios.php?ver_usuario=" . $id_usuario_vista . "&mensaje=Publicacion+eliminada+correctamente");
+                    exit();
+                } else {
+                    header("Location: gestor_usuarios.php?mensaje=Publicacion+eliminada+correctamente");
+                    exit();
+                }
+            } catch (Exception $e) {
+                // Revertir la transacción en caso de error
+                $conn->rollback();
+                header("Location: gestor_usuarios.php?error=Error+al+eliminar+publicación:+" . urlencode($e->getMessage()));
                 exit();
             }
         }
@@ -192,7 +295,8 @@ function agregarScriptDeteccionMovil() {
     <link rel="stylesheet" href="../assets/css/admin.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <!-- Reemplazar la referencia de Font Awesome con una versión que no cause problemas CORS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <?= agregarScriptDeteccionMovil() ?>
     <script>
         // Función mejorada para cambiar pestañas
@@ -415,6 +519,26 @@ function agregarScriptDeteccionMovil() {
             to { opacity: 1; transform: translateY(0); }
         }
         
+        /* Estilos para los mensajes de alerta */
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+        
+        .alert-success {
+            color: #3c763d;
+            background-color: #dff0d8;
+            border-color: #d6e9c6;
+        }
+        
+        .alert-danger {
+            color: #a94442;
+            background-color: #f2dede;
+            border-color: #ebccd1;
+        }
+        
         /* Añadir indicadores visuales para depuración si es necesario */
         .debug-outline {
             border: 2px solid red !important;
@@ -426,6 +550,17 @@ function agregarScriptDeteccionMovil() {
     
     <div class="admin-container">
         <h1><?= $translator->__("Gestor de Administración") ?></h1>
+        
+        <?php if (!empty($_GET['mensaje'])): ?>
+            <div class="alert alert-success">
+                <?= htmlspecialchars($_GET['mensaje']) ?>
+            </div>
+        <?php endif; ?>
+        <?php if (!empty($_GET['error'])): ?>
+            <div class="alert alert-danger">
+                <?= htmlspecialchars($_GET['error']) ?>
+            </div>
+        <?php endif; ?>
         
         <div class="admin-tabs">
             <button class="admin-tab active" data-tab="tab-usuarios" onclick="cambiarPestaña('tab-usuarios')">
@@ -575,6 +710,7 @@ function agregarScriptDeteccionMovil() {
                                     <a class="admin-link" href="?ver_usuario=<?= $usuario['id_usuario'] ?>">
                                         <i class="fas fa-eye"></i> <?= $translator->__("Ver Publicaciones y Comentarios") ?>
                                     </a>
+                                    
                                     <?php if ($usuario['perfil'] !== 'admin'): ?>
                                     <form method="POST" style="display:inline;">
                                         <input type="hidden" name="id_usuario" value="<?= $usuario['id_usuario'] ?>">
@@ -590,6 +726,7 @@ function agregarScriptDeteccionMovil() {
                                         </button>
                                     </form>
                                     <?php endif; ?>
+                                    
                                     <form method="POST" style="display:inline;">
                                         <input type="hidden" name="id_usuario" value="<?= $usuario['id_usuario'] ?>">
                                         <button class="admin-button" type="submit" name="accion" value="eliminar_usuario">
