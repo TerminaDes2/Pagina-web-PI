@@ -76,10 +76,44 @@
     padding: 20px;
 }
 
+/* Ajustes específicos para metadatos en la página de categorías */
+.articulo-contenido .post-meta {
+    margin-bottom: 15px;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.articulo-contenido .post-meta .author,
+.articulo-contenido .post-meta .date {
+    display: inline-flex;
+    align-items: center;
+    background-color: #f5f5f7;
+    padding: 3px 10px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.articulo-contenido .post-meta .author:hover,
+.articulo-contenido .post-meta .date:hover {
+    background-color: #e8eaee;
+}
+
+.articulo-contenido .post-meta i {
+    margin-right: 5px;
+    color: #719743;
+    font-size: 0.85rem;
+}
+
+/* Ya no necesitamos este estilo porque lo reemplazamos con post-meta */
+.articulo-fecha {
+    display: none;
+}
+
 .articulo-contenido h2 {
-    margin: 0 0 10px;
-    font-size: 1.4em;
-    line-height: 1.3;
+    display: none;
 }
 
 .articulo-contenido h2 a {
@@ -90,12 +124,6 @@
 
 .articulo-contenido h2 a:hover {
     color: #719743;
-}
-
-.articulo-fecha {
-    color: #888;
-    font-size: 0.9em;
-    margin-bottom: 15px;
 }
 
 .articulo-extracto {
@@ -140,6 +168,132 @@ blockquote {
     color: #555;
 }
 
+/* Estilos para la vista de todas las categorías */
+.grid-categorias {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+    margin-bottom: 50px;
+}
+
+.categoria-card {
+    background-color: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    height: 100%;
+}
+
+.categoria-card a {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    color: inherit;
+    text-decoration: none;
+}
+
+.categoria-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.categoria-imagen {
+    height: 180px;
+    overflow: hidden;
+    position: relative;
+    background-color: #f0f0f0;
+}
+
+.categoria-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.categoria-card:hover .categoria-imagen img {
+    transform: scale(1.05);
+}
+
+.categoria-imagen .sin-imagen {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #e1e9d4;
+}
+
+.categoria-imagen .sin-imagen i {
+    font-size: 3.5em;
+    color: #719743;
+}
+
+.categoria-contador {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background-color: rgba(113, 151, 67, 0.85);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    backdrop-filter: blur(3px);
+}
+
+.categoria-contenido {
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.categoria-contenido h2 {
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 1.3rem;
+    font-weight: 700;
+    display: block;
+}
+
+.categoria-descripcion {
+    color: #555;
+    font-size: 0.9rem;
+    margin-bottom: 0;
+    line-height: 1.5;
+    flex: 1;
+}
+
+/* Estilos para el filtro de categorías */
+.categorias-filtro {
+    margin-bottom: 30px;
+    padding: 0 10px;
+}
+
+.filtro-input {
+    width: 100%;
+    padding: 12px 20px;
+    border: 1px solid #e2e6ea;
+    border-radius: 25px;
+    font-size: 1rem;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+}
+
+.filtro-input:focus {
+    outline: none;
+    border-color: #719743;
+    box-shadow: 0 0 0 3px rgba(113, 151, 67, 0.2);
+}
+
+.filtro-input::placeholder {
+    color: #aaa;
+}
+
+/* Ajustes responsivos para metadatos */
 @media (max-width: 768px) {
     .grid-articulos {
         grid-template-columns: 1fr;
@@ -151,5 +305,44 @@ blockquote {
     
     .categoria-header h1 {
         font-size: 2em;
+    }
+    
+    .articulo-contenido .post-meta {
+        font-size: 0.75rem;
+        gap: 8px;
+        justify-content: center;
+    }
+    
+    .articulo-contenido .post-meta .author,
+    .articulo-contenido .post-meta .date {
+        padding: 2px 8px;
+    }
+    
+    .grid-categorias {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 20px;
+    }
+    
+    .categoria-imagen {
+        height: 150px;
+    }
+    
+    .categoria-contenido h2 {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .grid-categorias {
+        grid-template-columns: 1fr;
+    }
+    
+    .categoria-contenido {
+        padding: 15px;
+    }
+    
+    .filtro-input {
+        padding: 10px 15px;
+        font-size: 0.9rem;
     }
 }

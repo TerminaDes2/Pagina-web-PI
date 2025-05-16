@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $imagen_actualizada = true;
             $ruta_imagen = "uploads/usuarios/" . $nombre_archivo;
         } else {
-            header("Location: ../perfil.php?msg=" . urlencode("Error al subir la imagen.") . "&msgType=error");
+            header("Location: ../php/perfil.php?msg=" . urlencode("Error al subir la imagen.") . "&msgType=error");
             exit();
         }
     }
@@ -81,14 +81,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['usuario']['avatar'] = $ruta_imagen;
         }
         
-        header("Location: ../perfil.php?msg=" . urlencode("Perfil actualizado correctamente.") . "&msgType=success");
+        header("Location: ../php/perfil.php?msg=" . urlencode("Perfil actualizado correctamente.") . "&msgType=success");
     } else {
-        header("Location: ../perfil.php?msg=" . urlencode("Error al actualizar el perfil: " . $stmt->error) . "&msgType=error");
+        header("Location: ../php/perfil.php?msg=" . urlencode("Error al actualizar el perfil: " . $stmt->error) . "&msgType=error");
     }
     
     $stmt->close();
 } else {
-    header("Location: ../perfil.php?msg=" . urlencode("Método no permitido.") . "&msgType=error");
+    header("Location: ../php/perfil.php?msg=" . urlencode("Método no permitido.") . "&msgType=error");
 }
 
 $conn->close();

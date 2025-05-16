@@ -48,7 +48,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // Evento para categorías
         const categoriaToggles = document.querySelectorAll('.hf-categoria-toggle');
         categoriaToggles.forEach(toggle => {
-            toggle.addEventListener('click', handleCategoriaToggle);
+            toggle.addEventListener('click', function(e) {
+                // Llamar a la función con el contexto correcto
+                handleCategoriaToggle.call(this, e);
+            });
         });
         
         // Evento para el menú de usuario
@@ -93,37 +96,33 @@ document.addEventListener('DOMContentLoaded', function() {
      * @param {Event} e - El evento click
      */
     function handleCategoriaToggle(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        // Solo manejar el toggle en móvil (en desktop usamos hover)
-        const isMobile = window.innerWidth <= 768;
-        
-        if (!isMobile) {
-            return;
-        }
-        
-        // Obtener el submenú de categorías relacionado con este toggle
-        const parent = this.parentElement;
-        const submenu = parent.querySelector('.hf-contenido-categorias');
-        
-        if (!submenu) return;
-        
-        // Cerrar otros submenús de categorías
-        const allCategorias = document.querySelectorAll('.hf-contenido-categorias');
-        allCategorias.forEach(menu => {
-            if (menu !== submenu && menu.classList.contains('visible')) {
-                menu.classList.remove('visible');
+        // Prevenir navegación solo en dispositivos móviles
+        if (window.innerWidth <= 768) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Obtener el submenú de categorías relacionado con este toggle
+            const parent = this.closest('.hf-menu-categorias');
+            const submenu = parent.querySelector('.hf-contenido-categorias');
+            
+            if (!submenu) return;
+            
+            // Cerrar otros submenús de categorías
+            const allCategorias = document.querySelectorAll('.hf-contenido-categorias');
+            allCategorias.forEach(menu => {
+                if (menu !== submenu && menu.classList.contains('visible')) {
+                    menu.classList.remove('visible');
+                }
+            });
+            
+            // Alternar el submenú actual de categorías
+            submenu.classList.toggle('visible');
+            
+            // Rotar el icono
+            const icon = this.querySelector('.hf-dropdown-arrow');
+            if (icon) {
+                icon.style.transform = submenu.classList.contains('visible') ? 'rotate(180deg)' : '';
             }
-        });
-        
-        // Alternar el submenú actual de categorías
-        submenu.classList.toggle('visible');
-        
-        // Rotar el icono
-        const icon = this.querySelector('i');
-        if (icon) {
-            icon.style.transform = submenu.classList.contains('visible') ? 'rotate(180deg)' : '';
         }
     }
     
@@ -195,25 +194,6 @@ document.addEventListener('DOMContentLoaded', function() {
             mobileMenu = document.createElement('div');
             mobileMenu.className = 'hf-menu-desplegable';
             
-            // Verificar si el usuario está logueado
-            const isUserLoggedIn = document.querySelector('.hf-profile-circle') !== null;
-            
-            // Agregar el botón de inicio de sesión o círculo de perfil en la parte superior izquierda
-            if (isUserLoggedIn) {
-                const profileCircle = document.querySelector('.hf-profile-circle');
-                if (profileCircle) {
-                    const clonedProfileCircle = profileCircle.cloneNode(true);
-                    clonedProfileCircle.className = 'hf-mobile-profile-circle';
-                    mobileMenu.appendChild(clonedProfileCircle);
-                }
-            } else {
-                const loginBtn = document.createElement('a');
-                loginBtn.className = 'hf-mobile-login-btn';
-                loginBtn.href = '/Pagina-web-PI/php/registro.php';
-                loginBtn.innerHTML = '<i class="fas fa-user"></i> Iniciar sesión';
-                mobileMenu.appendChild(loginBtn);
-            }
-            
             // Agregar botón de cierre en la parte superior
             const closeBtn = document.createElement('button');
             closeBtn.className = 'hf-menu-close-btn';
@@ -274,6 +254,11 @@ document.addEventListener('DOMContentLoaded', function() {
             // Añadir al DOM
             header.appendChild(mobileMenu);
             mobileMenuCreated = true;
+            
+            // Asegurarse de que el menú esté inicialmente oculto
+            setTimeout(() => {
+                mobileMenu.style.display = 'block';
+            }, 100);
         }
     }
     
@@ -289,31 +274,68 @@ document.addEventListener('DOMContentLoaded', function() {
         menuVisible = force !== undefined ? force : !menuVisible;
         
         // Aplicar estado al menú
-        mobileMenu.classList.toggle('active', menuVisible);
-        
-        // Actualizar ícono del botón
-        const icon = menuBtn.querySelector('i');
-        if (icon) {
+        if (mobileMenu) {
+            console.log("Toggling menu to:", menuVisible ? "visible" : "hidden");
+            
+            // Añadir o quitar clase activa
+            mobileMenu.classList.toggle('active', menuVisible);
+            
+            // Prevenir scroll cuando el menú está abierto
+            document.body.style.overflow = menuVisible ? 'hidden' : '';
+            
+            // Forzar repintado del DOM para asegurar que la transición funcione
             if (menuVisible) {
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-times');
-            } else {
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
+                mobileMenu.style.visibility = 'visible';
             }
+            
+            // Actualizar ícono del botón
+            const icon = menuBtn.querySelector('i');
+            if (icon) {
+                if (menuVisible) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                    menuBtn.setAttribute('aria-expanded', 'true');
+                } else {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                    menuBtn.setAttribute('aria-expanded', 'false');
+                    
+                    // Dar tiempo para la transición antes de ocultar
+                    setTimeout(() => {
+                        if (!menuVisible) {
+                            mobileMenu.style.visibility = 'hidden';
+                        }
+                    }, 400); // Tiempo igual a la duración de la transición
+                }
+            }
+        } else {
+            console.error("El menú móvil no está disponible");
+            // Crear el menú si no existe
+            checkAndCreateMobileMenu();
+            // Intentar de nuevo después de crearlo
+            setTimeout(() => toggleMenu(null, menuVisible), 100);
         }
-        
-        // Prevenir scroll cuando el menú está abierto
-        document.body.style.overflow = menuVisible ? 'hidden' : '';
     }
     
     /**
      * Maneja el cambio de tamaño de la ventana
      */
     function handleWindowResize() {
+        const isMobile = window.innerWidth <= 768;
+        
         // Si la ventana es grande y el menú está visible, cerrarlo
-        if (window.innerWidth > 768 && menuVisible) {
+        if (!isMobile && menuVisible) {
             toggleMenu(null, false);
+        }
+        
+        // Asegurar que el botón del menú solo aparece en móvil
+        if (menuBtn) {
+            menuBtn.style.display = isMobile ? 'flex' : 'none';
+        }
+        
+        // Si estamos en vista móvil, asegurar que el menú móvil está creado
+        if (isMobile && !mobileMenuCreated) {
+            checkAndCreateMobileMenu();
         }
     }
 });

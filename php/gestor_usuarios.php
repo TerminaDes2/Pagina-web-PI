@@ -142,6 +142,45 @@ $resultPublicaciones = $conn->query("SELECT e.id_entrada, e.titulo, c.categoria 
                                      FROM entradas e
                                      LEFT JOIN categorias c ON e.categoria = c.id_categoria
                                      ORDER BY e.id_entrada DESC");
+
+// Función para determinar si usar vista móvil basada en el ancho de pantalla
+function agregarScriptDeteccionMovil() {
+    return "
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        function aplicarVistaTablasMoviles() {
+            if (window.innerWidth <= 480) {
+                document.querySelectorAll('.admin-table').forEach(table => {
+                    table.classList.add('admin-table-mobile-view');
+                    
+                    // Añadir atributos data-label a cada celda td basado en el encabezado
+                    table.querySelectorAll('tbody tr').forEach(row => {
+                        const headerCells = row.closest('table').querySelectorAll('thead th');
+                        const dataCells = row.querySelectorAll('td');
+                        
+                        dataCells.forEach((cell, index) => {
+                            if (headerCells[index]) {
+                                cell.setAttribute('data-label', headerCells[index].textContent);
+                            }
+                        });
+                    });
+                });
+            } else {
+                document.querySelectorAll('.admin-table').forEach(table => {
+                    table.classList.remove('admin-table-mobile-view');
+                });
+            }
+        }
+        
+        // Aplicar al cargar
+        aplicarVistaTablasMoviles();
+        
+        // Aplicar al cambiar el tamaño de la ventana
+        window.addEventListener('resize', aplicarVistaTablasMoviles);
+    });
+    </script>
+    ";
+}
 ?>
 
 <!DOCTYPE html>
@@ -154,51 +193,100 @@ $resultPublicaciones = $conn->query("SELECT e.id_entrada, e.titulo, c.categoria 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <?= agregarScriptDeteccionMovil() ?>
     <script>
+        // Función mejorada para cambiar pestañas
         function cambiarPestaña(pestaña) {
-            // Ocultar todas las secciones
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.style.display = 'none';
-            });
+            console.log("Cambiando a pestaña: ", pestaña);
             
-            // Mostrar la sección seleccionada
-            document.getElementById(pestaña).style.display = 'block';
+            // Mostrar la sección seleccionada primero para evitar problemas de renderizado
+            const tabContent = document.getElementById(pestaña);
+            if (tabContent) {
+                // Hacemos visible el contenido primero
+                tabContent.style.display = 'block';
+                
+                // Luego ocultamos los demás
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    if (content.id !== pestaña) {
+                        content.style.display = 'none';
+                    }
+                });
+                
+                // Aseguramos que la animación se aplica correctamente
+                setTimeout(() => {
+                    tabContent.classList.add('active');
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        if (content.id !== pestaña) {
+                            content.classList.remove('active');
+                        }
+                    });
+                }, 10);
+            } else {
+                console.error("Elemento con ID '" + pestaña + "' no encontrado");
+            }
             
             // Actualizar clases activas en las pestañas
             document.querySelectorAll('.admin-tab').forEach(tab => {
                 tab.classList.remove('active');
+                if (tab.getAttribute('data-tab') === pestaña) {
+                    tab.classList.add('active');
+                }
             });
-            document.querySelector(`.admin-tab[data-tab="${pestaña}"]`).classList.add('active');
             
             // Guardar la pestaña seleccionada en sessionStorage
             sessionStorage.setItem('adminTab', pestaña);
         }
         
         function cambiarPestañaUsuario(pestaña) {
-            // Ocultar todas las secciones
-            document.querySelectorAll('.tab-usuario-content').forEach(content => {
-                content.style.display = 'none';
-            });
+            console.log("Cambiando a pestaña de usuario: ", pestaña);
             
-            // Mostrar la sección seleccionada
-            document.getElementById(pestaña).style.display = 'block';
+            // Mostrar la sección de usuario seleccionada
+            const tabContent = document.getElementById(pestaña);
+            if (tabContent) {
+                // Hacemos visible el contenido primero
+                tabContent.style.display = 'block';
+                
+                // Luego ocultamos los demás
+                document.querySelectorAll('.tab-usuario-content').forEach(content => {
+                    if (content.id !== pestaña) {
+                        content.style.display = 'none';
+                    }
+                });
+            } else {
+                console.error("Elemento con ID '" + pestaña + "' no encontrado");
+            }
             
             // Actualizar clases activas en las pestañas
             document.querySelectorAll('.admin-tab-usuario').forEach(tab => {
                 tab.classList.remove('active');
+                if (tab.getAttribute('data-tab') === pestaña) {
+                    tab.classList.add('active');
+                }
             });
-            document.querySelector(`.admin-tab-usuario[data-tab="${pestaña}"]`).classList.add('active');
         }
         
         // Iniciar con la pestaña guardada o la primera
         document.addEventListener('DOMContentLoaded', () => {
-            const pestañaGuardada = sessionStorage.getItem('adminTab') || 'tab-usuarios';
-            cambiarPestaña(pestañaGuardada);
-            
-            // Inicializar pestañas de usuario si existen
-            if (document.querySelector('.admin-tab-usuario')) {
-                cambiarPestañaUsuario('tab-usuario-publicaciones');
-            }
+            // Establecemos un timeout pequeño para asegurar que el DOM está completamente cargado
+            setTimeout(() => {
+                try {
+                    const pestañaGuardada = sessionStorage.getItem('adminTab') || 'tab-usuarios';
+                    cambiarPestaña(pestañaGuardada);
+                    
+                    // Inicializar pestañas de usuario si existen
+                    if (document.querySelector('.admin-tab-usuario')) {
+                        cambiarPestañaUsuario('tab-usuario-publicaciones');
+                    }
+                    
+                    console.log("Pestañas inicializadas correctamente");
+                } catch (error) {
+                    console.error("Error al inicializar pestañas:", error);
+                    // Fallback: asegurarse de que al menos algo es visible
+                    if (document.getElementById('tab-usuarios')) {
+                        document.getElementById('tab-usuarios').style.display = 'block';
+                    }
+                }
+            }, 100);
             
             // Agregar confirmación para eliminar usuario
             document.querySelectorAll('button[value="eliminar_usuario"]').forEach(button => {
@@ -309,26 +397,48 @@ $resultPublicaciones = $conn->query("SELECT e.id_entrada, e.titulo, c.categoria 
             });
         });
     </script>
+    <style>
+        /* Corrección para los estilos de pestañas */
+        .tab-content {
+            display: none; /* Oculto por defecto */
+        }
+        
+        .tab-content.active {
+            display: block; /* Visible cuando está activo */
+            opacity: 1 !important; /* Forzar visibilidad */
+            transform: translateY(0) !important; /* Asegurar posición correcta */
+        }
+        
+        /* Corrección para asegurar que la animación no deja el contenido invisible */
+        @keyframes tabFadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Añadir indicadores visuales para depuración si es necesario */
+        .debug-outline {
+            border: 2px solid red !important;
+        }
+    </style>
 </head>
 <body>
-
     <?php include "../includes/header.php"; ?>
     
     <div class="admin-container">
         <h1><?= $translator->__("Gestor de Administración") ?></h1>
         
         <div class="admin-tabs">
-            <button class="admin-tab" data-tab="tab-usuarios" onclick="cambiarPestaña('tab-usuarios')">
+            <button class="admin-tab active" data-tab="tab-usuarios" onclick="cambiarPestaña('tab-usuarios')">
                 <i class="fas fa-users"></i> <?= $translator->__("Usuarios") ?>
             </button>
             <button class="admin-tab" data-tab="tab-publicaciones" onclick="cambiarPestaña('tab-publicaciones')">
                 <i class="fas fa-newspaper"></i> <?= $translator->__("Publicaciones") ?>
             </button>
             <a href="crear_publicacion.php" class="admin-tab crear-publicacion">
-                <i class="fas fa-plus-circle"></i> <?= $translator->__("Crear Publicación") ?>
+                <i class="fas fa-plus-circle"></i> <?= $translator->__("Crear") ?>
             </a>
             <a href="gestor_categorias.php" class="admin-tab">
-                <i class="fas fa-tags"></i> <?= $translator->__("Gestionar Categorías") ?>
+                <i class="fas fa-tags"></i> <?= $translator->__("Categorías") ?>
             </a>
         </div>
 
@@ -533,8 +643,24 @@ $resultPublicaciones = $conn->query("SELECT e.id_entrada, e.titulo, c.categoria 
             </section>
         </div>
     </div>
-
+    
     <?php include "../includes/footer.php"; ?>
+    
+    <!-- Script adicional para detectar y corregir problemas de visualización -->
+    <script>
+        // Función para forzar visibilidad si después de 500ms nada es visible
+        setTimeout(function() {
+            const anyTabVisible = Array.from(document.querySelectorAll('.tab-content'))
+                .some(el => el.style.display === 'block' || getComputedStyle(el).display === 'block');
+            
+            if (!anyTabVisible) {
+                console.log("Forzando visibilidad de la pestaña por defecto");
+                document.getElementById('tab-usuarios').style.display = 'block';
+                document.getElementById('tab-usuarios').classList.add('active');
+                document.querySelector('.admin-tab[data-tab="tab-usuarios"]').classList.add('active');
+            }
+        }, 500);
+    </script>
 </body>
 </html>
 <?php $conn->close(); ?>

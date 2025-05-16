@@ -38,6 +38,11 @@ $stmt->bind_result($nombre, $primer_apellido, $segundo_apellido, $correo, $image
 $stmt->fetch();
 $stmt->close();
 
+// Actualizar la imagen en la sesión
+if ($imagen_perfil !== $_SESSION['usuario']['imagen']) {
+    $_SESSION['usuario']['imagen'] = $imagen_perfil;
+}
+
 // Obtener las publicaciones del usuario
 $stmt = $conn->prepare("SELECT e.id_entrada, e.titulo, c.categoria as nombre_categoria, e.fecha 
                        FROM entradas e 
@@ -100,6 +105,11 @@ if(isset($_GET['msg'])){
                     enlace.classList.add('active');
                 }
             });
+            
+            // Forzar repintado para mejorar la nitidez
+            setTimeout(() => {
+                window.dispatchEvent(new Event('resize'));
+            }, 10);
         }
         
         function mostrarVistaPrevia() {
@@ -119,8 +129,15 @@ if(isset($_GET['msg'])){
         }
         
         document.addEventListener('DOMContentLoaded', function() {
-            // Iniciar en la pestaña de perfil
-            mostrarPestana('perfil-info');
+            // Iniciamos en la pestaña de perfil y optimizamos el renderizado
+            setTimeout(() => {
+                mostrarPestana('perfil-info');
+                
+                // Aplicamos clase para mejorar nitidez
+                document.querySelectorAll('input, select, textarea').forEach(el => {
+                    el.classList.add('sharp-text');
+                });
+            }, 100);
             
             // Mostrar mensaje si existe
             <?php if (!empty($message)): ?>
@@ -141,7 +158,7 @@ if(isset($_GET['msg'])){
         <div class="perfil-header">
             <div class="perfil-avatar">
                 <?php if (!empty($imagen_perfil)): ?>
-                    <img src="<?= htmlspecialchars($imagen_perfil) ?>" alt="<?= $translator->__("Foto de perfil") ?>">
+                    <img src="../<?= htmlspecialchars($imagen_perfil) ?>" alt="<?= $translator->__("Foto de perfil") ?>">
                 <?php else: ?>
                     <div class="avatar-placeholder">
                         <i class="fas fa-user"></i>
@@ -163,9 +180,11 @@ if(isset($_GET['msg'])){
             <a href="#" data-tab="perfil-info" class="active" onclick="mostrarPestana('perfil-info'); return false;">
                 <i class="fas fa-user"></i> <?= $translator->__("Mi Información") ?>
             </a>
+            <?php if ($_SESSION['usuario']['perfil'] === 'admin'): ?>
             <a href="#" data-tab="perfil-publicaciones" onclick="mostrarPestana('perfil-publicaciones'); return false;">
                 <i class="fas fa-newspaper"></i> <?= $translator->__("Mis Publicaciones") ?> (<?= count($publicaciones) ?>)
             </a>
+            <?php endif; ?>
             <a href="#" data-tab="perfil-comentarios" onclick="mostrarPestana('perfil-comentarios'); return false;">
                 <i class="fas fa-comments"></i> <?= $translator->__("Mis Comentarios") ?> (<?= count($comentarios) ?>)
             </a>
@@ -220,6 +239,7 @@ if(isset($_GET['msg'])){
             </form>
         </div>
         
+        <?php if ($_SESSION['usuario']['perfil'] === 'admin'): ?>
         <div id="perfil-publicaciones" class="perfil-contenido" style="display: none;">
             <h2><?= $translator->__("Mis Publicaciones") ?></h2>
             
@@ -262,6 +282,7 @@ if(isset($_GET['msg'])){
                 </div>
             <?php endif; ?>
         </div>
+        <?php endif; ?>
         
         <div id="perfil-comentarios" class="perfil-contenido" style="display: none;">
             <h2><?= $translator->__("Mis Comentarios") ?></h2>
