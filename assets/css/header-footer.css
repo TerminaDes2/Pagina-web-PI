@@ -1197,6 +1197,31 @@ body {
   border-left: 2px solid rgba(255, 255, 255, 0.1);
 }
 
+/* Estilos mejorados para los elementos option */
+select option {
+  padding: 10px 15px;
+  background-color: #0b751b;
+  color: #fff;
+  font-family: var(--font-primary);
+  font-size: 0.95rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: background-color 0.2s ease;
+}
+
+select option:hover, 
+select option:focus, 
+select option:active {
+  background-color: #187424 !important;
+  color: var(--accent-color);
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+}
+
+select option:checked {
+  background: linear-gradient(135deg, #187424, #0b751b);
+  color: var(--accent-color);
+  font-weight: 500;
+}
+
 /* Ajustes para el botón de categorías */
 .hf-menu-desplegable .hf-categoria-toggle {
   display: flex;

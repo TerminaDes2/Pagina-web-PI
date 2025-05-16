@@ -133,15 +133,24 @@ document.addEventListener('DOMContentLoaded', function() {
             // Deseleccionar: quitar todo el diseño de seleccionado
             submenu.classList.remove('visible');
             toggle.classList.remove('active');
-            // Restaurar la flecha
+            
+            // Restaurar la flecha completamente (quitar cualquier transformación)
             const arrow = toggle.querySelector('.hf-dropdown-arrow');
             if (arrow) {
                 arrow.style.transform = '';
                 arrow.classList.remove('rotated');
             }
-            // Quitar fondo y borde si tuvieran clases extra (según CSS)
+            
+            // Asegurarse de quitar cualquier estilo inline que pudiera estar aplicando colores
             toggle.style.backgroundColor = '';
             toggle.style.borderLeft = '';
+            toggle.style.color = '';
+            
+            // Restaurar color de texto por defecto para todos los elementos dentro del toggle
+            const textElements = toggle.querySelectorAll('*');
+            textElements.forEach(el => {
+                el.style.color = '';
+            });
         } else {
             // Cerrar todos los demás submenús y limpiar todos los toggles
             const allVisibleSubmenus = mobileMenu.querySelectorAll('.hf-contenido-categorias.visible');
@@ -153,7 +162,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 activeToggle.classList.remove('active');
                 activeToggle.style.backgroundColor = '';
                 activeToggle.style.borderLeft = '';
+                activeToggle.style.color = '';
+                
+                // Restaurar color para todos los elementos dentro del toggle
+                const innerElements = activeToggle.querySelectorAll('*');
+                innerElements.forEach(el => {
+                    el.style.color = '';
+                });
             });
+            
             allArrows.forEach(arrow => {
                 arrow.style.transform = '';
                 arrow.classList.remove('rotated');
@@ -162,15 +179,13 @@ document.addEventListener('DOMContentLoaded', function() {
             // Seleccionar el actual
             submenu.classList.add('visible');
             toggle.classList.add('active');
+            
             // Rotar la flecha
             const arrow = toggle.querySelector('.hf-dropdown-arrow');
             if (arrow) {
                 arrow.style.transform = 'rotate(180deg)';
                 arrow.classList.add('rotated');
             }
-            // Aplicar fondo y borde si tu CSS lo requiere (opcional)
-            // toggle.style.backgroundColor = 'rgba(255,255,255,0.1)';
-            // toggle.style.borderLeft = '3px solid var(--accent-color)';
         }
     }
     
@@ -192,7 +207,26 @@ document.addEventListener('DOMContentLoaded', function() {
         const allSubmenus = document.querySelectorAll('.hf-contenido-desplegable');
         allSubmenus.forEach(menu => {
             if (menu !== submenu && menu.classList.contains('visible')) {
-                menu.classList.remove('visible');
+                submenu.classList.remove('visible');
+                toggle.classList.remove('active');
+                
+                // Restaurar la flecha completamente (quitar cualquier transformación)
+                const arrow = toggle.querySelector('.hf-dropdown-arrow');
+                if (arrow) {
+                    arrow.style.transform = '';
+                    arrow.classList.remove('rotated');
+                }
+                
+                // Asegurarse de quitar cualquier estilo inline que pudiera estar aplicando colores
+                toggle.style.backgroundColor = '';
+                toggle.style.borderLeft = '';
+                toggle.style.color = '';
+                
+                // Restaurar color de texto por defecto para todos los elementos dentro del toggle
+                const textElements = toggle.querySelectorAll('*');
+                textElements.forEach(el => {
+                    el.style.color = '';
+                });
             }
         });
         

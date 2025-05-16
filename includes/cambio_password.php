@@ -37,7 +37,7 @@
     }
 
     if (isset($_POST['action']) && $_POST['action'] === 'code') {
-      $codigoIngresado = $_POST['codigo'] ?? null;
+      $codigoIngresado = isset($_POST['codigo']) ? $_POST['codigo'] : null;
 
       if(!$codigoIngresado) {
         echo json_encode(["error" => $translator->__("El código no fue proporcionado."), "icon" => "warning"]);
@@ -60,8 +60,8 @@
       }
     } elseif (isset($_POST['action']) && $_POST['action'] === 'change') {
       
-      $nuevaContra = $_POST['contra_nu'] ?? null;
-      $verificaContra = $_POST['contra_ve'] ?? null;
+      $nuevaContra = isset($_POST['contra_nu']) ? $_POST['contra_nu'] : null;
+      $verificaContra = isset($_POST['contra_ve']) ? $_POST['contra_ve'] : null;
 
       if (empty($nuevaContra) || empty($verificaContra)) {
         echo json_encode(["error" => $translator->__("Por favor, completa todos los campos requeridos."), "icon" => "warning"]);
@@ -105,10 +105,25 @@
   <link rel="stylesheet" href="../assets/css/registro.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Parisienne&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Agregamos Font Awesome para los iconos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="../assets/js/loggin_scripts.js" defer></script>
+  
+  <!-- Añadir objeto de traducciones para JavaScript -->
+  <script>
+    // Objeto global de traducciones para usar en JavaScript
+    window.translations = {
+      'attention': '<?= $translator->__("Atención") ?>',
+      'understood': '<?= $translator->__("Entendido") ?>',
+      'error': '<?= $translator->__("Error") ?>',
+      'passwords_match': '<?= $translator->__("¡Las contraseñas coinciden!") ?>',
+      'passwords_dont_match': '<?= $translator->__("Las contraseñas no coinciden") ?>'
+    };
+  </script>
+  
   <script>
     $(document).ready(function () {
       $("#codeModal").show();
@@ -118,7 +133,7 @@
       $("#codeForm").on("submit", function (e) {
         e.preventDefault();
         $.ajax({
-          url: "cambio_contraseña.php",
+          url: "cambio_password.php",
           type: "POST",
           data: $(this).serialize(),
           success: function (response) {
@@ -158,8 +173,21 @@
 
       $("#form-righ").on("submit", function (e) {
         e.preventDefault();
+        // Validar coincidencia de contraseñas
+        const contraInput = document.getElementById('contra_nu');
+        const confirmaInput = document.getElementById('contra_ve');
+        if (contraInput.value !== confirmaInput.value) {
+          Swal.fire({
+            title: window.translations.error || 'Error',
+            text: window.translations.passwords_dont_match || 'Las contraseñas no coinciden',
+            icon: 'error',
+            showConfirmButton: true
+          });
+          return false;
+        }
+        
         $.ajax({
-          url: "cambio_contraseña.php",
+          url: "cambio_password.php",
           type: "POST",
           data: $(this).serialize(),
           success: function (response) {
@@ -204,6 +232,47 @@
       $(document).on('show', '.modal', function () {
         $(this).addClass('active');
       });
+      
+      // Validar coincidencia de contraseñas con efectos visuales
+      const contraInput = document.getElementById('contra_nu');
+      const confirmaInput = document.getElementById('contra_ve');
+      const mensajeCoincidencia = document.getElementById('mensaje-coincidencia');
+      
+      function validarCoincidencia() {
+        if (!confirmaInput || !mensajeCoincidencia) return;
+        
+        if (!confirmaInput.value) {
+          mensajeCoincidencia.textContent = '';
+          mensajeCoincidencia.className = 'password-match-message';
+          return;
+        }
+        
+        if (contraInput.value === confirmaInput.value) {
+          mensajeCoincidencia.textContent = window.translations.passwords_match || '¡Las contraseñas coinciden!';
+          mensajeCoincidencia.className = 'password-match-message password-match-success';
+          mensajeCoincidencia.style.opacity = '0';
+          setTimeout(() => {
+            mensajeCoincidencia.style.opacity = '1';
+          }, 10);
+        } else {
+          mensajeCoincidencia.textContent = window.translations.passwords_dont_match || 'Las contraseñas no coinciden';
+          mensajeCoincidencia.className = 'password-match-message password-match-error';
+          mensajeCoincidencia.style.opacity = '0';
+          setTimeout(() => {
+            mensajeCoincidencia.style.opacity = '1';
+          }, 10);
+        }
+      }
+      
+      if (contraInput && confirmaInput) {
+        contraInput.addEventListener('input', validarCoincidencia);
+        confirmaInput.addEventListener('input', validarCoincidencia);
+        
+        // Ejecutar validación inicial si hay valores
+        if (contraInput.value || confirmaInput.value) {
+          validarCoincidencia();
+        }
+      }
     });
   </script>
 </head>
@@ -212,12 +281,28 @@
 
   <main class="main">
     <div class="card" id="datos">
-      <form id="form-righ" action="cambio_contraseña.php" method="POST">
+      <form id="form-righ" action="cambio_password.php" method="POST">
           <input type="hidden" name="action" value="change">
           <h1><?= $translator->__("Restablecer contraseña") ?></h1>
           <p><?= $translator->__("Has solicitado recuperar el acceso a tu cuenta. Completa el proceso para restablecer tu contraseña de forma segura.") ?></p>
-          <input type="password" id="contra_nu" name="contra_nu" placeholder="<?= $translator->__("Nueva Contraseña") ?>" required>
-          <input type="password" id="contra_ve" name="contra_ve" placeholder="<?= $translator->__("Confirmar nueva contraseña") ?>" required>
+          
+          <div class="input-container">
+            <i class="fa fa-lock"></i>
+            <input type="password" id="contra_nu" name="contra_nu" placeholder="<?= $translator->__("Nueva Contraseña") ?>" required>
+            <button type="button" class="toggle-password" onclick="togglePassword('contra_nu')">
+              <i class="fa fa-eye"></i>
+            </button>
+          </div>
+          
+          <div class="input-container">
+            <i class="fa fa-lock"></i>
+            <input type="password" id="contra_ve" name="contra_ve" placeholder="<?= $translator->__("Confirmar nueva contraseña") ?>" required>
+            <button type="button" class="toggle-password" onclick="togglePassword('contra_ve')">
+              <i class="fa fa-eye"></i>
+            </button>
+          </div>
+          <span id="mensaje-coincidencia" class="password-match-message"></span>
+          
           <button type="submit" class="btn"><?= $translator->__("Actualizar contraseña") ?></button>
       </form>
     </div>
@@ -226,7 +311,7 @@
     <div id="codeModal" class="modal">
       <div class="modal-content">
         <h2><?= $translator->__("Ingresa tu código de verificación") ?></h2>
-        <form id="codeForm" action="cambio_contraseña.php" method="POST">
+        <form id="codeForm" action="cambio_password.php" method="POST">
           <input type="hidden" name="action" value="code">
           <p><?= $translator->__("Código enviado a tu correo:") ?></p>
           <input type="text" name="codigo" required>
@@ -262,3 +347,5 @@
     });
   </script>
   <?php endif; ?>
+</body>
+</html>

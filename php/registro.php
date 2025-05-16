@@ -606,7 +606,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                   showConfirmButton: false,
                   timer: 2000
                 }).then(() => {
-                  window.location.href = "../includes/cambio_contraseña.php";
+                  window.location.href = "../includes/cambio_password.php";
                 });
               } else if (res.error) {
                 Swal.fire({
@@ -694,7 +694,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
          
           <div class="input-container">
             <i class="fa fa-user"></i>
-            <input type="text" id="nombre" name="nombre" placeholder="<?= $translator->__("Name") ?>" required>
+            <input type="text" id="nombre" name="nombre" placeholder="<?= $translator->__("Nombre") ?>" required>
           </div>
           
           <div class="input-container">
