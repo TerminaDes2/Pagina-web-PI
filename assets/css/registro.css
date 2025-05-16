@@ -243,6 +243,13 @@ main form p {
 #datos {
   animation: fadeInLeft 0.5s ease forwards;
 }
+#datos p {
+  margin-bottom: 35px;
+}
+#datos a {
+  font-size: 14px;
+  color: #4D5656;
+}
 .card {
   display: flex;
   flex-direction: row;

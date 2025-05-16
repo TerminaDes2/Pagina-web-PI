@@ -228,7 +228,6 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
         <h2 class="men_titulo">Comentarios</h2>
         <?php if(isset($_SESSION['usuario'])): ?>
           <!-- Comentarios -->
-
           <form action="publicacion.php?id=<?= $id_entrada ?>" method="POST" class="comen_container">
             <div class="comen">
               <label class="comen_title">
@@ -245,6 +244,9 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
               </div>
             </div>
           </form>
+          <button type="button" class="btn_comen" id="btn_comen">Ver comentarios</button>
+        <?php elseif(isset($_GET['error'])): ?>
+          <p class="men_err"><?= htmlspecialchars($_GET['error']) ?></p>
           <button type="button" class="btn_comen" id="btn_comen">Ver comentarios</button>
           <div id="contenedor-comentarios" class="ocultar">
             <?php
@@ -275,8 +277,6 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
               }
             ?>
           </div>
-        <?php elseif(isset($_GET['error'])): ?>
-          <p class="men_err"><?= htmlspecialchars($_GET['error']) ?></p>
         <?php endif; ?>
       </div>
     </div>
