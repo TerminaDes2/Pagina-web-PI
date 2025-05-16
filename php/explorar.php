@@ -235,10 +235,10 @@ function procesarArticulo(&$row, $translator) {
     $contenido_limpio = preg_replace('/<h2>.*?<\/h2>/is', '', $row['contenido']);
     $contenido_limpio = strip_tags($contenido_limpio);
     
-    // Obtener un extracto del contenido (primeras 20 palabras o menos)
+    // Obtener un extracto del contenido (primeras 18 palabras o menos)
     $palabras = explode(' ', $contenido_limpio);
-    $palabras = array_slice($palabras, 0, 25);
-    $row['extracto'] = implode(' ', $palabras) . (count(explode(' ', $contenido_limpio)) > 25 ? '...' : '');
+    $palabras = array_slice($palabras, 0, 18);
+    $row['extracto'] = implode(' ', $palabras) . (count(explode(' ', $contenido_limpio)) > 18 ? '...' : '');
     
     // Asegurar que la imagen_principal esté disponible (consistencia de nombres)
     if (isset($row['imagen']) && !isset($row['imagen_principal'])) {
@@ -285,6 +285,97 @@ if ($result_categorias_filtro && $result_categorias_filtro->num_rows > 0) {
     <link rel="stylesheet" href="../assets/css/categorias.css">
     <link rel="stylesheet" href="../assets/css/explorar.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .articulo-imagen {
+            position: relative;
+            overflow: hidden;
+            height: 240px; /* Altura fija para todas las imágenes */
+        }
+        
+        .articulo-imagen img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Asegura que la imagen cubra todo el espacio sin deformarse */
+        }
+        
+        .sin-imagen {
+            height: 100%;
+        }
+        
+        .titulo-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.5), transparent);
+            color: white;
+            padding: 25px 15px 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .titulo-overlay h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+            letter-spacing: 0.5px;
+            transform: translateY(0);
+            transition: transform 0.4s ease;
+        }
+        
+        .articulo-card:hover .titulo-overlay {
+            background: linear-gradient(to top, rgba(113, 151, 67, 0.9), rgba(24, 116, 36, 0.7), transparent);
+            padding-bottom: 20px;
+        }
+        
+        .articulo-card:hover .titulo-overlay h3 {
+            transform: translateY(-5px);
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 1);
+        }
+        
+        /* Ajustes para evitar espacios en blanco en las tarjetas */
+        .articulos-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .articulo-card {
+            display: flex;
+            flex-direction: row;
+            height: auto;
+        }
+        
+        .articulo-contenido {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+        
+        .articulo-extracto {
+            flex-grow: 1;
+            overflow: hidden;
+        }
+        
+        /* Ajustes responsivos */
+        @media (max-width: 768px) {
+            .articulo-card {
+                flex-direction: column;
+            }
+            
+            .articulo-imagen {
+                width: 100%;
+                height: 200px;
+            }
+            
+            .titulo-overlay h3 {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <?php include '../includes/header.php'; ?>
@@ -395,6 +486,9 @@ if ($result_categorias_filtro && $result_categorias_filtro->num_rows > 0) {
                                     <i class="fas fa-newspaper"></i>
                                 </div>
                             <?php endif; ?>
+                            <div class="titulo-overlay">
+                                <h3><?= htmlspecialchars($articulo['titulo']) ?></h3>
+                            </div>
                             <?php if (!empty($articulo['nombre_categoria'])): ?>
                                 <div class="categoria-tag"><?= htmlspecialchars($articulo['nombre_categoria']) ?></div>
                             <?php endif; ?>
@@ -444,14 +538,14 @@ if ($result_categorias_filtro && $result_categorias_filtro->num_rows > 0) {
                             echo '<a href="' . getPaginationUrl($i, $modo, isset($busqueda) ? $busqueda : '', isset($_GET['cat']) ? intval($_GET['cat']) : 0) . '">' . $i . '</a>';
                         }
                     }
+                    ?> página
                     
-                    if ($fin_rango < $total_paginas) {
+                    <?php if ($fin_rango < $total_paginas): ?>
                         if ($fin_rango < $total_paginas - 1) echo '<span class="puntos">...</span>';
                         echo '<a href="' . getPaginationUrl($total_paginas, $modo, isset($busqueda) ? $busqueda : '', isset($_GET['cat']) ? intval($_GET['cat']) : 0) . '">' . $total_paginas . '</a>';
-                    }
-                    ?>
+                    <?php endif; ?>
                     
-                    <?php if ($pagina_actual < $total_paginas): ?>
+                    <?php if ($pagina_actual < $total_paginas): ?>   
                         <a href="<?= getPaginationUrl($pagina_actual + 1, $modo, isset($busqueda) ? $busqueda : '', isset($_GET['cat']) ? intval($_GET['cat']) : 0) ?>">
                             <i class="fas fa-chevron-right"></i>
                         </a>
@@ -460,19 +554,18 @@ if ($result_categorias_filtro && $result_categorias_filtro->num_rows > 0) {
             <?php endif; ?>
         <?php endif; ?>
     <?php endif; ?>
-
+    
     <?php include '../includes/footer.php'; ?>
     
     <script>
         // Función para cambiar de categoría
         function cambiarCategoria(categoriaId) {
-            const nuevaURL = new URL(window.location.href);
-            
             // Configurar el modo
+            const nuevaURL = new URL(window.location.href);
             nuevaURL.searchParams.set('modo', 'categorias');
             
             // Manejar la categoría
-            if (categoriaId && categoriaId != "0") {
+            if (categoriaId > 0) {
                 nuevaURL.searchParams.set('cat', categoriaId);
             } else {
                 nuevaURL.searchParams.delete('cat');
