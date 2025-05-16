@@ -8,7 +8,7 @@ if (!isset($_SESSION['idioma'])) {
 
 // Conexión a la base de datos
 include "../includes/db_config.php";
-
+// Incluir la configuración de la base de datos
 $conn = new mysqli(host, dbuser, dbpass, dbname);
 if ($conn->connect_error) {
     die("Error en la conexión: " . $conn->connect_error);
