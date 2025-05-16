@@ -118,6 +118,14 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
 <body>
   <?php include '../includes/header.php'; ?>
 
+  <!-- Agregar el buscador aquí -->
+  <div class="form-container">
+      <form action="../php/buscador.php" method="get">
+          <input type="text" name="busqueda" placeholder="Buscador">
+          <input type="submit" name="enviar" value="?">
+      </form>
+  </div>
+
   <div class="titulo">
       <h1><?php echo $entrada['titulo']; ?></h1>
   </div>

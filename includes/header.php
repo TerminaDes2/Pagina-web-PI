@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="<?= $_SERVER['DOCUMENT_ROOT'] . '/Pi/Pagina-web-PI/assets/css/header-footer.css' ?>">
+<link rel="stylesheet" href="<?=  '/Pagina-web-PI/assets/css/header-footer.css' ?>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
@@ -18,16 +18,9 @@
         </div>
         <nav class="hf-main-nav">
             <ul class="hf-main-menu" id="mainMenu">
-                <li><a href="/index.php"><?= $translator->__("Inicio") ?></a></li>
+                <li><a href="/Pagina-web-PI/index.php"><?= $translator->__("Inicio") ?></a></li>
                 <li class="hf-menu-categorias">
-                    <a href="#" class="hf-categoria-toggle"><?= $translator->__("Noticias") ?> <i class="fas fa-chevron-down"></i></a>
-                    <div class="hf-contenido-categorias">
-                        <a href="/Pagina-web-PI/categorias.php?cat=politica">Política</a>
-                        <a href="/Pagina-web-PI/categorias.php?cat=economia">Economía</a>
-                        <a href="/Pagina-web-PI/categorias.php?cat=cultura">Cultura</a>
-                        <a href="/Pagina-web-PI/categorias.php?cat=deportes">Deportes</a>
-                        <a href="/Pagina-web-PI/categorias.php?cat=tecnologia">Tecnología</a>
-                    </div>
+                    <a href="/Pagina-web-PI/php/Noticias.php"><?= $translator->__("Noticias") ?></a>
                 </li>
                 <li>
                     <a href="templates/Contacto.html"><?= $translator->__("Contacto") ?></a>
@@ -39,7 +32,7 @@
         </nav>
         <div class="hf-header-actions">
             <div class="hf-search-box">
-                <?php include $_SERVER['DOCUMENT_ROOT'] . '/Pi/Pagina-web-PI/php/buscador.php'; ?>
+                <?php include $_SERVER['DOCUMENT_ROOT'] . '/Pagina-web-PI/php/buscador.php'; ?>
             </div>
             <div class="hf-social-icons">
                 <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
