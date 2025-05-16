@@ -16,7 +16,7 @@ if ($conn->connect_error) {
 $conn->set_charset("utf8");
 
 // Incluir el traductor
-require_once 'includes/traductor.php';
+require_once "includes/traductor.php";
 $translator = new Translator($conn);
 
 // Manejar cambio de idioma
@@ -25,6 +25,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idioma'])) {
     header("Location: " . $_SERVER['PHP_SELF']);
     exit();
 }
+
+    //Uso de Cookie
+    require_once 'includes/auth.php';
 
 // Obtener y traducir contenido dinámico
 // Consulta para el banner

@@ -203,6 +203,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     'correo'          => $usuario['correo'],
                     'perfil'          => $usuario['perfil'] // Agregar el campo perfil
                 ];
+
+                if (isset($_POST['recordarme']) && $_POST['recordarme'] === 'true') {
+                  // Guarda el ID en la cookie por 10 dias
+                  setcookie('usuario_id', $usuario['id_usuario'], time() + (10 * 24 * 60 * 60), '/');
+                }
+              
                 // En lugar de redirigir directamente, enviamos la URL en la respuesta JSON
                 echo json_encode(["success" => $translator->__("Bienvenido"), "redirect" => "../index.php", "icon" => "success"]);
                 exit();
@@ -551,14 +557,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <main class="main">
     <div class="card" id="datos">
       <form id="form-right" action="registro.php" method="POST">
-          <input type="hidden" name="action" value="login">
-          <h1><?= $translator->__("Inicio de Sesión") ?></h1>
-          <p><?= $translator->__("Bienvenido de vuelta! Inicia sesión en tu cuenta para registrar las asistencias de tu club.") ?></p>
-          <input type="text" id="correo" name="correo" placeholder="<?= $translator->__("Cuenta o correo") ?>" required>
-          <input type="password" id="contra" name="contra" placeholder="<?= $translator->__("Contraseña") ?>" required>
-          <a href="#" id="changePassword"><?= $translator->__("¿Olvidaste tu contraseña?") ?></a>
-          <button type="submit" class="btn"><?= $translator->__("Iniciar Sesión") ?></button>
-          <button class="btin" type="button" onclick="mostrarFormulario2()"><?= $translator->__("Crear una cuenta nueva") ?></button>
+        <input type="hidden" name="action" value="login">
+        <h1><?= $translator->__("Inicio de Sesión") ?></h1>
+        <p><?= $translator->__("Bienvenido de vuelta! Inicia sesión en tu cuenta para registrar las asistencias de tu club.") ?></p>
+        <input type="text" id="correo" name="correo" placeholder="<?= $translator->__("Cuenta o correo") ?>" required>
+        <input type="password" id="contra" name="contra" placeholder="<?= $translator->__("Contraseña") ?>" required>
+        <a href="#" id="changePassword"><?= $translator->__("¿Olvidaste tu contraseña?") ?></a>
+        <div class="switch-container">
+          <input type="checkbox" name="recordarme" value="true">
+          <label for="switch">Recordar mis datos de acceso</label>
+        </div>
+        <button type="submit" class="btn"><?= $translator->__("Iniciar Sesión") ?></button>
+        <button class="btin" type="button" onclick="mostrarFormulario2()"><?= $translator->__("Crear una cuenta nueva") ?></button>
       </form>
     </div>
 

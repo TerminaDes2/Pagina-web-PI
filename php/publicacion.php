@@ -1,5 +1,9 @@
 <?php
 session_start();
+
+//Uso de Cookie
+require_once '../includes/auth.php';
+
 // Verificar si el idioma está configurado en la sesión, si no, establecer un idioma predeterminado
 if (!isset($_SESSION['idioma'])) {
     $_SESSION['idioma'] = 'es'; // Idioma predeterminado

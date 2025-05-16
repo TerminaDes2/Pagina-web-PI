@@ -1,5 +1,9 @@
 <?php
 session_start();
+
+//Uso de Cookie
+require_once '../includes/auth.php';
+
 header('Content-Type: text/html; charset=utf-8');
 
 if (!isset($_SESSION['idioma'])) {
