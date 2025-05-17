@@ -173,7 +173,7 @@ main form h1 {
   font-size: 2.2rem;
   position: relative;
   padding-bottom: 15px;
-  text-shadow: 1px 1px 0 rgba(255,255,255,0.8);
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8);
 }
 main form h1::after {
   content: '';
@@ -811,4 +811,139 @@ body {
     padding: 25px 20px;
     margin-top: 15%;
   }
+}
+
+/* === MODO OSCURO REGISTRO === */
+body.dark-mode,
+.dark-mode body {
+  background-color: #232323 !important;
+  color: #e0e0e0 !important;
+  background-image: none !important;
+}
+
+.dark-mode main form,
+.dark-mode .card,
+.dark-mode .modal-content {
+  background: #292929 !important;
+  color: #e0e0e0 !important;
+  border: 1px solid #333 !important;
+  box-shadow: 0 8px 24px rgba(30,30,30,0.12) !important;
+}
+
+.dark-mode main form h1,
+.dark-mode .modal-content h2 {
+  color: #7fdc9c !important;
+  text-shadow: none !important;
+}
+
+.dark-mode main form h1::after,
+.dark-mode .modal-content h2::after {
+  background: #116434 !important;
+}
+
+.dark-mode main form label,
+.dark-mode .modal-content label {
+  color: #7fdc9c !important;
+}
+
+.dark-mode main form input,
+.dark-mode main form select,
+.dark-mode main form textarea,
+.dark-mode .modal-content input,
+.dark-mode .modal-content select {
+  background: #232323 !important;
+  color: #e0e0e0 !important;
+  border: 1px solid #444 !important;
+}
+
+.dark-mode main form input:focus,
+.dark-mode main form select:focus,
+.dark-mode .modal-content input:focus,
+.dark-mode .modal-content select:focus {
+  border-color: #7fdc9c !important;
+  box-shadow: 0 0 0 3px rgba(127,220,156,0.2) !important;
+}
+
+.dark-mode .btn,
+.dark-mode .btin,
+.dark-mode .modal-content button {
+  background: #116434 !important;
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(30,30,30,0.3) !important;
+}
+
+.dark-mode .btn:hover,
+.dark-mode .btin:hover,
+.dark-mode .modal-content button:hover {
+  background: #185c36 !important;
+  color: #fff !important;
+}
+
+.dark-mode .custom-file-upload label {
+  background: #232323 !important;
+  color: #7fdc9c !important;
+  border: 1px solid #444 !important;
+}
+
+.dark-mode .custom-file-upload label:hover {
+  background: #353535 !important;
+  color: #fff !important;
+  border-color: #7fdc9c !important;
+}
+
+.dark-mode .custom-file-upload .file-name {
+  color: #b0b0b0 !important;
+}
+
+.dark-mode .alert {
+  background-color: #353535 !important;
+  color: #7fdc9c !important;
+  border-left: 6px solid #116434 !important;
+}
+
+.dark-mode .terms-checkbox label {
+  color: #e0e0e0 !important;
+}
+
+.dark-mode .terms-checkbox a {
+  color: #7fdc9c !important;
+}
+
+.dark-mode .terms-checkbox a:hover {
+  color: #116434 !important;
+}
+
+.dark-mode .modal-content {
+  background: #292929 !important;
+  color: #e0e0e0 !important;
+  border: 1px solid #333 !important;
+}
+
+.dark-mode .modal-content .close {
+  color: #7fdc9c !important;
+}
+
+.dark-mode .modal-content .close:hover {
+  color: #fff !important;
+  background-color: #232323 !important;
+}
+
+.dark-mode .modal-content p {
+  color: #b0b0b0 !important;
+}
+
+.dark-mode form p {
+  line-height: 165%;
+  margin-bottom: 5px;
+  font-size: 15px;
+  color: #ffffff;
+  font-weight: 400;
+  max-width: 330px;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.dark-mode #datos a {
+  font-size: 14px;
+  color: #b2bdbd;
 }

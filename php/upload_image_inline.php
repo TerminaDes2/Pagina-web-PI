@@ -33,13 +33,14 @@ if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
     } else {
         $response = [
             'success' => false,
-            'error' => 'Error al mover el archivo'
+            'error' => 'Error al mover el archivo: ' . error_get_last()['message']
         ];
     }
 } else {
+    $error_code = isset($_FILES['imagen']) ? $_FILES['imagen']['error'] : 'No se recibió archivo';
     $response = [
         'success' => false,
-        'error' => 'No se recibió ninguna imagen o hubo un error en la subida'
+        'error' => 'No se recibió ninguna imagen o hubo un error en la subida. Código: ' . $error_code
     ];
 }
 

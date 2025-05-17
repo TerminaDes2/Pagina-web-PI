@@ -12,6 +12,14 @@ if (!isset($_SESSION['idioma'])) {
 $idiomaActual = $_SESSION['idioma']; // Guardar el idioma actual
 include "../includes/db_config.php";
 
+function getBaseUrl() {
+    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+    $host = $_SERVER['HTTP_HOST'];
+    $baseUrl = $protocol . '://' . $host;
+    $folder = dirname($_SERVER['PHP_SELF']);
+    return $baseUrl . substr($folder, 0, strrpos($folder, '/'));
+}
+
 date_default_timezone_set('America/Mexico_City');
 
 $conn = new mysqli(host, dbuser, dbpass, dbname);
@@ -183,8 +191,11 @@ if(isset($_GET['msg'])){
             Swal.close();
             
             if (data.success) {
+              // Usar una ruta absoluta para la imagen
+              const baseUrl = '<?= getBaseUrl() ?>';
+              const imgUrl = baseUrl + '/' + data.url;
               // Insertar la imagen en el contenido
-              const imgHtml = `<img src="${data.url}" alt="${data.filename}" style="max-width:100%; margin:10px 0;">`;
+              const imgHtml = `<img src="${imgUrl}" alt="${data.filename}" style="max-width:100%; margin-top:10px; margin-bottom:10px;">`;
               document.execCommand('insertHTML', false, imgHtml);
             } else {
               Swal.fire({

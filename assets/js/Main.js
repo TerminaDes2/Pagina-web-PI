@@ -18,6 +18,25 @@ document.addEventListener('DOMContentLoaded', function() {
     initCarousel();
 });
 
+// Modo oscuro global
+document.addEventListener('DOMContentLoaded', function() {
+    // Botón de alternancia (puedes crear uno en el header con id="darkModeToggle")
+    const toggle = document.getElementById('darkModeToggle');
+    // Guardar preferencia en localStorage
+    const prefersDark = localStorage.getItem('modoOscuro') === '1';
+
+    if (prefersDark) {
+        document.body.classList.add('dark-mode');
+    }
+
+    if (toggle) {
+        toggle.addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('modoOscuro', document.body.classList.contains('dark-mode') ? '1' : '0');
+        });
+    }
+});
+
 function initCarousel() {
     // Seleccionar elementos del DOM
     const carouselTrack = document.querySelector('.carousel-track');
@@ -30,9 +49,9 @@ function initCarousel() {
     
     // Salir si no hay elementos necesarios
     if (!carouselTrack || !allCarouselItems.length) return;
-    
-    // Limitar el carrusel a un máximo de 6 elementos
-    const MAX_CAROUSEL_ITEMS = 6;
+
+    // Limitar el carrusel a un máximo de 7 elementos
+    const MAX_CAROUSEL_ITEMS = 7;
     let carouselItems = Array.from(allCarouselItems);
     
     if (carouselItems.length > MAX_CAROUSEL_ITEMS) {

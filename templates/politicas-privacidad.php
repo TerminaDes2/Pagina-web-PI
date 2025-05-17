@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idioma'])) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title><?= $translator->__('Políticas de Privacidad') ?> - Voces del Proceso</title>
+  <title><?= $translator->__('Políticas de Privacidad') ?> - POALCE</title>
   <link rel="stylesheet" href="../assets/css/publicacion.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

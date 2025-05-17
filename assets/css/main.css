@@ -408,10 +408,15 @@ a {
   width: 100%;
   border-radius: 25px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.06);
-  background: rgba(255,255,255,0.7);
-  backdrop-filter: blur(10px);
-  padding: 20px 0;
-  border: 1px solid rgba(255,255,255,0.8);
+  background: linear-gradient(135deg, #f0f4f8 0%, #e2e6ea 100%);
+  border: 1px solid rgba(225,225,225,0.3);
+  backdrop-filter: none;
+}
+
+.dark-mode .carousel-viewport {
+  background: #232323 !important;
+  border: 1px solid #333 !important;
+  box-shadow: 0 10px 30px rgba(30,30,30,0.06) !important;
 }
 
 /* Pista del carrusel - con efecto 3D */
@@ -1423,6 +1428,11 @@ blockquote cite {
 
 .newsletter-content {
   text-align: center;
+  background: transparent; /* Quitar fondo blanco */
+}
+
+.dark-mode .newsletter-content {
+  background: transparent !important;
 }
 
 .newsletter-content h2 {
@@ -1548,4 +1558,196 @@ blockquote cite {
   .newsletter-form input[type="email"] {
     width: 100%;
   }
+}
+
+/* === MODO OSCURO GLOBAL === */
+body.dark-mode,
+.dark-mode body {
+  background-color: #232323 !important;
+  color: #e0e0e0 !important;
+  background-image: none !important;
+}
+
+/* Enlaces y botones */
+.dark-mode a,
+.dark-mode a:visited {
+  color: #7fdc9c;
+}
+
+.dark-mode .btn,
+.dark-mode .btn-primary,
+.dark-mode .btn-secondary,
+.dark-mode .btn-tertiary {
+  background-color: #353535 !important;
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(30,30,30,0.3) !important;
+  border: none;
+}
+
+.dark-mode .btn-primary {
+  background-color: #116434 !important; /* Verde oscuro */
+  color: #fff !important;
+}
+
+.dark-mode .btn-secondary {
+  background-color: #185c36 !important; /* Verde aún más oscuro */
+  color: #fff !important;
+}
+
+.dark-mode .btn-tertiary {
+  background-color: #333 !important;
+  color: #fff !important;
+}
+
+.dark-mode .btn:hover,
+.dark-mode .btn-primary:hover,
+.dark-mode .btn-secondary:hover,
+.dark-mode .btn-tertiary:hover {
+  background-color: #222 !important;
+  color: #fff !important;
+  box-shadow: 0 6px 15px rgba(30,30,30,0.5) !important;
+}
+
+/* Fondos principales */
+.dark-mode .hero-section,
+.dark-mode .featured-articles,
+.dark-mode .cta-section,
+.dark-mode .key-stats,
+.dark-mode .quote-section,
+.dark-mode .newsletter-section,
+.dark-mode .info-blocks,
+.dark-mode .info-title-section {
+  background: #262626  !important;
+  color: #e0e0e0 !important;
+  box-shadow: none !important;
+}
+
+/* Títulos y acentos verdes */
+.dark-mode .hero-content h1,
+.dark-mode .featured-articles h2,
+.dark-mode .cta-content h2,
+.dark-mode .key-stats h2,
+.dark-mode .info-title-section h2,
+.dark-mode .info-block h3,
+.dark-mode .stat-number,
+.dark-mode .newsletter-content h2 {
+  color: #7fdc9c !important; /* Verde claro para títulos */
+}
+
+.dark-mode .hero-content h1::after,
+.dark-mode .featured-articles h2::after,
+.dark-mode .cta-content h2::after,
+.dark-mode .key-stats h2::after,
+.dark-mode .info-title-section h2::after,
+.dark-mode .info-block h3::after,
+.dark-mode .carousel-title::after {
+  background: #116434 !important; /* Verde oscuro para subrayados/acento */
+}
+
+.dark-mode .info-block i,
+.dark-mode .stat-icon,
+.dark-mode .quote-icon,
+.dark-mode .post-meta i {
+  color: #116434 !important; /* Verde oscuro para iconos/acento */
+}
+
+/* Texto general y subtítulos */
+.dark-mode .carousel-title,
+.dark-mode .carousel-subtitle,
+.dark-mode .carousel-item-content .post-meta,
+.dark-mode .carousel-item-content .post-meta .author,
+.dark-mode .carousel-item-content .post-meta .date,
+.dark-mode .info-block p,
+.dark-mode .stat-label,
+.dark-mode .stats-note,
+.dark-mode .newsletter-content p,
+.dark-mode .cta-content p,
+.dark-mode .banner-content p,
+.dark-mode .post-meta,
+.dark-mode .post-meta .author,
+.dark-mode .post-meta .date {
+  color: #e0e0e0 !important;
+  background: transparent !important;
+}
+
+/* Meta datos hover */
+.dark-mode .carousel-item-content .post-meta .author:hover,
+.dark-mode .carousel-item-content .post-meta .date:hover,
+.dark-mode .hero-content .post-meta .author:hover,
+.dark-mode .hero-content .post-meta .date:hover {
+  background-color: #185c36 !important;
+  color: #fff !important;
+}
+
+/* Carrusel y tarjetas */
+.dark-mode .carousel-item,
+.dark-mode .carousel-item-content,
+.dark-mode .info-block,
+.dark-mode .stat-card,
+.dark-mode .quote-content,
+.dark-mode .newsletter-content,
+.dark-mode .cta-content {
+  background: #292929  !important;
+  color: #e0e0e0 !important;
+  box-shadow: 0 8px 24px rgba(30,30,30,0.12) !important;
+}
+
+.dark-mode .carousel-item img,
+.dark-mode .hero-image img {
+  border: 4px solid #232323 !important;
+  box-shadow: 0 8px 24px rgba(30,30,30,0.18) !important;
+  background: #232323 !important;
+}
+
+/* Indicadores y controles */
+.dark-mode .carousel-indicator {
+  background-color: #116434 !important;
+  border: 1px solid #185c36 !important;
+}
+
+.dark-mode .carousel-indicator.active {
+  background: linear-gradient(to right, #116434, #185c36) !important;
+}
+
+.dark-mode .carousel-button-left,
+.dark-mode .carousel-button-right {
+  background: #116434 !important;
+  color: #fff !important;
+  box-shadow: 0 10px 20px rgba(30,30,30,0.4) !important;
+}
+
+.dark-mode .carousel-button-left:hover,
+.dark-mode .carousel-button-right:hover {
+  background: #185c36 !important;
+}
+
+/* Newsletter input */
+.dark-mode .newsletter-form input[type="email"] {
+  background: #292929 !important;
+  color: #fff !important;
+  border: 2px solid #116434 !important;
+}
+
+.dark-mode .newsletter-form input[type="email"]:focus {
+  border-color: #7fdc9c !important;
+  box-shadow: 0 0 0 3px rgba(127,220,156,0.2) !important;
+}
+
+.dark-mode .newsletter-form .btn {
+  background: #116434 !important;
+  color: #fff !important;
+}
+
+.dark-mode .newsletter-form .btn:hover {
+  background: #185c36 !important;
+  color: #fff !important;
+}
+
+/* Cita y bloquequote */
+.dark-mode blockquote {
+  color: #fff !important;
+}
+
+.dark-mode blockquote cite {
+  color: #7fdc9c !important;
 }

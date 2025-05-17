@@ -455,3 +455,131 @@
       font-size: 1.3rem;
     }
   }
+
+  /* === MODO OSCURO PUBLICAR === */
+  body.dark-mode,
+  .dark-mode body {
+    background-color: #232323 !important;
+    color: #e0e0e0 !important;
+    background-image: none !important;
+  }
+
+  .dark-mode .main {
+    background: #292929 !important;
+    color: #e0e0e0 !important;
+    border: 1px solid #333 !important;
+    box-shadow: 0 8px 24px rgba(30,30,30,0.12) !important;
+  }
+
+  .dark-mode .main h1 {
+    color: #7fdc9c !important;
+  }
+
+  .dark-mode .main h1::after {
+    background: #116434 !important;
+  }
+
+  .dark-mode .main form label {
+    color: #7fdc9c !important;
+  }
+
+  .dark-mode .main form input[type="text"],
+  .dark-mode .main form textarea,
+  .dark-mode .main form input[type="file"],
+  .dark-mode .main form select {
+    background: #232323 !important;
+    color: #e0e0e0 !important;
+    border: 1px solid #444 !important;
+  }
+
+  .dark-mode .main form input[type="text"]:focus,
+  .dark-mode .main form textarea:focus,
+  .dark-mode .main form select:focus {
+    border-color: #7fdc9c !important;
+    box-shadow: 0 0 0 3px rgba(127,220,156,0.2) !important;
+  }
+
+  .dark-mode .main form select option {
+    background: #292929 !important;
+    color: #e0e0e0 !important;
+  }
+
+  .dark-mode .main form button,
+  .dark-mode .custom-file-upload {
+    background-color: #116434 !important;
+    color: #fff !important;
+    box-shadow: 0 4px 12px rgba(30,30,30,0.3) !important;
+  }
+
+  .dark-mode .main form button:hover,
+  .dark-mode .custom-file-upload:hover {
+    background-color: #185c36 !important;
+    color: #fff !important;
+  }
+
+  .dark-mode #toolbar {
+    background-color: #232323 !important;
+    border: 1px solid #444 !important;
+    box-shadow: 0 2px 8px rgba(30,30,30,0.04) !important;
+  }
+
+  .dark-mode #toolbar button {
+    background-color: #353535 !important;
+    color: #e0e0e0 !important;
+  }
+
+  .dark-mode #toolbar button:hover {
+    background-color: #232323 !important;
+    color: #7fdc9c !important;
+  }
+
+  .dark-mode #editor {
+    background: #232323 !important;
+    color: #e0e0e0 !important;
+    border: 1px solid #444 !important;
+  }
+
+  .dark-mode #editor:focus {
+    border-color: #7fdc9c !important;
+    box-shadow: 0 0 0 3px rgba(127,220,156,0.2) !important;
+  }
+
+  .dark-mode #image-preview {
+    background-color: #232323 !important;
+    border: 2px solid #444 !important;
+  }
+
+  .dark-mode #image-preview::before {
+    background-color: #116434 !important;
+  }
+
+  .dark-mode #nombre-archivo {
+    background-color: #232323 !important;
+    border-color: #116434 !important;
+    color: #e0e0e0 !important;
+  }
+
+  .dark-mode #nombre-archivo:not(:empty) {
+    background-color: #185c36 !important;
+    border-color: #7fdc9c !important;
+  }
+
+  .dark-mode .main form select {
+    background: #232323 !important;
+    color: #e0e0e0 !important;
+    border: 1px solid #444 !important;
+  }
+
+  .dark-mode .main form select:focus {
+    border-color: #7fdc9c !important;
+  }
+
+  .dark-mode .main form select option {
+    background: #292929 !important;
+    color: #e0e0e0 !important;
+  }
+
+  .dark-mode .main form button::before,
+  .dark-mode .custom-file-upload::before {
+    background: linear-gradient(90deg, transparent, rgba(127,220,156,0.2), transparent) !important;
+  }

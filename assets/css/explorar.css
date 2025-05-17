@@ -1141,3 +1141,112 @@
     from { opacity: 0; transform: translateY(-20px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* === MODO OSCURO EXPLORAR === */
+body.dark-mode,
+.dark-mode body {
+  background-color: #232323 !important;
+  color: #e0e0e0 !important;
+  background-image: none !important;
+}
+
+.dark-mode .explorar-header,
+.dark-mode .articulos-grid,
+.dark-mode .categorias-grid,
+.dark-mode .articulo-card,
+.dark-mode .categoria-card,
+.dark-mode .sin-resultados {
+  background: #292929 !important;
+  color: #e0e0e0 !important;
+  border: 1px solid #333 !important;
+  box-shadow: 0 8px 24px rgba(30,30,30,0.12) !important;
+}
+
+.dark-mode .explorar-header h1,
+.dark-mode .sin-resultados h3,
+.dark-mode .categoria-titulo,
+.dark-mode .articulo-titulo {
+  color: #7fdc9c !important;
+}
+
+.dark-mode .explorar-header h1::after,
+.dark-mode .categoria-titulo::after,
+.dark-mode .articulo-titulo::after,
+.dark-mode .sin-resultados::before {
+  background: #116434 !important;
+}
+
+.dark-mode .explorar-header p,
+.dark-mode .articulo-extracto,
+.dark-mode .categoria-descripcion,
+.dark-mode .sin-resultados p {
+  color: #b0b0b0 !important;
+}
+
+.dark-mode .filtro-busqueda input,
+.dark-mode .filtro-categorias select,
+.dark-mode .filtro-modo-btn {
+  background: #232323 !important;
+  color: #e0e0e0 !important;
+  border: 2px solid #444 !important;
+}
+
+.dark-mode .filtro-busqueda input:focus,
+.dark-mode .filtro-categorias select:focus {
+  border-color: #7fdc9c !important;
+  box-shadow: 0 0 0 4px rgba(127,220,156,0.2) !important;
+}
+
+.dark-mode .filtro-modo-btn.active {
+  color: #fff !important;
+  border-color: #7fdc9c !important;
+}
+
+.dark-mode .filtro-modo-btn.active::after {
+  background: linear-gradient(135deg, #116434 0%, #232323 100%) !important;
+}
+
+.dark-mode .btn-leer-mas {
+  background-color: #353535 !important;
+  color: #e0e0e0 !important;
+  border: 2px solid #444 !important;
+}
+
+.dark-mode .btn-leer-mas:hover {
+  background: linear-gradient(135deg, #116434 0%, #232323 100%) !important;
+  color: #fff !important;
+}
+
+.dark-mode .categoria-tag,
+.dark-mode .categoria-contador,
+.dark-mode .articulo-meta .autor,
+.dark-mode .articulo-meta .fecha {
+  background-color: #232323 !important;
+  color: #7fdc9c !important;
+  border: 1px solid #444 !important;
+}
+
+.dark-mode .articulo-meta i,
+.dark-mode .categoria-imagen .sin-imagen i,
+.dark-mode .sin-resultados i {
+  color: #7fdc9c !important;
+}
+
+.dark-mode .paginacion a,
+.dark-mode .paginacion span {
+  background: #232323 !important;
+  color: #e0e0e0 !important;
+  border: 2px solid #444 !important;
+}
+
+.dark-mode .paginacion a:hover {
+  background-color: #353535 !important;
+  color: #7fdc9c !important;
+  border-color: #7fdc9c !important;
+}
+
+.dark-mode .paginacion .actual {
+  background: linear-gradient(135deg, #116434 0%, #232323 100%) !important;
+  color: #fff !important;
+  border-color: #7fdc9c !important;
+}

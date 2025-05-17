@@ -17,6 +17,14 @@ if (!isset($_GET['id'])) {
 $id_publicacion = intval($_GET['id']);
 include "../includes/db_config.php";
 
+function getBaseUrl() {
+    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+    $host = $_SERVER['HTTP_HOST'];
+    $baseUrl = $protocol . '://' . $host;
+    $folder = dirname($_SERVER['PHP_SELF']);
+    return $baseUrl . substr($folder, 0, strrpos($folder, '/'));
+}
+
 $conn = new mysqli(host, dbuser, dbpass, dbname);
 if ($conn->connect_error) {
     die("Error en la conexión: " . $conn->connect_error);
@@ -63,18 +71,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $rutaDestino   = $destino . $nombreArchivo;
 
                 if (move_uploaded_file($_FILES['imagen']['tmp_name'], $rutaDestino)) {
-                    $stmtImg = $conn->prepare("UPDATE imagenes SET imagen = ? WHERE id_entrada = ?");
-                    if ($stmtImg) {
+                    // Verificar si ya existe una imagen para esta entrada
+                    $checkStmt = $conn->prepare("SELECT id_imagen FROM imagenes WHERE id_entrada = ?");
+                    $checkStmt->bind_param("i", $id_publicacion);
+                    $checkStmt->execute();
+                    $checkResult = $checkStmt->get_result();
+                    
+                    if ($checkResult->num_rows > 0) {
+                        // Actualizar la imagen existente
+                        $stmtImg = $conn->prepare("UPDATE imagenes SET imagen = ? WHERE id_entrada = ?");
                         $stmtImg->bind_param("si", $rutaDestino, $id_publicacion);
-                        $stmtImg->execute();
-                        $stmtImg->close();
+                    } else {
+                        // Insertar una nueva imagen
+                        $stmtImg = $conn->prepare("INSERT INTO imagenes (imagen, id_entrada) VALUES (?, ?)");
+                        $stmtImg->bind_param("si", $rutaDestino, $id_publicacion);
                     }
+                    
+                    if ($stmtImg->execute()) {
+                        $imgMsg = "Imagen actualizada correctamente.";
+                    } else {
+                        $imgMsg = "Error al actualizar la imagen: " . $stmtImg->error;
+                    }
+                    $stmtImg->close();
+                    $checkStmt->close();
+                } else {
+                    $imgMsg = "Error al subir la imagen al servidor.";
                 }
             }
-            header("Location: editar_publicacion.php?id=$id_publicacion&msg=" . urlencode("Publicación actualizada exitosamente.") . "&msgType=success");
+            header("Location: editar_publicacion.php?id=$id_publicacion&msg=" . urlencode("Publicación actualizada exitosamente. " . (isset($imgMsg) ? $imgMsg : "")) . "&msgType=success");
             exit();
         } else {
-            header("Location: editar_publicacion.php?id=$id_publicacion&msg=" . urlencode("Error al actualizar la publicación.") . "&msgType=error");
+            header("Location: editar_publicacion.php?id=$id_publicacion&msg=" . urlencode("Error al actualizar la publicación: " . $stmt->error) . "&msgType=error");
             exit();
         }
         $stmt->close();
@@ -154,7 +181,7 @@ if (isset($_GET['msg'])) {
           });
           
           // Subir la imagen al servidor
-          fetch('upload_image_inline.php', {
+          fetch(getBaseUrl() + '/upload_image_inline.php', {
             method: 'POST',
             body: formData
           })

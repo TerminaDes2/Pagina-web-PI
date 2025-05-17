@@ -200,3 +200,51 @@ body {
         font-size: 1em;
     }
 }
+
+/* === MODO OSCURO ACERCA DE NOSOTROS === */
+body.dark-mode,
+.dark-mode body {
+  background-color: #232323 !important;
+  color: #e0e0e0 !important;
+  background-image: none !important;
+}
+
+.dark-mode .main-content,
+.dark-mode .contenido,
+.dark-mode #subirArriba {
+  background: #292929 !important;
+  color: #e0e0e0 !important;
+  border: 1px solid #333 !important;
+  box-shadow: 0 8px 24px rgba(30,30,30,0.12) !important;
+}
+
+.dark-mode .contenido h1,
+.dark-mode .contenido h2 {
+  color: #7fdc9c !important;
+}
+
+.dark-mode .contenido h1::after,
+.dark-mode .contenido h2::after {
+  background: #116434 !important;
+}
+
+.dark-mode .contenido p,
+.dark-mode .contenido ul,
+.dark-mode .contenido ul li {
+  color: #e0e0e0 !important;
+}
+
+.dark-mode .contenido ul li::before {
+  color: #7fdc9c !important;
+}
+
+.dark-mode #subirArriba {
+  background-color: #353535 !important;
+  color: #7fdc9c !important;
+  box-shadow: 0 4px 12px rgba(30,30,30,0.3) !important;
+}
+
+.dark-mode #subirArriba:hover {
+  background-color: #232323 !important;
+  color: #fff !important;
+}

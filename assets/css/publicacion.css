@@ -595,3 +595,153 @@ main img:hover {
   color: #719743;
   border-bottom: 1px solid #719743;
 }
+
+/* === MODO OSCURO PUBLICACION === */
+body.dark-mode,
+.dark-mode body {
+  background-color: #232323 !important;
+  color: #e0e0e0 !important;
+  background-image: none !important;
+}
+
+/* Fondos principales y tarjetas */
+.dark-mode .titulo,
+.dark-mode .noticia,
+.dark-mode .indice,
+.dark-mode .publicidad,
+.dark-mode .imagenes img,
+.dark-mode .comentario,
+.dark-mode .comen,
+.dark-mode .men_err,
+.dark-mode .no-articulos,
+.dark-mode .sin-contenido {
+  background: #292929 !important;
+  color: #e0e0e0 !important;
+  border: 1px solid #333 !important;
+  box-shadow: 0 8px 24px rgba(30,30,30,0.12) !important;
+}
+
+/* Títulos y acentos verdes */
+.dark-mode .titulo h1,
+.dark-mode .noticia h2,
+.dark-mode .noticia h3,
+.dark-mode .noticia h4,
+.dark-mode .noticia h5,
+.dark-mode .noticia h6,
+.dark-mode .indice h2,
+.dark-mode .publicidad h3,
+.dark-mode .imagenes h3 {
+  color: #7fdc9c !important;
+}
+
+.dark-mode .titulo::before,
+.dark-mode .noticia::before,
+.dark-mode .indice::before,
+.dark-mode .publicidad::before,
+.dark-mode .titulo h1::after,
+.dark-mode .noticia h2::after,
+.dark-mode .noticia h3::after,
+.dark-mode .noticia h4::after,
+.dark-mode .noticia h5::after,
+.dark-mode .noticia h6::after,
+.dark-mode .indice h2::after,
+.dark-mode .publicidad h3::after {
+  background: #116434 !important;
+}
+
+.dark-mode .noticia ul li::marker,
+.dark-mode .noticia ol li::marker {
+  color: #116434 !important;
+}
+
+.dark-mode .indice li a:hover,
+.dark-mode .publicidad h3 a:hover {
+  color: #7fdc9c !important;
+}
+
+.dark-mode .indice li a::before {
+  color: #116434 !important;
+}
+
+/* Texto general */
+.dark-mode .noticia p,
+.dark-mode .titulo p,
+.dark-mode .comentario-texto,
+.dark-mode .comen_paragraph,
+.dark-mode .men_titulo {
+  color: #e0e0e0 !important;
+}
+
+/* Comentarios y formularios */
+.dark-mode .comentario {
+  background-color: #232323 !important;
+  border-left: 4px solid #116434 !important;
+}
+
+.dark-mode .comen {
+  background-color: #232323 !important;
+  border-bottom: 4px solid #116434 !important;
+}
+
+.dark-mode .btn_comen {
+  background-color: #116434 !important;
+  color: #fff !important;
+}
+
+.dark-mode .btn_comen:hover {
+  background-color: #185c36 !important;
+}
+
+.dark-mode .men_err {
+  background-color: #353535 !important;
+  color: #7fdc9c !important;
+  border: 1px solid #444 !important;
+}
+
+.dark-mode .sin-contenido {
+  background-color: #232323 !important;
+  color: #b0b0b0 !important;
+}
+
+.dark-mode .sin-contenido i {
+  color: #7fdc9c !important;
+}
+
+/* Enlaces */
+.dark-mode .noticia a,
+.dark-mode .indice li a {
+  color: #7fdc9c !important;
+  border-bottom: 1px dotted #116434 !important;
+}
+
+.dark-mode .noticia a:hover,
+.dark-mode .indice li a:hover {
+  color: #fff !important;
+  border-bottom: 1px solid #7fdc9c !important;
+}
+
+/* Inputs y textarea */
+.dark-mode .comen_paragraph {
+  background: #292929 !important;
+  color: #e0e0e0 !important;
+  border: 1px solid #116434 !important;
+}
+
+.dark-mode .comen_paragraph:focus {
+  border-color: #7fdc9c !important;
+  box-shadow: 0 0 0 3px rgba(127,220,156,0.2) !important;
+}
+
+/* Avatares y detalles */
+.dark-mode .avatar {
+  border: 2px solid #116434 !important;
+}
+
+/* Texto negro en publicidad en modo oscuro */
+.dark-mode .publicidad,
+.dark-mode .publicidad *,
+.dark-mode .publicidad h3,
+.dark-mode .publicidad h3 a,
+.dark-mode .publicidad p {
+  color: #ffffff !important;
+}
