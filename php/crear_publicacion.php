@@ -159,68 +159,94 @@ if(isset($_GET['msg'])){
       }
     }
     
-    // Nueva función para insertar imagen en editor
+    // Función para insertar imagen en el editor
     function insertarImagenEnEditor() {
-      const fileInput = document.createElement('input');
-      fileInput.type = 'file';
-      fileInput.accept = 'image/*';
-      fileInput.style.display = 'none';
-      document.body.appendChild(fileInput);
+      // Guardar referencia al elemento actual con foco
+      const activeElement = document.activeElement;
       
-      fileInput.addEventListener('change', function() {
-        if (fileInput.files && fileInput.files[0]) {
+      // Crear un input de tipo file invisible
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.style.display = 'none';
+      document.body.appendChild(input);
+      
+      // Cuando el usuario selecciona un archivo
+      input.addEventListener('change', function() {
+        if (input.files && input.files[0]) {
           const formData = new FormData();
-          formData.append('imagen', fileInput.files[0]);
+          formData.append('image', input.files[0]);
           
-          // Mostrar indicador de carga
-          Swal.fire({
-            title: '<?= $translator->__("Subiendo imagen...") ?>',
-            allowOutsideClick: false,
-            didOpen: () => {
-              Swal.showLoading();
-            }
-          });
+          // Mostrar indicador de carga sin usar aria-hidden
+          const loadingContainer = document.createElement('div');
+          loadingContainer.innerHTML = '<div style="text-align:center;padding:20px;"><i class="fas fa-spinner fa-spin fa-3x"></i><p><?= $translator->__("Subiendo imagen...") ?></p></div>';
+          document.body.appendChild(loadingContainer);
           
-          // Subir la imagen al servidor
-          fetch('upload_image_inline.php', {
+          // Subir imagen al servidor
+          fetch('upload_inline_image.php', {
             method: 'POST',
             body: formData
           })
           .then(response => response.json())
-          .then(data => {
-            Swal.close();
+          .then(result => {
+            // Eliminar indicador de carga
+            document.body.removeChild(loadingContainer);
             
-            if (data.success) {
-              // Usar una ruta absoluta para la imagen
-              const baseUrl = '<?= getBaseUrl() ?>';
-              const imgUrl = baseUrl + '/' + data.url;
-              // Insertar la imagen en el contenido
-              const imgHtml = `<img src="${imgUrl}" alt="${data.filename}" style="max-width:100%; margin-top:10px; margin-bottom:10px;">`;
-              document.execCommand('insertHTML', false, imgHtml);
+            if (result.success) {
+              // Restaurar el foco al editor explícitamente
+              const editor = document.getElementById('editor');
+              editor.focus();
+              
+              // Insertar la imagen en el editor en la posición del cursor
+              const img = document.createElement('img');
+              img.src = result.file.url;
+              img.alt = result.file.name;
+              img.className = 'editor-inline-image'; // Añadir clase para estilos CSS
+              img.style.maxWidth = '500px'; // Limitar ancho máximo
+              img.style.maxHeight = '300px'; // Limitar altura máxima
+              img.style.height = 'auto'; // Mantener proporción
+              img.style.marginTop = '10px';
+              img.style.marginBottom = '10px';
+              
+              // Insertar en la posición del cursor
+              const selection = window.getSelection();
+              if (selection.rangeCount) {
+                const range = selection.getRangeAt(0);
+                range.deleteContents();
+                range.insertNode(img);
+                
+                // Mover el cursor después de la imagen
+                range.setStartAfter(img);
+                range.setEndAfter(img);
+                selection.removeAllRanges();
+                selection.addRange(range);
+              }
             } else {
-              Swal.fire({
-                icon: 'error',
-                title: '<?= $translator->__("Error") ?>',
-                text: data.error || '<?= $translator->__("Error al subir la imagen") ?>'
-              });
+              alert('<?= $translator->__("Error al subir la imagen") ?>: ' + (result.message || ''));
             }
           })
           .catch(error => {
-            Swal.close();
-            Swal.fire({
-              icon: 'error',
-              title: '<?= $translator->__("Error") ?>',
-              text: '<?= $translator->__("Hubo un problema al subir la imagen") ?>'
-            });
+            // Eliminar indicador de carga en caso de error
+            if (document.body.contains(loadingContainer)) {
+              document.body.removeChild(loadingContainer);
+            }
+            
+            alert('<?= $translator->__("Ha ocurrido un error al procesar la imagen") ?>');
             console.error('Error:', error);
           });
         }
         
-        // Eliminar el input una vez usado
-        document.body.removeChild(fileInput);
+        // Restaurar el foco al elemento original si es posible
+        if (activeElement && typeof activeElement.focus === 'function') {
+          activeElement.focus();
+        }
+        
+        // Eliminar el input después de usarlo
+        document.body.removeChild(input);
       });
       
-      fileInput.click();
+      // Activar el diálogo de selección de archivo
+      input.click();
     }
     
     // Mostrar el nombre del archivo seleccionado y previsualizar la imagen
@@ -308,6 +334,25 @@ if(isset($_GET['msg'])){
     }
     #image-preview img:hover {
       transform: scale(1.03);
+    }
+    
+    /* Estilos para imágenes dentro del editor */
+    #editor img.editor-inline-image {
+      max-width: 500px;
+      max-height: 300px;
+      height: auto;
+      display: block;
+      margin: 10px auto;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    /* Para pantallas pequeñas */
+    @media (max-width: 768px) {
+      #editor img.editor-inline-image {
+        max-width: 100%;
+        max-height: 250px;
+      }
     }
   </style>
 </head>
