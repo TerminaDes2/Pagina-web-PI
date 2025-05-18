@@ -158,8 +158,8 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
   <title><?php echo $entrada['titulo']; ?></title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/css/publicacion.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/publicacion-nuevo.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -167,6 +167,10 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
 
   <div class="titulo">
       <h1><?php echo $entrada['titulo']; ?></h1>
+      <div class="post-meta">
+        <span class="date"><i class="far fa-calendar-alt"></i> <?php echo $entrada['fecha']; ?></span>
+        <span class="categoria"><i class="fas fa-tag"></i> <?php echo $entrada['nombre_categoria']; ?></span>
+      </div>
   </div>
 
   <main>
@@ -185,8 +189,6 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
             echo '<img src="' . $entrada['imagen'] . '" alt="' . $translator->traducirTexto($entrada['titulo']) . '">';
         }
         ?>
-        <p><strong><?= $translator->__("Fecha:") ?></strong> <?php echo $entrada['fecha']; ?></p>
-        <p><strong><?= $translator->__("Categoría:") ?></strong> <?php echo $entrada['nombre_categoria']; ?></p>
         <div>
           <?php echo $contenidoConAnchors; ?>
         </div>
@@ -240,14 +242,20 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
               </div>
                 
               <div class="button_comen">
-                <button type="submit" id="comentar" name="comentar" class="btn_comen">Publicar</button>
+                <button type="submit" id="comentar" name="comentar" class="btn_comen">
+                  <i class="far fa-paper-plane"></i> Publicar
+                </button>
               </div>
             </div>
           </form>
-          <button type="button" class="btn_comen" id="btn_comen">Ver comentarios</button>
+          <button type="button" class="btn_comen" id="btn_comen">
+            <i class="far fa-comments"></i> Ver comentarios
+          </button>
         <?php elseif(isset($_GET['error'])): ?>
           <p class="men_err"><?= htmlspecialchars($_GET['error']) ?></p>
-          <button type="button" class="btn_comen" id="btn_comen">Ver comentarios</button>
+          <button type="button" class="btn_comen" id="btn_comen">
+            <i class="far fa-comments"></i> Ver comentarios
+          </button>
           <div id="contenedor-comentarios" class="ocultar">
             <?php
               if ($result->num_rows > 0) {
@@ -283,6 +291,7 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
 
     <!-- Sección Publicidad: Otras publicaciones -->
     <aside class="publicidad">
+      <h3>Artículos relacionados</h3>
       <?php
       if (!empty($ads)) {
           foreach ($ads as $ad) {
@@ -302,5 +311,6 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
 
   <?php include '../includes/footer.php'; ?>
   <script src="../assets/js/comentarios.js"></script>
+  <script src="../assets/js/scroll-index.js"></script>
 </body>
 </html>
