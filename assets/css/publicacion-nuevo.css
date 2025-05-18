@@ -526,6 +526,9 @@ main {
   border-radius: 15px;
   padding: 20px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  overflow-x: hidden;
 }
 
 .usuario-info {
@@ -562,6 +565,12 @@ main {
 .comentario-texto {
   line-height: 1.6;
   color: var(--color-font-main);
+  word-wrap: break-word;       /* Permite que el texto se rompa entre palabras */
+  overflow-wrap: break-word;   /* Versión moderna de word-wrap */
+  word-break: break-word;      /* Rompe palabras solo cuando es necesario */
+  max-width: 100%;             /* Limita el ancho máximo al contenedor */
+  hyphens: auto;               /* Añade guiones donde sea posible al romper palabras */
+  overflow-x: hidden;          /* Evita el desplazamiento horizontal */
 }
 
 /* Errores */
