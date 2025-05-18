@@ -54,9 +54,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $segundo_apellido = trim($_POST['segundo_apellido']);
         $correo           = filter_input(INPUT_POST, 'correo', FILTER_SANITIZE_EMAIL);
         $contra           = $_POST['contra'];
-        $codigo           = rand(100000, 999999); // Codigo que se mandara como verificacion al correo (Codigo de 6 digitos)
+        $codigo           = rand(100000, 999999); // Código de verificación
+        $imagen_perfil    = null;
 
-        
+        // Manejar la subida de la imagen de perfil
+        if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+            $directorio_destino = "../uploads/usuarios/";
+            if (!is_dir($directorio_destino)) {
+                mkdir($directorio_destino, 0777, true);
+            }
+            $nombre_archivo = time() . "_" . basename($_FILES['imagen']['name']);
+            $ruta_destino = $directorio_destino . $nombre_archivo;
+
+            if (move_uploaded_file($_FILES['imagen']['tmp_name'], $ruta_destino)) {
+                $imagen_perfil = "uploads/usuarios/" . $nombre_archivo;
+            } else {
+                echo json_encode(["error" => $translator->__("Error al subir la imagen de perfil."), "icon" => "error"]);
+                exit;
+            }
+        }
+
         if (empty($nombre) || empty($primer_apellido) || empty($correo) || empty($contra)) {
             echo json_encode(["error" => $translator->__("Por favor, completa todos los campos requeridos."), "icon" => "warning"]);
             exit;
@@ -77,48 +94,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             ]);
             exit;
         }
-
-        $foto_perfil = NULL; //Inicializamos la variable en NULL
-
-        if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] == 0) {
-            // Obtener informacion de la imagen
-            $foto_tmp = $_FILES['imagen']['tmp_name'];
-            $foto_nombre = $_FILES['imagen']['name'];
-            $foto_tipo = $_FILES['imagen']['type'];
-            $foto_size = $_FILES['imagen']['size'];
-
-            //Validacion del tipo de archivo
-            $tipo_permitido = ['image/jpeg', 'image/png', 'image/gif'];
-
-            if (!in_array($foto_tipo, $tipo_permitido)) {
-                echo json_encode(["error" => $translator->__("El archivo subido no es una imagen válida."), "icon" => "error"]);
-                exit;
-            }
-
-            //Validación del tamaño del archivo
-            if ($foto_size > 2 * 1024 * 1024) {
-                echo json_encode(["error" => $translator->__("El archivo es demasiado grande. El tamaño permitido es 2MB."), "icon" => "error"]);
-                exit;
-            }
-
-            //Generar un nombre único para la imagen
-            $foto_nombre_unico = uniqid('foto_', true) . '.' . pathinfo($foto_nombre, PATHINFO_EXTENSION);
-
-            //Ruta donde guarda la foto - crear directorio específico para usuarios
-            $directorio = '../uploads/usuarios/';
-            if (!is_dir($directorio)) {
-                mkdir($directorio, 0777, true); //Crear el directorio si no existe
-            }
-
-            //Mover el archivo a la carpeta de destino
-            $foto_ruta = $directorio . $foto_nombre_unico;
-            if (move_uploaded_file($foto_tmp, $foto_ruta)) {
-                $foto_perfil = 'uploads/usuarios/' . $foto_nombre_unico; // Guardar ruta relativa para la BD
-            } else {
-                echo json_encode(["error" => $translator->__("Error al subir la imagen. Inténtalo de nuevo."), "icon" => "error"]);
-                exit;
-            }
-        }
         
         $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE correo = :correo");
         $stmt->bindParam(':correo', $correo);
@@ -131,16 +106,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $hashed_password = password_hash($contra, PASSWORD_DEFAULT);
 
-        // SESION para guardar los datos de registro.
+        // SESIÓN para guardar los datos de registro.
         $_SESSION['registro'] = [
-          'nombre'            => $nombre,
-          'primer_apellido'   => $primer_apellido,
-          'segundo_apellido'  => $segundo_apellido,
-          'correo'            => $correo,
-          'contra'            => $hashed_password, // Almacenar la contraseña ya hasheada
-          'codigo'            => $codigo,
-          'imagen'            => $foto_perfil, //Guardar la ruta de la imagen
-          'timestamp'         => time() // Añadir timestamp para control de expiración
+            'nombre'            => $nombre,
+            'primer_apellido'   => $primer_apellido,
+            'segundo_apellido'  => $segundo_apellido,
+            'correo'            => $correo,
+            'contra'            => $hashed_password,
+            'codigo'            => $codigo,
+            'imagen'            => $imagen_perfil, // Guardar la ruta de la imagen
+            'timestamp'         => time()
         ];
 
         // Enviar correo
@@ -256,18 +231,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             try {
                 $perfil = 'cliente';
                 
-                // Usar la imagen guardada en la sesión o dejar vacío
-                $imagen = !empty($datos['imagen']) ? $datos['imagen'] : '';
-                
-                $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, primer_apellido, segundo_apellido, correo, contra, imagen, perfil) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, primer_apellido, segundo_apellido, correo, contra, perfil, imagen) VALUES (?, ?, ?, ?, ?, ?, ?)");
                 $stmt->execute([
                     $datos['nombre'], 
                     $datos['primer_apellido'], 
                     $datos['segundo_apellido'], 
                     $datos['correo'], 
                     $datos['contra'],
-                    $imagen,
-                    $perfil
+                    $perfil,
+                    $datos['imagen'] // Insertar la imagen en la base de datos
                 ]);
 
                 // Obtener el ID del usuario recién registrado
@@ -280,8 +252,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     'primer_apellido' => $datos['primer_apellido'],
                     'segundo_apellido'=> $datos['segundo_apellido'],
                     'correo'          => $datos['correo'],
-                    'perfil'          => $perfil,
-                    'imagen'          => $imagen // Incluir la imagen en la sesión
+                    'perfil'          => $perfil
                 ];
 
                 unset($_SESSION['registro']);
@@ -426,7 +397,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $.ajax({
           url: "registro.php",
           type: "POST",
-          data: $(this).serialize(),
+          data: new FormData(this),
+          processData: false,
+          contentType: false,
           success: function (response) {
             try {
               const res = JSON.parse(response);
@@ -643,22 +616,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       $(document).on('show', '.modal', function () {
         $(this).addClass('active');
       });
-
-      // Mostrar el nombre del archivo seleccionado
-      $(".file-input").on("change", function () {
-        const fileName = this.files[0] ? this.files[0].name : window.translations['no_file_selected'];
-        $(this).siblings(".file-name").text(fileName);
-      });
-
-      // Script para manejar la selección de archivos
-      $("#imagen").on("change", function() {
-        var fileName = $(this).val().split("\\").pop();
-        if(fileName) {
-          $(this).siblings(".file-name").html(fileName);
-        } else {
-          $(this).siblings(".file-name").html(window.translations['no_file_selected']);
-        }
-      });
     });
   </script>
 </head>
@@ -731,11 +688,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           </div>
           <span id="mensaje-coincidencia" class="password-match-message"></span>
           
-          <div class="custom-file-upload">
+          <div class="input-container">
             <i class="fa fa-image"></i>
-            <label for="imagen"><?= $translator->__("Seleccionar imagen de perfil") ?></label>
-            <input type="file" id="imagen" name="imagen" accept="image/*" class="file-input">
-            <span class="file-name"><?= $translator->__("Ningún archivo seleccionado") ?></span>
+            <input type="file" id="imagen" name="imagen" accept="image/*" onchange="mostrarVistaPrevia()">
+            <img id="imagen-preview" src="#" alt="Vista previa" style="display: none;">
           </div>
           
           <div class="terms-checkbox">
@@ -811,3 +767,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <?php endif; ?>
 </body>
 </html>
+<script>
+function mostrarVistaPrevia() {
+    const input = document.getElementById('imagen');
+    const preview = document.getElementById('imagen-preview');
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>

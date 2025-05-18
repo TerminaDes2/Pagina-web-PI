@@ -333,9 +333,16 @@ main form p {
   padding-left: 45px !important; /* Espacio para el icono */
 }
 
-/* Ajustar padding del input para dar espacio al botón */
 .input-container input[type="password"] {
   padding-right: 45px !important;
+}
+
+.input-container img {
+  max-width: 100%;
+  max-height: 150px;
+  margin-top: 10px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Estilo especial para el input de tipo file */
