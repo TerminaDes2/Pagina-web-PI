@@ -208,7 +208,7 @@ if ($modo === 'buscar') {
                  ON i.id_entrada = e.id_entrada 
              LEFT JOIN usuarios u ON e.id_usuario = u.id_usuario
              LEFT JOIN categorias c ON e.categoria = c.id_categoria
-             ORDER BY e.fecha DESC
+             ORDER BY e.id_entrada DESC
              LIMIT ?, ?";
 
     $stmt = $conn->prepare($sql);
@@ -449,11 +449,11 @@ if ($result_categorias_filtro && $result_categorias_filtro->num_rows > 0) {
                             echo '<a href="' . getPaginationUrl($i, $modo, isset($busqueda) ? $busqueda : '', isset($_GET['cat']) ? intval($_GET['cat']) : 0) . '">' . $i . '</a>';
                         }
                     }
-                    ?> página
+                    ?> 
                     
                     <?php if ($fin_rango < $total_paginas): ?>
-                        if ($fin_rango < $total_paginas - 1) echo '<span class="puntos">...</span>';
-                        echo '<a href="' . getPaginationUrl($total_paginas, $modo, isset($busqueda) ? $busqueda : '', isset($_GET['cat']) ? intval($_GET['cat']) : 0) . '">' . $total_paginas . '</a>';
+                        <?php if ($fin_rango < $total_paginas - 1) echo '<span class="puntos">...</span>'; ?>
+                        <?php echo '<a href="' . getPaginationUrl($total_paginas, $modo, isset($busqueda) ? $busqueda : '', isset($_GET['cat']) ? intval($_GET['cat']) : 0) . '">' . $total_paginas . '</a>'; ?>
                     <?php endif; ?>
                     
                     <?php if ($pagina_actual < $total_paginas): ?>   

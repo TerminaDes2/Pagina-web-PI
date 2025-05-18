@@ -196,7 +196,7 @@ $result = $conn->query("SELECT e.*, u.nombre, u.primer_apellido, u.segundo_apell
                         FROM entradas e 
                         LEFT JOIN usuarios u ON e.id_usuario = u.id_usuario 
                         LEFT JOIN categorias c ON e.categoria = c.id_categoria 
-                        ORDER BY e.fecha DESC");
+                        ORDER BY e.id_entrada DESC");
 if ($result) {
     while ($row = $result->fetch_assoc()) {
         $publicaciones[] = $row;
@@ -209,7 +209,7 @@ $result = $conn->query("SELECT c.*, u.nombre, u.primer_apellido, u.segundo_apell
                         FROM comentarios c 
                         LEFT JOIN usuarios u ON c.id_usuario = u.id_usuario 
                         LEFT JOIN entradas e ON c.id_entrada = e.id_entrada 
-                        ORDER BY c.fecha DESC");
+                        ORDER BY c.id_comentario DESC");
 if ($result) {
     while ($row = $result->fetch_assoc()) {
         $comentarios[] = $row;

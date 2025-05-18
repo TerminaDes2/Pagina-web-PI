@@ -52,7 +52,7 @@ $stmt = $conn->prepare("SELECT e.id_entrada, e.titulo, c.categoria as nombre_cat
                        FROM entradas e 
                        LEFT JOIN categorias c ON e.categoria = c.id_categoria
                        WHERE e.id_usuario = ?
-                       ORDER BY e.fecha DESC");
+                       ORDER BY e.id_entrada DESC");
 $stmt->bind_param("i", $id_usuario);
 $stmt->execute();
 $publicaciones = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
@@ -63,7 +63,7 @@ $stmt = $conn->prepare("SELECT c.id_comentario, c.descripcion, c.fecha, e.titulo
                        FROM comentarios c
                        JOIN entradas e ON c.id_entrada = e.id_entrada
                        WHERE c.id_usuario = ?
-                       ORDER BY c.fecha DESC");
+                       ORDER BY c.id_comentario DESC");
 $stmt->bind_param("i", $id_usuario);
 $stmt->execute();
 $comentarios = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
