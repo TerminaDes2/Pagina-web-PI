@@ -1,5 +1,9 @@
 <?php
 session_start();
+
+//Uso de Cookie
+require_once '../includes/auth.php';
+
 if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['perfil'] !== 'admin') {
     header("Location: registro.php?error=Acceso+denegado");
     exit();

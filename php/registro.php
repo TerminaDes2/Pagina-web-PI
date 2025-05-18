@@ -231,6 +231,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     'correo'          => $usuario['correo'],
                     'perfil'          => $usuario['perfil'] // Agregar el campo perfil
                 ];
+
+                if (isset($_POST['recordarme']) && $_POST['recordarme'] === 'true') {
+                  // Guarda el ID en la cookie por 10 dias
+                  setcookie('usuario_id', $usuario['id_usuario'], time() + (10 * 24 * 60 * 60), '/');
+                }
+              
                 // En lugar de redirigir directamente, enviamos la URL en la respuesta JSON
                 echo json_encode(["success" => $translator->__("Bienvenido"), "redirect" => "../index.php", "icon" => "success"]);
                 exit();
@@ -666,7 +672,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <main class="main">
     <div class="card" id="datos">
       <form id="form-right" action="registro.php" method="POST">
-          <input type="hidden" name="action" value="login">
+        <input type="hidden" name="action" value="login">x
           <h1><?= $translator->__("Inicio de Sesión") ?></h1>
           <p><?= $translator->__("Bienvenido de vuelta! Inicia sesión en tu cuenta para registrar las asistencias de tu club.") ?></p>
           <div class="input-container">

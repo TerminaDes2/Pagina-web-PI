@@ -16,7 +16,7 @@ if ($conn->connect_error) {
 $conn->set_charset("utf8");
 
 // Incluir el traductor
-require_once 'includes/traductor.php';
+require_once "includes/traductor.php";
 $translator = new Translator($conn);
 
 // Manejar cambio de idioma
@@ -35,6 +35,9 @@ if ($cita) {
     $cita['texto'] = $translator->traducirTexto($cita['texto']);
     $cita['autor'] = $translator->traducirTexto($cita['autor']);
 }
+
+    //Uso de Cookie
+    require_once 'includes/auth.php';
 
 // Obtener y traducir contenido dinámico
 // Consulta para el banner
