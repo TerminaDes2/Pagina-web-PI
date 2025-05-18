@@ -273,14 +273,18 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
                     $nombre_completo = $row['nombre'] . ' ' . $row['primer_apellido'] . ' ' . $row['segundo_apellido'];
                     $fecha = $row['fecha'];
                     $descripcion = htmlspecialchars($row['descripcion']);
-                    // Corregir la ruta de la imagen
-                    $imagen = !empty($row['imagen']) ? '/Pagina-web-PI/' . $row['imagen'] : '/Pagina-web-PI/assets/img/default-avatar.png';
                     echo "
                     <div class='comentario-container'>
                       <div class='comentario'>
-                        <div class='usuario-info'>
-                          <img src='$imagen' alt='avatar' class='avatar'>
-                          <div>
+                        <div class='usuario-info'>";
+                    // Mostrar la imagen de usuario o un ícono por defecto
+                    if (isset($row['imagen']) && !empty($row['imagen'])) {
+                        $imagen = '/Pagina-web-PI/' . ltrim($row['imagen'], '/');
+                        echo "<img src='$imagen' alt='avatar' class='avatar'>";
+                    } else {
+                        echo '<i class="fas fa-user"></i>';
+                    }
+                    echo "      <div>
                             <strong>$nombre_completo</strong><br>
                             <span class='fecha'>$fecha</span>
                           </div>
