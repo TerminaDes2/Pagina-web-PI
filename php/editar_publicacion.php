@@ -341,6 +341,16 @@ if(isset($_GET['msg'])){
       }
     }
     
+    // Función para contar palabras en el contenido del editor
+    function contarPalabras(texto) {
+      // Eliminar HTML tags y contar palabras
+      const textoPlano = texto.replace(/<[^>]*>/g, ' ');
+      const palabras = textoPlano.split(/\s+/).filter(function(palabra) {
+        return palabra.length > 0;
+      });
+      return palabras.length;
+    }
+    
     // Confirmar antes de enviar el formulario y cargar contenido inicial
     document.addEventListener('DOMContentLoaded', function() {
       // Cargar el contenido actual en el editor
@@ -371,11 +381,37 @@ if(isset($_GET['msg'])){
         }
       }
       
-      // Confirmar antes de enviar el formulario
+      // Confirmar antes de enviar el formulario con validaciones
       document.getElementById('publicacionForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        document.getElementById('contenido').value = document.getElementById('editor').innerHTML;
+        const contenidoHTML = document.getElementById('editor').innerHTML;
+        const numeroPalabras = contarPalabras(contenidoHTML);
         
+        if (numeroPalabras < 10) {
+          Swal.fire({
+            title: '<?= $translator->__("Contenido insuficiente") ?>',
+            text: '<?= $translator->__("El contenido debe tener al menos 10 palabras") ?>',
+            icon: 'error',
+            confirmButtonColor: '#719743'
+          });
+          return;
+        }
+        
+        // Validar que haya una imagen (actual o nueva)
+        const imagenInput = document.getElementById('imagen');
+        const imagenActual = '<?= $publicacion['imagen'] ?>';
+        
+        if (!imagenActual && imagenInput.files.length === 0) {
+          Swal.fire({
+            title: '<?= $translator->__("Imagen requerida") ?>',
+            text: '<?= $translator->__("Debe subir una imagen para la publicación") ?>',
+            icon: 'error',
+            confirmButtonColor: '#719743'
+          });
+          return;
+        }
+        
+        document.getElementById('contenido').value = contenidoHTML;
         const titulo = document.getElementById('titulo').value;
         
         Swal.fire({
@@ -424,6 +460,11 @@ if(isset($_GET['msg'])){
         max-width: 100%;
         max-height: 250px;
       }
+    }
+    
+    /* Estilo para los campos requeridos */
+    .required {
+      color: #f00;
     }
   </style>
 </head>

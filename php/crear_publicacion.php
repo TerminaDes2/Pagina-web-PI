@@ -304,12 +304,34 @@ if(isset($_GET['msg'])){
       }
     }
     
+    // Función para contar palabras en el contenido del editor
+    function contarPalabras(texto) {
+      // Eliminar HTML tags y contar palabras
+      const textoPlano = texto.replace(/<[^>]*>/g, ' ');
+      const palabras = textoPlano.split(/\s+/).filter(function(palabra) {
+        return palabra.length > 0;
+      });
+      return palabras.length;
+    }
+    
     // Confirmar antes de enviar el formulario
     document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('publicacionForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        document.getElementById('contenido').value = document.getElementById('editor').innerHTML;
+        const contenidoHTML = document.getElementById('editor').innerHTML;
+        const numeroPalabras = contarPalabras(contenidoHTML);
         
+        if (numeroPalabras < 10) {
+          Swal.fire({
+            title: '<?= $translator->__("Contenido insuficiente") ?>',
+            text: '<?= $translator->__("El contenido debe tener al menos 10 palabras") ?>',
+            icon: 'error',
+            confirmButtonColor: '#719743'
+          });
+          return;
+        }
+        
+        document.getElementById('contenido').value = contenidoHTML;
         const titulo = document.getElementById('titulo').value;
         
         Swal.fire({
@@ -417,11 +439,11 @@ if(isset($_GET['msg'])){
       <!-- Campo oculto para enviar el contenido formateado -->
       <textarea name="contenido" id="contenido" style="display:none;"></textarea>
 
-      <label for="imagen"><?= $translator->__("Imagen") ?> / Banner:</label>
+      <label for="imagen"><?= $translator->__("Imagen") ?> / Banner: <span class="required">*</span></label>
       <label for="imagen" class="custom-file-upload">
         <?= $translator->__("Seleccionar archivo") ?>
       </label>
-      <input type="file" name="imagen" id="imagen" accept="image/*" onchange="mostrarNombreArchivo()">
+      <input type="file" name="imagen" id="imagen" accept="image/*" onchange="mostrarNombreArchivo()" required>
       <span id="nombre-archivo" style="margin-left:10px;"></span>
 
       <button type="submit"><?= $translator->__("Crear Publicación") ?></button>
