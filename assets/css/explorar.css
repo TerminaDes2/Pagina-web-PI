@@ -596,15 +596,27 @@
     z-index: 2;
 }
 
-/* Estilos para la paginación */
+/* Estilos para la paginación - Rediseño completo */
 .paginacion {
     display: flex;
     justify-content: center;
+    align-items: center;
     margin: 50px 0;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 30px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    gap: 8px;
     flex-wrap: wrap;
-    gap: 10px;
-    animation: fadeIn 1s ease forwards;
-    animation-delay: 0.2s;
+    position: relative;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    backdrop-filter: blur(10px);
+}
+
+.paginacion::before {
+    position: absolute;
 }
 
 .paginacion a, 
@@ -612,65 +624,86 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    border: 2px solid rgba(113, 151, 67, 0.2);
-    color: #444;
-    text-decoration: none;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    min-width: 40px;
+    height: 40px;
+    padding: 0 5px;
+    border-radius: 8px;
     font-weight: 600;
     font-size: 1rem;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
-    background: rgba(255,255,255,0.8);
+    text-decoration: none;
+    transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
-    backdrop-filter: blur(5px);
-}
-
-.paginacion a::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    transition: left 0.7s ease;
-    pointer-events: none;
-}
-
-.paginacion a:hover::before {
-    left: 100%;
+    color: #444;
+    background: transparent;
+    border: none;
+    margin: 2px;
 }
 
 .paginacion a:hover {
-    background-color: rgba(248,248,248,0.95);
-    border-color: rgba(113, 151, 67, 0.5);
     color: #187424;
-    transform: translateY(-5px) scale(1.1);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-    z-index: 2;
+    background: rgba(113, 151, 67, 0.1);
+    transform: translateY(-3px);
 }
 
 .paginacion .actual {
-    background: linear-gradient(135deg, #719743 0%, #187424 100%);
     color: white;
-    border-color: transparent;
-    box-shadow: 0 6px 15px rgba(113, 151, 67, 0.3);
-    animation: pulse 2s infinite;
-    transform: scale(1.1);
-    z-index: 2;
+    background: linear-gradient(135deg, #719743 0%, #187424 100%);
+    box-shadow: 0 4px 12px rgba(113, 151, 67, 0.3);
+    border-radius: 8px;
+    transform: none;
+}
+
+/* Botones de anterior/siguiente */
+.paginacion a:first-child,
+.paginacion a:last-child {
+    background: rgba(113, 151, 67, 0.1);
+    padding: 0 15px;
+    font-size: 0.9rem;
 }
 
 .paginacion .puntos {
-    border: none;
-    background: none;
-    width: auto;
-    padding: 0 8px;
-    box-shadow: none;
-    font-size: 1.2rem;
+    min-width: auto;
+    padding: 0 5px;
     color: #666;
+    font-size: 1.2rem;
+    background: transparent;
+}
+
+/* Mejoras para diferentes dispositivos */
+@media (max-width: 768px) {
+    .paginacion {
+        padding: 12px 10px;
+        border-radius: 20px;
+        gap: 5px;
+    }
+    
+    .paginacion a, 
+    .paginacion span {
+        min-width: 35px;
+        height: 35px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .paginacion {
+        padding: 10px 8px;
+        border-radius: 16px;
+        gap: 3px;
+    }
+    
+    .paginacion a, 
+    .paginacion span {
+        min-width: 32px;
+        height: 32px;
+        font-size: 0.85rem;
+    }
+    
+    .paginacion a:first-child,
+    .paginacion a:last-child {
+        padding: 0 10px;
+    }
 }
 
 /* Estilos para las tarjetas de categorías */
@@ -1022,9 +1055,17 @@
         height: auto;
     }
     
-    .paginacion a, .paginacion span {
-        width: 40px;
-        height: 40px;
+    .paginacion {
+        padding: 12px 10px;
+        border-radius: 20px;
+        gap: 5px;
+    }
+    
+    .paginacion a, 
+    .paginacion span {
+        min-width: 35px;
+        height: 35px;
+        font-size: 0.9rem;
     }
 }
 
@@ -1101,14 +1142,21 @@
     }
     
     .paginacion {
-        margin: 30px 0;
-        gap: 8px;
+        padding: 10px 8px;
+        border-radius: 16px;
+        gap: 3px;
     }
-
-    .paginacion a, .paginacion span {
-        width: 35px;
-        height: 35px;
-        font-size: 0.9rem;
+    
+    .paginacion a, 
+    .paginacion span {
+        min-width: 32px;
+        height: 32px;
+        font-size: 0.85rem;
+    }
+    
+    .paginacion a:first-child,
+    .paginacion a:last-child {
+        padding: 0 10px;
     }
 
     /* Mejorar la accesibilidad táctil en dispositivos móviles pequeños */
