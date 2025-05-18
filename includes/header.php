@@ -7,6 +7,22 @@
 <script src="/Pagina-web-PI/assets/js/Main.js" defer></script>
 
 <?php
+// Verificar y actualizar la imagen de perfil del usuario en la sesión
+if (isset($_SESSION['usuario']) && isset($_SESSION['usuario']['id_usuario'])) {
+    $id_usuario = $_SESSION['usuario']['id_usuario'];
+    $stmt_imagen = $conn->prepare("SELECT imagen FROM usuarios WHERE id_usuario = ?");
+    $stmt_imagen->bind_param("i", $id_usuario);
+    $stmt_imagen->execute();
+    $stmt_imagen->bind_result($imagen_perfil);
+    $stmt_imagen->fetch();
+    $stmt_imagen->close();
+    
+    // Actualizar la imagen en la sesión si es diferente
+    if (isset($imagen_perfil) && (!isset($_SESSION['usuario']['imagen']) || $imagen_perfil !== $_SESSION['usuario']['imagen'])) {
+        $_SESSION['usuario']['imagen'] = $imagen_perfil;
+    }
+}
+
 // Obtener categorías dinámicamente para el menú
 $categorias_menu = [];
 $sql_categorias = "SELECT id_categoria, categoria FROM categorias ORDER BY categoria";
@@ -76,12 +92,6 @@ if ($result_categorias && $result_categorias->num_rows > 0) {
                     <option value="es" <?= $_SESSION['idioma'] == 'es' ? 'selected' : '' ?>><?= $translator->__("Español") ?></option>
                 </select>
             </form>
-            <div class="hf-dark-mode-toggle">
-                <button id="darkModeToggle" class="dark-mode-btn" title="<?= $translator->__("Cambiar modo") ?>">
-                    <i class="fas fa-moon"></i>
-                    <i class="fas fa-sun"></i>
-                </button>
-            </div>
             <?php if (isset($_SESSION['usuario'])): ?>
                 <div class="hf-user-menu">
                     <a href="#" class="hf-profile-circle" title="<?= $translator->__("Mi perfil") ?>">
