@@ -15,12 +15,13 @@ body {
     border-radius: 12px;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15), 0 5px 15px rgba(0, 0, 0, 0.08);
     overflow: hidden;
-    margin-top: 90px;
+    margin-top: 120px;
     transition: all 0.3s ease;
-    border: 1px solid rgba(113, 151, 67, 0.2);
+    border: 1px solid var(--color-carousel-border);
     animation: fadeIn 0.8s ease;
     transform-style: preserve-3d;
     perspective: 1000px;
+    background-image: var(--color-hero-bg-gradient);
 }
 
 .perfil-container:hover {
@@ -37,8 +38,8 @@ body {
     display: flex;
     align-items: center;
     padding: 30px;
-    background: linear-gradient(135deg, #719743 0%, #187424 100%);
-    color: white;
+    background: var(--color-hero-deco-gradient);
+    color: rgb(0, 0, 0);
     position: relative;
     overflow: hidden;
 }
@@ -226,7 +227,7 @@ body {
 
 .perfil-nav {
     display: flex;
-    background: linear-gradient(to right, #f8f8f8, #f0f0f0);
+    background: var(--color-info-title-bg);
     border-bottom: 1px solid #ddd;
     overflow-x: auto;
     position: relative;
@@ -285,8 +286,8 @@ body {
 }
 
 .perfil-nav a.active {
-    background: linear-gradient(135deg, #719743 0%, #4b7b1e 100%);
-    color: white;
+    background: var(--color-carousel-btn-bg);
+    color: rgb(0, 0, 0);
     position: relative;
     box-shadow: 0 5px 15px rgba(113, 151, 67, 0.3);
     animation: nav-active-entrance 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -530,8 +531,8 @@ body {
 }
 
 .btn-guardar {
-    background: linear-gradient(135deg, #719743 0%, #187424 100%);
-    color: white;
+    background: var(--color-carousel-btn-bg);
+    color: #012310;
     border: none;
     padding: 14px 28px;
     border-radius: 50px;
@@ -627,7 +628,7 @@ body {
 }
 
 .tabla-contenido th {
-    background: linear-gradient(135deg, #719743 0%, #558033 100%);
+    background: var(--color-carousel-btn-bg);
     color: white;
     font-weight: 600;
     text-transform: uppercase;
@@ -717,6 +718,10 @@ body {
     background-image: linear-gradient(135deg, #f39c12, #e67e22);
 }
 
+.btn-accion.eliminar {
+    background-image: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+
 .btn-accion.ver:hover {
     background-image: linear-gradient(135deg, #2980b9, #1c6ea4);
     transform: translateY(-5px) scale(1.05) translateZ(5px);
@@ -724,6 +729,11 @@ body {
 
 .btn-accion.editar:hover {
     background-image: linear-gradient(135deg, #e67e22, #d35400);
+    transform: translateY(-5px) scale(1.05) translateZ(5px);
+}
+
+.btn-accion.eliminar:hover {
+    background-image: linear-gradient(135deg, #c0392b, #a93226);
     transform: translateY(-5px) scale(1.05) translateZ(5px);
 }
 
@@ -841,7 +851,8 @@ body {
     }
     
     .btn-accion.ver:hover, 
-    .btn-accion.editar:hover {
+    .btn-accion.editar:hover,
+    .btn-accion.eliminar:hover {
         transform: translateY(-3px);
     }
 }
@@ -934,188 +945,44 @@ body {
     transform: translateY(-2px);
 }
 
-/* === MODO OSCURO PERFIL === */
-body.dark-mode,
-.dark-mode body {
-  background-color: #232323 !important;
-  color: #e0e0e0 !important;
-  background-image: none !important;
+/* Añadir clases para elementos decorativos similares a index.php */
+.perfil-shapes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
 }
 
-.dark-mode .perfil-container,
-.dark-mode .perfil-header,
-.dark-mode .perfil-contenido,
-.dark-mode .form-group,
-.dark-mode .form-group input,
-.dark-mode .form-group input[type="file"],
-.dark-mode .form-actions,
-.dark-mode .btn-guardar,
-.dark-mode .tabla-contenido,
-.dark-mode .sin-contenido,
-.dark-mode .lista-contenido {
-  background: #292929 !important;
-  color: #e0e0e0 !important;
-  border: 1px solid #333 !important;
-  box-shadow: 0 8px 24px rgba(30,30,30,0.12) !important;
+.perfil-shape {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.6;
 }
 
-.dark-mode .perfil-header {
-  background: linear-gradient(135deg, #232323 0%, #353535 100%) !important;
-  color: #e0e0e0 !important;
+.perfil-shape-1 {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #719743 0%, rgba(113, 151, 67, 0.6) 100%);
+    top: 15%;
+    left: 8%;
+    animation: float 6s ease-in-out infinite;
 }
 
-.dark-mode .perfil-avatar,
-.dark-mode .avatar-placeholder {
-  background: #232323 !important;
-  border: 4px solid #444 !important;
+.perfil-shape-2 {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #187424 0%, rgba(24, 116, 36, 0.6) 100%);
+    bottom: 20%;
+    right: 10%;
+    animation: float 8s ease-in-out infinite 1s;
 }
 
-.dark-mode .perfil-avatar img,
-.dark-mode .avatar-placeholder i {
-  filter: grayscale(1) brightness(0.8) !important;
-}
-
-.dark-mode .perfil-info-header h1,
-.dark-mode .perfil-info-header h1::after,
-.dark-mode .perfil-info-header p,
-.dark-mode .perfil-info-header p::after,
-.dark-mode .perfil-badge {
-  color: #7fdc9c !important;
-  background: none !important;
-}
-
-.dark-mode .perfil-badge {
-  background-color: #353535 !important;
-  border: 1px solid #444 !important;
-}
-
-.dark-mode .perfil-nav {
-  background: linear-gradient(to right, #232323, #353535) !important;
-  border-bottom: 1px solid #444 !important;
-}
-
-.dark-mode .perfil-nav a {
-  color: #e0e0e0 !important;
-  background: none !important;
-}
-
-.dark-mode .perfil-nav a.active {
-  background: linear-gradient(135deg, #353535 0%, #232323 100%) !important;
-  color: #7fdc9c !important;
-  box-shadow: 0 5px 15px rgba(30,30,30,0.3) !important;
-}
-
-.dark-mode .perfil-nav a.active::after {
-  background-color: #116434 !important;
-}
-
-.dark-mode .perfil-nav a:hover:not(.active) {
-  background-color: #292929 !important;
-  color: #7fdc9c !important;
-}
-
-.dark-mode .perfil-nav a.cerrar-sesion {
-  color: #e57373 !important;
-}
-
-.dark-mode .perfil-nav a.cerrar-sesion:hover {
-  background-color: #232323 !important;
-  color: #ffbdbd !important;
-}
-
-.dark-mode .perfil-contenido h2,
-.dark-mode .perfil-contenido h2::after {
-  color: #7fdc9c !important;
-  background: #116434 !important;
-  border-bottom: 2px solid #116434 !important;
-}
-
-.dark-mode .form-group label {
-  color: #7fdc9c !important;
-}
-
-.dark-mode .form-group input,
-.dark-mode .form-group input[type="file"] {
-  background: #232323 !important;
-  color: #e0e0e0 !important;
-  border: 1px solid #444 !important;
-}
-
-.dark-mode .form-group input:focus {
-  border-color: #7fdc9c !important;
-  box-shadow: 0 0 0 3px rgba(127,220,156,0.2) !important;
-}
-
-.dark-mode .form-group input[type="file"] {
-  background-color: #292929 !important;
-  border: 2px dashed #444 !important;
-}
-
-.dark-mode .imagen-actual {
-  color: #b0b0b0 !important;
-}
-
-.dark-mode .imagen-actual a {
-  color: #7fdc9c !important;
-}
-
-.dark-mode .imagen-actual a:hover {
-  color: #fff !important;
-}
-
-.dark-mode .btn-guardar {
-  background: linear-gradient(135deg, #116434 0%, #232323 100%) !important;
-  color: #e0e0e0 !important;
-  box-shadow: 0 4px 15px rgba(30,30,30,0.4) !important;
-}
-
-.dark-mode .btn-guardar:hover {
-  background: linear-gradient(135deg, #232323, #353535) !important;
-  color: #fff !important;
-}
-
-.dark-mode .tabla-contenido th {
-  background: linear-gradient(135deg, #353535 0%, #232323 100%) !important;
-  color: #7fdc9c !important;
-}
-
-.dark-mode .tabla-contenido th::after {
-  background: radial-gradient(circle, #116434 0%, rgba(17,100,52,0) 70%) !important;
-}
-
-.dark-mode .tabla-contenido tr:hover {
-  background-color: #232323 !important;
-}
-
-.dark-mode .btn-accion.ver {
-  background-image: linear-gradient(135deg, #1976d2, #1565c0) !important;
-}
-
-.dark-mode .btn-accion.editar {
-  background-image: linear-gradient(135deg, #fbc02d, #f57c00) !important;
-}
-
-.dark-mode .btn-accion.ver:hover,
-.dark-mode .btn-accion.editar:hover {
-  background-image: linear-gradient(135deg, #232323, #353535) !important;
-}
-
-.dark-mode .sin-contenido {
-  background-color: #232323 !important;
-  color: #b0b0b0 !important;
-}
-
-.dark-mode .sin-contenido i {
-  color: #7fdc9c !important;
-}
-
-.dark-mode .perfil-top-btn {
-  background: linear-gradient(135deg, #353535 0%, #232323 100%) !important;
-  color: #7fdc9c !important;
-  box-shadow: 0 6px 15px rgba(30,30,30,0.4) !important;
-}
-
-.dark-mode .perfil-top-btn:hover {
-  background: #232323 !important;
-  color: #fff !important;
+@keyframes float {
+    0% { transform: translateY(0) rotate(0); }
+    50% { transform: translateY(-10px) rotate(5deg); }
+    100% { transform: translateY(0) rotate(0); }
 }

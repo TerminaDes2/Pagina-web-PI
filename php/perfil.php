@@ -128,6 +128,40 @@ if(isset($_GET['msg'])){
             }
         }
         
+        function confirmarEliminarComentario(idComentario) {
+            Swal.fire({
+                title: '<?= $translator->__("¿Estás seguro?") ?>',
+                text: '<?= $translator->__("Esta acción no se puede deshacer") ?>',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: '<?= $translator->__("Sí, eliminar") ?>',
+                cancelButtonText: '<?= $translator->__("Cancelar") ?>'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '../includes/eliminar_comentario.php?id=' + idComentario;
+                }
+            });
+        }
+        
+        function confirmarEliminarPublicacion(idPublicacion) {
+            Swal.fire({
+                title: '<?= $translator->__("¿Estás seguro?") ?>',
+                text: '<?= $translator->__("Esta acción eliminará permanentemente la publicación y todos sus comentarios") ?>',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: '<?= $translator->__("Sí, eliminar") ?>',
+                cancelButtonText: '<?= $translator->__("Cancelar") ?>'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '../includes/eliminar_publicacion.php?id=' + idPublicacion;
+                }
+            });
+        }
+        
         document.addEventListener('DOMContentLoaded', function() {
             // Iniciamos en la pestaña de perfil y optimizamos el renderizado
             setTimeout(() => {
@@ -269,11 +303,12 @@ if(isset($_GET['msg'])){
                                     <a href="publicacion.php?id=<?= $pub['id_entrada'] ?>" class="btn-accion ver">
                                         <i class="fas fa-eye"></i> <?= $translator->__("Ver") ?>
                                     </a>
-                                    <?php if ($_SESSION['usuario']['perfil'] === 'admin'): ?>
                                     <a href="editar_publicacion.php?id=<?= $pub['id_entrada'] ?>" class="btn-accion editar">
                                         <i class="fas fa-edit"></i> <?= $translator->__("Editar") ?>
                                     </a>
-                                    <?php endif; ?>
+                                    <a href="javascript:void(0);" onclick="confirmarEliminarPublicacion(<?= $pub['id_entrada'] ?>)" class="btn-accion eliminar">
+                                        <i class="fas fa-trash-alt"></i> <?= $translator->__("Eliminar") ?>
+                                    </a>
                                 </td>
                             </tr>
                             <?php endforeach; ?>
@@ -312,6 +347,9 @@ if(isset($_GET['msg'])){
                                 <td class="acciones">
                                     <a href="publicacion.php?id=<?= $com['id_entrada'] ?>#comentario-<?= $com['id_comentario'] ?>" class="btn-accion ver">
                                         <i class="fas fa-eye"></i> <?= $translator->__("Ver") ?>
+                                    </a>
+                                    <a href="javascript:void(0);" onclick="confirmarEliminarComentario(<?= $com['id_comentario'] ?>)" class="btn-accion eliminar">
+                                        <i class="fas fa-trash-alt"></i> <?= $translator->__("Eliminar") ?>
                                     </a>
                                 </td>
                             </tr>
