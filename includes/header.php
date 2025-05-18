@@ -4,7 +4,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Roboto+Slab:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <script src="/Pagina-web-PI/assets/js/menu.js" defer></script>
-<script src="/Pagina-web-PI/assets/js/Main.js" defer></script>
 
 <?php
 // Verificar y actualizar la imagen de perfil del usuario en la sesión

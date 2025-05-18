@@ -129,7 +129,7 @@ $stmt->close();
 ?>
 
 <!DOCTYPE html>
-<html lang="<?= $_SESSION['idioma'] ?>">
+<html lang="<?= isset($_SESSION['idioma']) ? $_SESSION['idioma'] : 'es' ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -138,6 +138,7 @@ $stmt->close();
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="/Pagina-web-PI/assets/img/Poalce-logo.png" type="image/x-icon">
     <script>
         function confirmarEliminarPublicacion(id, titulo) {
             Swal.fire({
@@ -169,10 +170,6 @@ $stmt->close();
                 cancelButtonColor: '#3085d6',
                 confirmButtonText: '<?= $translator->__("Sí, eliminar") ?>',
                 cancelButtonText: '<?= $translator->__("Cancelar") ?>'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    document.getElementById('form-eliminar-comentario-' + id).submit();
-                }
             });
         }
         
@@ -200,6 +197,20 @@ $stmt->close();
                 showConfirmButton: true
             });
             <?php endif; ?>
+            
+            // Botón para volver arriba
+            $(window).scroll(function() {
+                if ($(this).scrollTop() > 300) {
+                    $('.admin-top-btn').addClass('visible');
+                } else {
+                    $('.admin-top-btn').removeClass('visible');
+                }
+            });
+            
+            $('.admin-top-btn').click(function() {
+                $('html, body').animate({scrollTop: 0}, 500);
+                return false;
+            });
         });
     </script>
 </head>
@@ -396,6 +407,11 @@ $stmt->close();
             </div>
         </div>
     </div>
+    
+    <!-- Botón para volver arriba -->
+    <button class="admin-top-btn">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
     <?php include "../includes/footer.php"; ?>
 </body>

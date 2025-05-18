@@ -852,6 +852,34 @@
   .acciones-container {
     justify-content: center;
   }
+  
+  /* Mejorar las pestañas de navegación */
+  .admin-tabs {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 0 10px;
+  }
+  
+  .admin-tab {
+    flex: 1 1 calc(50% - 10px);
+    min-width: 160px;
+    text-align: center;
+    padding: 12px 15px;
+    margin-bottom: 5px;
+  }
+  
+  .admin-tab.crear-publicacion {
+    flex: 1 1 100%;
+  }
+  
+  /* Mejorar el aspecto general del contenedor */
+  .admin-container h1 {
+    font-size: 2rem;
+  }
+  
+  .admin-container h2 {
+    font-size: 1.4rem;
+  }
 }
 
 /* Nuevos estilos para móviles más pequeños */
@@ -872,7 +900,21 @@
     border: 1px solid #e2e6ea;
     border-radius: 10px;
     padding: 10px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    background-color: #fff;
+    position: relative;
+    transition: all 0.3s ease;
+    animation: card-appear 0.5s ease-out forwards;
+  }
+  
+  @keyframes card-appear {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .admin-table-mobile-view tr:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
   }
   
   /* Arreglo para la imagen y título que se superponen */
@@ -942,7 +984,7 @@
     padding-bottom: 8px;
   }
   
-  /* Botones más grandes y fáciles de tocar */
+  /* Botones más grandes y fáciles de tocar en móvil */
   .admin-table-mobile-view .admin-button,
   .admin-table-mobile-view button,
   .admin-table-mobile-view .admin-link {
@@ -976,82 +1018,119 @@
   .admin-table-mobile-view form button {
     width: 100%;
   }
+  
+  /* Ajuste para los tabs en móviles pequeños */
+  .admin-tab {
+    flex: 1 1 100%;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+    padding: 10px;
+  }
+  
+  /* Estilo de tarjeta para los detalles de usuario */
+  .usuario-info {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+    animation: fade-in-up 0.5s ease-out forwards;
+  }
+  
+  @keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .usuario-info p {
+    margin: 8px 0;
+    padding: 5px 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .usuario-info p:last-child {
+    border-bottom: none;
+  }
+  
+  /* Reducir padding en el contenedor principal */
+  .admin-section {
+    padding: 15px 10px;
+  }
+  
+  /* Ajustes para las notificaciones */
+  .admin-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    font-size: 0.7rem;
+  }
+  
+  /* Mejora de la visualización de tabs de usuarios */
+  .admin-tabs-usuario {
+    overflow-x: auto;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+  }
+  
+  .admin-tabs-usuario::-webkit-scrollbar {
+    height: 4px;
+  }
+  
+  .admin-tabs-usuario::-webkit-scrollbar-thumb {
+    background-color: rgba(113, 151, 67, 0.5);
+    border-radius: 4px;
+  }
+  
+  .admin-tab-usuario {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    padding: 10px 15px;
+    margin-right: 5px;
+  }
 }
 
-/* Nuevas animaciones para mejorar la experiencia */
-/* Notificación tipo badge para elementos */
-.admin-badge {
-  display: inline-block;
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  color: white;
-  font-weight: 600;
-  margin-left: 6px;
-  animation: badge-pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-@keyframes badge-pop {
-  from { transform: scale(0); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-
-.admin-badge.admin-badge-primary {
-  background-color: #3498db;
-}
-
-.admin-badge.admin-badge-success {
-  background-color: #2ecc71;
-}
-
-.admin-badge.admin-badge-warning {
-  background-color: #f39c12;
-}
-
-.admin-badge.admin-badge-danger {
-  background-color: #e74c3c;
-}
-
-/* Efecto de destello para acciones importantes */
-.flash-highlight {
-  animation: flash-highlight 2s ease;
-}
-
-@keyframes flash-highlight {
-  0% { background-color: rgba(113, 151, 67, 0.3); }
-}
-
-/* Botón flotante para acciones rápidas */
-.floating-action-button {
+/* Añadir un botón flotante para volver arriba */
+.admin-top-btn {
   position: fixed;
   bottom: 30px;
   right: 30px;
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   background: linear-gradient(135deg, #719743 0%, #187424 100%);
   color: white;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   box-shadow: 0 6px 15px rgba(113, 151, 67, 0.4);
   cursor: pointer;
   z-index: 999;
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  transform: translateZ(0) scale(1);
-  overflow: hidden;
+  border: none;
+  opacity: 0;
 }
 
-.floating-action-button:hover {
-  transform: translateZ(0) scale(1.1) rotate(5deg);
+.admin-top-btn.visible {
+  display: flex;
+  animation: btn-appear 0.5s ease forwards;
+}
+
+@keyframes btn-appear {
+  from { opacity: 0; transform: translateY(20px) scale(0.8); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.admin-top-btn:hover {
+  transform: translateY(-5px) scale(1.1);
   box-shadow: 0 8px 20px rgba(113, 151, 67, 0.5);
 }
 
-.floating-action-button i {
+.admin-top-btn i {
   font-size: 1.5rem;
   transition: all 0.3s ease;
 }
 
-.floating-action-button:hover i {
-  transform: rotate(180deg);
+.admin-top-btn:hover i {
+  transform: translateY(-2px);
 }

@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idioma'])) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="<?= $_SESSION['idioma'] ?>">
+<html lang="<?= isset($_SESSION['idioma']) ? $_SESSION['idioma'] : 'es' ?>">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -38,11 +38,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idioma'])) {
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
-  <!-- Agregamos Font Awesome para los iconos -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-  <!-- Agregar soporte para modo oscuro -->
   <link rel="stylesheet" href="../assets/css/dark-mode.css">
-  <script src="../assets/js/dark-mode.js" defer></script>
+  <link rel="icon" href="/Pagina-web-PI/assets/img/Poalce-logo.png" type="image/x-icon">
 </head>
 <body>
   <?php include '../includes/header.php'; ?>

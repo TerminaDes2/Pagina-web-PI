@@ -357,7 +357,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 <!DOCTYPE html>
-<html lang="<?= $_SESSION['idioma'] ?>">
+<html lang="<?= isset($_SESSION['idioma']) ? $_SESSION['idioma'] : 'es' ?>">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -370,8 +370,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <link rel="stylesheet" href="../assets/css/dark-mode.css">
-  <script src="../assets/js/dark-mode.js" defer></script>
+  <link rel="icon" href="/Pagina-web-PI/assets/img/Poalce-logo.png" type="image/x-icon">
   
   <!-- Añadir objeto de traducciones para JavaScript -->
   <script>
@@ -631,7 +630,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <main class="main">
     <div class="card" id="datos">
       <form id="form-right" action="registro.php" method="POST">
-        <input type="hidden" name="action" value="login">x
+        <input type="hidden" name="action" value="login">
           <h1><?= $translator->__("Inicio de Sesión") ?></h1>
           <p><?= $translator->__("Bienvenido de vuelta! Inicia sesión en tu cuenta para registrar las asistencias de tu club.") ?></p>
           <div class="input-container">

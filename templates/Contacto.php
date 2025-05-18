@@ -30,9 +30,7 @@ if (isset($_POST['idioma'])) {
     <!-- Agregar jQuery y SweetAlert2 -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- Agregar soporte para modo oscuro -->
-    <link rel="stylesheet" href="/Pagina-web-PI/assets/css/dark-mode.css">
-    <script src="/Pagina-web-PI/assets/js/dark-mode.js" defer></script>
+    <link rel="icon" href="/Pagina-web-PI/assets/img/Poalce-logo.png" type="image/x-icon">
 </head>
 <body>
     <?php include(__DIR__ . '/../includes/header.php'); ?>

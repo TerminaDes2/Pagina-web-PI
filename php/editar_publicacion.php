@@ -163,7 +163,7 @@ if(isset($_GET['msg'])){
 ?>
 
 <!DOCTYPE html>
-<html lang="<?= $_SESSION['idioma'] ?>">
+<html lang="<?= isset($_SESSION['idioma']) ? $_SESSION['idioma'] : 'es' ?>">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -176,6 +176,7 @@ if(isset($_GET['msg'])){
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="../assets/js/loggin_scripts.js" defer></script>
+  <link rel="icon" href="/Pagina-web-PI/assets/img/Poalce-logo.png" type="image/x-icon">
   
   <script>
     // Función de formateo con capacidad de toggle para bloques (h2, p, listas)

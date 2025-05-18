@@ -20,7 +20,6 @@
   --color-btn-secondary-shadow: rgba(24, 116, 36, 0.3);
   --color-btn-shadow-hover: rgba(0,0,0,0.15);
   --color-hero-bg-gradient: linear-gradient(135deg, #f8faff 0%, #e2e6ea 100%);
-  --color-hero-dot-bg: url('../img/pattern-dots.png');
   --color-hero-dot-opacity: 0.08;
   --color-hero-deco-gradient: linear-gradient(135deg, #719743 0%, #187424 100%);
   --color-hero-img-border: #fff;
@@ -284,6 +283,7 @@ a {
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   text-overflow: ellipsis;
   position: relative;
@@ -644,6 +644,7 @@ a {
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 4;
+  line-clamp: 4;
   -webkit-box-orient: vertical;
   text-overflow: ellipsis;
   position: relative;
@@ -844,6 +845,7 @@ a {
   .carousel-subtitle {
     font-size: 0.95rem;
     -webkit-line-clamp: 3;
+    line-clamp: 3;
   }
 
   .carousel-nav-buttons {
@@ -1148,6 +1150,7 @@ a {
   .carousel-subtitle {
     font-size: 0.9rem;
     -webkit-line-clamp: 3;
+    line-clamp: 3;
   }
 
   .carousel-item .btn {
@@ -1191,6 +1194,7 @@ a {
   .hero-content p {
     font-size: 1rem;
     -webkit-line-clamp: 2; /* Solo 2 líneas en móviles */
+    line-clamp: 2;
     max-height: 3.2em;
   }
 

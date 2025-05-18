@@ -218,16 +218,16 @@ if ($result) {
 ?>
 
 <!DOCTYPE html>
-<html lang="<?= $_SESSION['idioma'] ?>">
+<html lang="<?= isset($_SESSION['idioma']) ? $_SESSION['idioma'] : 'es' ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $translator->__("Panel de Administración") ?></title>
     <link rel="stylesheet" href="../assets/css/admin.css">
-    <link rel="stylesheet" href="../assets/css/admin-dark.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="/Pagina-web-PI/assets/img/Poalce-logo.png" type="image/x-icon">
     <script>
         function confirmarEliminarUsuario(id, nombre) {
             Swal.fire({
@@ -351,6 +351,20 @@ if ($result) {
                 showConfirmButton: true
             });
             <?php endif; ?>
+            
+            // Botón para volver arriba
+            $(window).scroll(function() {
+                if ($(this).scrollTop() > 300) {
+                    $('.admin-top-btn').addClass('visible');
+                } else {
+                    $('.admin-top-btn').removeClass('visible');
+                }
+            });
+            
+            $('.admin-top-btn').click(function() {
+                $('html, body').animate({scrollTop: 0}, 500);
+                return false;
+            });
         });
     </script>
 </head>
@@ -630,6 +644,11 @@ if ($result) {
             </div>
         </section>
     </div>
+    
+    <!-- Botón para volver arriba -->
+    <button class="admin-top-btn">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
     <?php include "../includes/footer.php"; ?>
 </body>

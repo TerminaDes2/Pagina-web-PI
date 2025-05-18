@@ -273,7 +273,7 @@ if ($result_categorias_filtro && $result_categorias_filtro->num_rows > 0) {
 ?>
 
 <!DOCTYPE html>
-<html lang="<?= $_SESSION['idioma'] ?>">
+<html lang="<?= isset($_SESSION['idioma']) ? $_SESSION['idioma'] : 'es' ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -285,8 +285,7 @@ if ($result_categorias_filtro && $result_categorias_filtro->num_rows > 0) {
     <link rel="stylesheet" href="../assets/css/categorias.css">
     <link rel="stylesheet" href="../assets/css/explorar.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="../assets/css/dark-mode.css">
-    <script src="../assets/js/dark-mode.js" defer></script>
+    <link rel="icon" href="/Pagina-web-PI/assets/img/Poalce-logo.png" type="image/x-icon">
     <!-- Se eliminó la etiqueta style, el código está ahora en explorar.css -->
 </head>
 <body>

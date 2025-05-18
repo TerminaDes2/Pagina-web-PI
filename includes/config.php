@@ -1,7 +1,7 @@
 <?php
 // Configuración de Azure Translator - Verificamos si las constantes ya están definidas
 if (!defined('AZURE_TRANSLATOR_KEY')) {
-    define('AZURE_TRANSLATOR_KEY', 'GDaHkQHsv2Tbw3YC026AENYk8Cj9HQVTakgMtqfjovkQTgEl1zJEJQQJ99BEACLArgHXJ3w3AAAbACOGYqyI');
+    define('AZURE_TRANSLATOR_KEY', 'EUQHR5PP9DDD09w8Euwp0AJ2r4IBvm2cgaUfZTRYjiuOH23c928kJQQJ99BEACLArgHXJ3w3AAAbACOGIxFo');
 }
 if (!defined('AZURE_TRANSLATOR_REGION')) {
     define('AZURE_TRANSLATOR_REGION', 'southcentralus');
@@ -19,7 +19,7 @@ if (!defined('AZURE_TRANSLATOR_LANG')) {
 // Devolvemos configuración como array para mantener compatibilidad con el código existente
 return [
     'translator' => [
-        'key'      => 'bedFkL5bZyqj9lsdC9wAtxagbaZLAFaPs2Y8f7t51A6ciP7igj5vJQQJ99BEACLArgHXJ3w3AAAbACOGXmXi',
+        'key'      => 'EUQHR5PP9DDD09w8Euwp0AJ2r4IBvm2cgaUfZTRYjiuOH23c928kJQQJ99BEACLArgHXJ3w3AAAbACOGIxFo',
         'endpoint' => 'https://api.cognitive.microsofttranslator.com/',
         'location' => 'southcentralus'
     ]
