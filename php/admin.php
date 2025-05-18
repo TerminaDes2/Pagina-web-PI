@@ -365,6 +365,18 @@ if ($result) {
                 $('html, body').animate({scrollTop: 0}, 500);
                 return false;
             });
+            
+            // Funcionalidad para expandir/contraer comentarios
+            $(document).on('click', '.expand-comment-btn', function() {
+                var commentCell = $(this).prev('.comment-cell');
+                commentCell.toggleClass('comment-expanded');
+                
+                if (commentCell.hasClass('comment-expanded')) {
+                    $(this).text('<?= $translator->__("Ver menos") ?>');
+                } else {
+                    $(this).text('<?= $translator->__("Ver más") ?>');
+                }
+            });
         });
     </script>
 </head>
@@ -608,15 +620,21 @@ if ($result) {
                                     <?= htmlspecialchars($comentario['nombre'] . ' ' . $comentario['primer_apellido']) ?>
                                 </td>
                                 <td data-label="<?= $translator->__("Publicación") ?>">
-                                    <a href="publicacion.php?id=<?= $comentario['id_entrada'] ?>" target="_blank">
-                                        <?= htmlspecialchars($comentario['titulo_entrada']) ?>
-                                    </a>
+                                    <div style="display:flex; align-items:center; gap:10px;">
+                                        <?php if (!empty($publicacion['imagen'])): ?>
+                                            <img src="<?= htmlspecialchars($publicacion['imagen']) ?>" alt="<?= $translator->__("Imagen de publicación") ?>" 
+                                                 style="width: 40px; height: 40px; border-radius: 5px; object-fit: cover;">
+                                        <?php endif; ?>
+                                        <span href="publicacion.php?id=<?= $comentario['id_entrada'] ?>"><?= htmlspecialchars($comentario['titulo_entrada']) ?></span>
+                                    </div>
                                 </td>
                                 <td data-label="<?= $translator->__("Comentario") ?>">
-                                    <?php 
-                                    $texto = htmlspecialchars($comentario['descripcion']);
-                                    echo (strlen($texto) > 100) ? substr($texto, 0, 100) . '...' : $texto;
-                                    ?>
+                                    <div class="comment-cell">
+                                        <?= htmlspecialchars($comentario['descripcion']) ?>
+                                    </div>
+                                    <?php if (strlen($comentario['descripcion']) > 100): ?>
+                                        <button class="expand-comment-btn"><?= $translator->__("Ver más") ?></button>
+                                    <?php endif; ?>
                                 </td>
                                 <td data-label="<?= $translator->__("Fecha") ?>">
                                     <?= date('d/m/Y H:i', strtotime($comentario['fecha'])) ?>

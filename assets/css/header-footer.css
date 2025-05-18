@@ -1347,7 +1347,7 @@ select option:checked {
   }
   
   /* Ocultar el texto y mostrar solo el icono en pantallas muy pequeñas */
-  @media (max-width: 370px) {
+  @media (max-width: 329px) {
     .hf-header-actions .hf-login-btn span {
       display: none;
     }
@@ -1406,7 +1406,7 @@ select option:checked {
 }
 
 /* Para pantallas más pequeñas - mejor organización vertical */
-@media (max-width: 480px) {
+@media (max-width: 329px) {
   .hf-footer-wave svg {
     height: 30px; /* Reducir altura de la onda en móviles pequeños */
   }

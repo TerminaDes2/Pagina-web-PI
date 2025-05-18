@@ -2,7 +2,7 @@
 session_start();
 
 //Uso de Cookie
-require_once 'includes/auth.php';
+require_once '../includes/auth.php';
 
 if (!isset($_SESSION['usuario'])) {
     header("Location: ../php/registro.php?error=Acceso+denegado");

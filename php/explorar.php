@@ -388,7 +388,7 @@ if ($result_categorias_filtro && $result_categorias_filtro->num_rows > 0) {
         <?php elseif (!empty($articulos)): ?>
             <div class="articulos-grid">
                 <?php foreach ($articulos as $articulo): ?>
-                    <article class="articulo-card">
+                    <article class="articulo-card articulo-card-clickable" data-url="publicacion.php?id=<?= $articulo['id_entrada'] ?>">
                         <div class="articulo-imagen">
                             <?php if (!empty($articulo['imagen_principal'])): ?>
                                 <img src="<?= htmlspecialchars($articulo['imagen_principal']) ?>" alt="<?= htmlspecialchars($articulo['titulo']) ?>">
@@ -417,7 +417,7 @@ if ($result_categorias_filtro && $result_categorias_filtro->num_rows > 0) {
                             <p class="articulo-extracto">
                                 <?= htmlspecialchars($articulo['extracto']) ?>
                             </p>
-                            <a href="publicacion.php?id=<?= $articulo['id_entrada'] ?>" class="btn-leer-mas"><?= $translator->__("Leer más") ?></a>
+                            <a href="publicacion.php?id=<?= $articulo['id_entrada'] ?>" class="btn-leer-mas" onclick="event.stopPropagation();"><?= $translator->__("Leer más") ?></a>
                         </div>
                     </article>
                 <?php endforeach; ?>
@@ -488,6 +488,20 @@ if ($result_categorias_filtro && $result_categorias_filtro->num_rows > 0) {
             // Redirigir
             window.location.href = nuevaURL.toString();
         }
+
+        // Hacer que las tarjetas de artículos sean clickeables
+        document.addEventListener('DOMContentLoaded', function() {
+            const tarjetasClickeables = document.querySelectorAll('.articulo-card-clickable');
+            
+            tarjetasClickeables.forEach(function(tarjeta) {
+                tarjeta.addEventListener('click', function() {
+                    const url = this.getAttribute('data-url');
+                    if (url) {
+                        window.location.href = url;
+                    }
+                });
+            });
+        });
     </script>
 </body>
 </html>

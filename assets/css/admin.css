@@ -757,6 +757,63 @@
   transform: scale(1.1) rotate(10deg);
 }
 
+/* Mejorar la visualización de comentarios */
+.comment-cell {
+  white-space: normal;
+  overflow: auto;
+  text-overflow: ellipsis;
+  line-height: 1.5;
+  max-height: 80px;
+  position: relative;
+}
+
+.comment-cell.comment-expanded {
+  max-height: none;
+  white-space: normal;
+}
+
+.expand-comment-btn {
+  display: inline-block;
+  margin-top: 5px;
+  background: #f2f2f2;
+  border: none;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: #555;
+  transition: all 0.2s ease;
+}
+
+.expand-comment-btn:hover {
+  background: #e0e0e0;
+  color: #333;
+}
+
+/* Estilo específico para enlaces de títulos de publicaciones */
+.admin-table td[data-label="Publicación"] a,
+.admin-table td[data-label="Publication"] a {
+  display: inline;
+  background: none;
+  color: #187424;
+  padding: 0;
+  margin: 0;
+  border-radius: 0;
+  box-shadow: none;
+  font-weight: bold;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.admin-table td[data-label="Publicación"] a:hover,
+.admin-table td[data-label="Publication"] a:hover {
+  background: none;
+  color: #0b571b;
+  transform: none;
+  box-shadow: none;
+  text-decoration: underline;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .admin-container {
@@ -1027,6 +1084,53 @@
     padding: 10px;
   }
   
+  /* Estilo para los títulos de publicación en la sección de comentarios - igual que en publicaciones */
+  .admin-table-mobile-view td[data-label="Publicación"] {
+    display: block;
+    padding: 10px;
+    text-align: left;
+    position: relative;
+    background-color: #fff;
+    border-radius: 8px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  
+  .admin-table-mobile-view td[data-label="Publicación"]:before {
+    content: attr(data-label);
+    display: block;
+    position: relative;
+    left: 0;
+    font-weight: 600;
+    text-align: left;
+    color: #555;
+    background-color: #f2f2f2;
+    padding: 5px 8px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+  }
+  
+  .admin-table-mobile-view td[data-label="Publicación"] a {
+    display: inline-block;
+    padding: 8px;
+    background: transparent; /* Eliminado el degradado de fondo */
+    width: 100%;  
+    font-weight: 600;
+    text-decoration: none;
+    white-space: normal; /* Permite saltos de línea */
+    line-height: 1.4;
+    transition: all 0.3s ease;
+    color: #187424; /* Mantener el color del texto */
+  }
+  
+  .admin-table-mobile-view td[data-label="Publicación"] a:hover {
+    background: transparent; /* Eliminar también el fondo en hover */
+    text-decoration: underline; /* Añadir subrayado al pasar el cursor para mejor feedback */
+    transform: translateX(2px);
+  }
+  
   /* Estilo de tarjeta para los detalles de usuario */
   .usuario-info {
     background: white;
@@ -1087,6 +1191,38 @@
     white-space: nowrap;
     padding: 10px 15px;
     margin-right: 5px;
+  }
+  
+  /* Mejorar visualización de comentarios en móvil */
+  .admin-table-mobile-view td[data-label="Comentario"] {
+    padding-top: 30px; /* Espacio para la etiqueta */
+    position: relative;
+    text-align: left;
+  }
+  
+  .admin-table-mobile-view td[data-label="Comentario"]:before {
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    width: auto;
+    text-align: left;
+    padding: 2px 8px;
+    background-color: #f2f2f2;
+    border-radius: 4px;
+    font-size: 0.85rem;
+  }
+  
+  .admin-table-mobile-view .comment-cell {
+    display: block;
+    width: 100%;
+    padding: 0;
+  }
+  
+  .admin-table-mobile-view .expand-comment-btn {
+    display: block;
+    margin-top: 8px;
+    width: 100%;
+    text-align: center;
   }
 }
 

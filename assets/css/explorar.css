@@ -576,6 +576,26 @@
     box-shadow: 0 8px 20px rgba(113, 151, 67, 0.4);
 }
 
+/* Estilos para tarjetas clickeables */
+.articulo-card-clickable {
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.articulo-card-clickable:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Asegurar que los enlaces y elementos interactivos dentro de la tarjeta tengan su propio comportamiento */
+.articulo-card-clickable a,
+.articulo-card-clickable button,
+.articulo-card-clickable select,
+.articulo-card-clickable input {
+    position: relative;
+    z-index: 2;
+}
+
 /* Estilos para la paginación */
 .paginacion {
     display: flex;
