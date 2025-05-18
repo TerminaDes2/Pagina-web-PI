@@ -4,7 +4,25 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Roboto+Slab:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <script src="/Pagina-web-PI/assets/js/menu.js" defer></script>
+<script src="/Pagina-web-PI/assets/js/Main.js" defer></script>
+
 <?php
+// Verificar y actualizar la imagen de perfil del usuario en la sesión
+if (isset($_SESSION['usuario']) && isset($_SESSION['usuario']['id_usuario'])) {
+    $id_usuario = $_SESSION['usuario']['id_usuario'];
+    $stmt_imagen = $conn->prepare("SELECT imagen FROM usuarios WHERE id_usuario = ?");
+    $stmt_imagen->bind_param("i", $id_usuario);
+    $stmt_imagen->execute();
+    $stmt_imagen->bind_result($imagen_perfil);
+    $stmt_imagen->fetch();
+    $stmt_imagen->close();
+    
+    // Actualizar la imagen en la sesión si es diferente
+    if (isset($imagen_perfil) && (!isset($_SESSION['usuario']['imagen']) || $imagen_perfil !== $_SESSION['usuario']['imagen'])) {
+        $_SESSION['usuario']['imagen'] = $imagen_perfil;
+    }
+}
+
 // Obtener categorías dinámicamente para el menú
 $categorias_menu = [];
 $sql_categorias = "SELECT id_categoria, categoria FROM categorias ORDER BY categoria";

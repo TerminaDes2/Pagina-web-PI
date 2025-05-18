@@ -123,7 +123,9 @@ $result = $stmt->get_result();
  */
 function generarIndice($html) {
     $dom = new DOMDocument('1.0', 'UTF-8');
+    libxml_use_internal_errors(true); // Suprimir errores de HTML mal formado
     @$dom->loadHTML('<?xml encoding="utf-8" ?>' . $html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+    libxml_clear_errors();
     
     $headers = $dom->getElementsByTagName('h2');
     $indice = '<ul>';
@@ -144,11 +146,17 @@ function generarIndice($html) {
     $indice .= '</ul>';
     
     $nuevoHtml = $dom->saveHTML();
+    // Eliminar tags XML y DOCTYPE añadidos
+    $nuevoHtml = preg_replace('/<\?xml encoding="utf-8" \?>/i', '', $nuevoHtml);
+    $nuevoHtml = preg_replace('/<\/?html>/i', '', $nuevoHtml);
+    $nuevoHtml = preg_replace('/<\/?body>/i', '', $nuevoHtml);
+    
     return ['indice' => $indice, 'contenido' => $nuevoHtml];
 }
 
 // Generar índice y traducir contenido con anchors
 $htmlContenido = nl2br($entrada['contenido']);
+
 $resultado = generarIndice($htmlContenido);
 $indiceGenerado = $resultado['indice'];
 $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
@@ -162,8 +170,8 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
   <title><?php echo $entrada['titulo']; ?></title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/css/publicacion.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/publicacion-nuevo.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -171,13 +179,17 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
 
   <div class="titulo">
       <h1><?php echo $entrada['titulo']; ?></h1>
+      <div class="post-meta">
+        <span class="date"><i class="far fa-calendar-alt"></i> <?php echo date('d/m/Y', strtotime($entrada['fecha'])); ?></span>
+        <span class="categoria"><i class="fas fa-tag"></i> <?php echo $entrada['nombre_categoria']; ?></span>
+      </div>
   </div>
 
   <main>
     
     <!-- Sección Índice -->
     <div class="indice">
-      <h2><?= $translator->__("Índice") ?></h2>
+      <h2><i class="fas fa-list-ul"></i> <?= $translator->__("Índice") ?></h2>
       <?php echo $indiceGenerado; ?>
     </div>
 
@@ -189,8 +201,6 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
             echo '<img src="' . $entrada['imagen'] . '" alt="' . $translator->traducirTexto($entrada['titulo']) . '">';
         }
         ?>
-        <p><strong><?= $translator->__("Fecha:") ?></strong> <?php echo $entrada['fecha']; ?></p>
-        <p><strong><?= $translator->__("Categoría:") ?></strong> <?php echo $entrada['nombre_categoria']; ?></p>
         <div>
           <?php echo $contenidoConAnchors; ?>
         </div>
@@ -198,7 +208,7 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
         <?php if (!empty($entrada['cita'])): ?> 
         <!-- Si el campo de referencias no está vacío, entonces se muestra el bloque -->
           <div class="mt-4">
-            <h5>Referencias</h5>
+            <h5><i class="fas fa-book"></i> Referencias</h5>
             <ul>
               <?php 
                 $lineas = explode("\n", $entrada['cita']); 
@@ -229,7 +239,7 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
       </article>
 
       <div class="men_container">
-        <h2 class="men_titulo">Comentarios</h2>
+        <h2 class="men_titulo"><i class="far fa-comments"></i> <?= $translator->__("Comentarios") ?></h2>
         <?php if(isset($_SESSION['usuario'])): ?>
           <!-- Comentarios -->
           <form action="publicacion.php?id=<?= $id_entrada ?>" method="POST" class="comen_container">
@@ -239,19 +249,22 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
               </label>
 
               <div class="comen_group">
-                <label class="comen_comen">Comentario:</label>
-                <textarea class="comen_paragraph" id="descripcion" name="descripcion" rows="5" maxlength="255" placeholder="Escribe tu comentario..."></textarea>
+                <label class="comen_comen"><?= $translator->__("Comentario:") ?></label>
+                <textarea class="comen_paragraph" id="descripcion" name="descripcion" rows="5" maxlength="255" placeholder="<?= $translator->__("Escribe tu comentario...") ?>"></textarea>
               </div>
                 
               <div class="button_comen">
-                <button type="submit" id="comentar" name="comentar" class="btn_comen">Publicar</button>
+                <button type="submit" id="comentar" name="comentar" class="btn_comen">
+                  <i class="far fa-paper-plane"></i> <?= $translator->__("Publicar") ?>
+                </button>
               </div>
             </div>
           </form>
-          <button type="button" class="btn_comen" id="btn_comen">Ver comentarios</button>
-        <?php elseif(isset($_GET['error'])): ?>
-          <p class="men_err"><?= htmlspecialchars($_GET['error']) ?></p>
-          <button type="button" class="btn_comen" id="btn_comen">Ver comentarios</button>
+          <button type="button" class="btn_comen" id="btn_comen">
+            <i class="far fa-comments"></i> <span><?= $translator->__("Ver comentarios") ?></span>
+          </button>
+          
+          <!-- Contenedor de comentarios para usuarios autenticados -->
           <div id="contenedor-comentarios" class="ocultar">
             <?php
               if ($result->num_rows > 0) {
@@ -277,7 +290,42 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
                     ";
                 }
               } else {
-                  echo "<p class = 'men_err'>No hay comentarios aún.</p>";
+                  echo "<p class = 'men_err'>" . $translator->__("No hay comentarios aún.") . "</p>";
+              }
+            ?>
+          </div>
+          
+        <?php elseif(isset($_GET['error'])): ?>
+          <p class="men_err"><?= htmlspecialchars($_GET['error']) ?></p>
+          <button type="button" class="btn_comen" id="btn_comen">
+            <i class="far fa-comments"></i> <span><?= $translator->__("Ver comentarios") ?></span>
+          </button>
+          <div id="contenedor-comentarios" class="ocultar">
+            <?php
+              if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    $nombre_completo = $row['nombre'] . ' ' . $row['primer_apellido'] . ' ' . $row['segundo_apellido'];
+                    $fecha = $row['fecha'];
+                    $descripcion = htmlspecialchars($row['descripcion']);
+                    // Corregir la ruta de la imagen
+                    $imagen = !empty($row['imagen']) ? '/Pagina-web-PI/' . $row['imagen'] : '/Pagina-web-PI/assets/img/default-avatar.png';
+                    echo "
+                    <div class='comentario-container'>
+                      <div class='comentario'>
+                        <div class='usuario-info'>
+                          <img src='$imagen' alt='avatar' class='avatar'>
+                          <div>
+                            <strong>$nombre_completo</strong><br>
+                            <span class='fecha'>$fecha</span>
+                          </div>
+                        </div>
+                        <p class='comentario-texto'>$descripcion</p>
+                      </div>
+                    </div>
+                    ";
+                }
+              } else {
+                  echo "<p class = 'men_err'>" . $translator->__("No hay comentarios aún.") . "</p>";
               }
             ?>
           </div>
@@ -287,6 +335,7 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
 
     <!-- Sección Publicidad: Otras publicaciones -->
     <aside class="publicidad">
+      <h3><i class="fas fa-bookmark"></i> <?= $translator->__("Artículos relacionados") ?></h3>
       <?php
       if (!empty($ads)) {
           foreach ($ads as $ad) {
@@ -298,7 +347,7 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
               echo '</div>';
           }
       } else {
-          echo "<p>No hay otras publicaciones disponibles.</p>";
+          echo "<p>" . $translator->__("No hay otras publicaciones disponibles.") . "</p>";
       }
       ?>
     </aside>
@@ -306,5 +355,6 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
 
   <?php include '../includes/footer.php'; ?>
   <script src="../assets/js/comentarios.js"></script>
+  <script src="../assets/js/scroll-index.js"></script>
 </body>
 </html>

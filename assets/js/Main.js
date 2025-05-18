@@ -30,9 +30,9 @@ function initCarousel() {
     
     // Salir si no hay elementos necesarios
     if (!carouselTrack || !allCarouselItems.length) return;
-    
-    // Limitar el carrusel a un máximo de 6 elementos
-    const MAX_CAROUSEL_ITEMS = 6;
+
+    // Limitar el carrusel a un máximo de 7 elementos
+    const MAX_CAROUSEL_ITEMS = 7;
     let carouselItems = Array.from(allCarouselItems);
     
     if (carouselItems.length > MAX_CAROUSEL_ITEMS) {

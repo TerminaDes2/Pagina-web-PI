@@ -15,12 +15,13 @@ body {
     border-radius: 12px;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15), 0 5px 15px rgba(0, 0, 0, 0.08);
     overflow: hidden;
-    margin-top: 90px;
+    margin-top: 120px;
     transition: all 0.3s ease;
-    border: 1px solid rgba(113, 151, 67, 0.2);
+    border: 1px solid var(--color-carousel-border);
     animation: fadeIn 0.8s ease;
     transform-style: preserve-3d;
     perspective: 1000px;
+    background-image: var(--color-hero-bg-gradient);
 }
 
 .perfil-container:hover {
@@ -37,8 +38,8 @@ body {
     display: flex;
     align-items: center;
     padding: 30px;
-    background: linear-gradient(135deg, #719743 0%, #187424 100%);
-    color: white;
+    background: var(--color-hero-deco-gradient);
+    color: rgb(0, 0, 0);
     position: relative;
     overflow: hidden;
 }
@@ -226,7 +227,7 @@ body {
 
 .perfil-nav {
     display: flex;
-    background: linear-gradient(to right, #f8f8f8, #f0f0f0);
+    background: var(--color-info-title-bg);
     border-bottom: 1px solid #ddd;
     overflow-x: auto;
     position: relative;
@@ -285,8 +286,8 @@ body {
 }
 
 .perfil-nav a.active {
-    background: linear-gradient(135deg, #719743 0%, #4b7b1e 100%);
-    color: white;
+    background: var(--color-carousel-btn-bg);
+    color: rgb(0, 0, 0);
     position: relative;
     box-shadow: 0 5px 15px rgba(113, 151, 67, 0.3);
     animation: nav-active-entrance 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -530,8 +531,8 @@ body {
 }
 
 .btn-guardar {
-    background: linear-gradient(135deg, #719743 0%, #187424 100%);
-    color: white;
+    background: var(--color-carousel-btn-bg);
+    color: #012310;
     border: none;
     padding: 14px 28px;
     border-radius: 50px;
@@ -627,7 +628,7 @@ body {
 }
 
 .tabla-contenido th {
-    background: linear-gradient(135deg, #719743 0%, #558033 100%);
+    background: var(--color-carousel-btn-bg);
     color: white;
     font-weight: 600;
     text-transform: uppercase;
@@ -717,6 +718,10 @@ body {
     background-image: linear-gradient(135deg, #f39c12, #e67e22);
 }
 
+.btn-accion.eliminar {
+    background-image: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+
 .btn-accion.ver:hover {
     background-image: linear-gradient(135deg, #2980b9, #1c6ea4);
     transform: translateY(-5px) scale(1.05) translateZ(5px);
@@ -724,6 +729,11 @@ body {
 
 .btn-accion.editar:hover {
     background-image: linear-gradient(135deg, #e67e22, #d35400);
+    transform: translateY(-5px) scale(1.05) translateZ(5px);
+}
+
+.btn-accion.eliminar:hover {
+    background-image: linear-gradient(135deg, #c0392b, #a93226);
     transform: translateY(-5px) scale(1.05) translateZ(5px);
 }
 
@@ -841,7 +851,8 @@ body {
     }
     
     .btn-accion.ver:hover, 
-    .btn-accion.editar:hover {
+    .btn-accion.editar:hover,
+    .btn-accion.eliminar:hover {
         transform: translateY(-3px);
     }
 }
@@ -932,4 +943,46 @@ body {
 
 .perfil-top-btn:hover i {
     transform: translateY(-2px);
+}
+
+/* Añadir clases para elementos decorativos similares a index.php */
+.perfil-shapes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.perfil-shape {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.6;
+}
+
+.perfil-shape-1 {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #719743 0%, rgba(113, 151, 67, 0.6) 100%);
+    top: 15%;
+    left: 8%;
+    animation: float 6s ease-in-out infinite;
+}
+
+.perfil-shape-2 {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #187424 0%, rgba(24, 116, 36, 0.6) 100%);
+    bottom: 20%;
+    right: 10%;
+    animation: float 8s ease-in-out infinite 1s;
+}
+
+@keyframes float {
+    0% { transform: translateY(0) rotate(0); }
+    50% { transform: translateY(-10px) rotate(5deg); }
+    100% { transform: translateY(0) rotate(0); }
 }

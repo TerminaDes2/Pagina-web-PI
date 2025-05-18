@@ -9,24 +9,31 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['perfil'] !== 'admin') 
     exit();
 }
 
+// Verificar si el idioma está configurado en la sesión, si no, establecer un idioma predeterminado
 if (!isset($_SESSION['idioma'])) {
     $_SESSION['idioma'] = 'es'; // Idioma predeterminado
 }
+$idiomaActual = $_SESSION['idioma']; // Guardar el idioma actual
+include "../includes/db_config.php";
 
-if (!isset($_GET['id'])) {
-    header("Location: lista_publicaciones.php?msg=" . urlencode("ID de publicación no proporcionado.") . "&msgType=error");
-    exit();
+function getBaseUrl() {
+    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+    $host = $_SERVER['HTTP_HOST'];
+    $baseUrl = $protocol . '://' . $host;
+    $folder = dirname($_SERVER['PHP_SELF']);
+    return $baseUrl . substr($folder, 0, strrpos($folder, '/'));
 }
 
-$id_publicacion = intval($_GET['id']);
-include "../includes/db_config.php";
+date_default_timezone_set('America/Mexico_City');
 
 $conn = new mysqli(host, dbuser, dbpass, dbname);
 if ($conn->connect_error) {
     die("Error en la conexión: " . $conn->connect_error);
 }
+// Configurar la conexión para usar UTF-8
 $conn->set_charset("utf8");
 
+// Incluir el traductor
 require_once '../includes/traductor.php';
 $translator = new Translator($conn);
 
@@ -46,60 +53,110 @@ if ($resultCats) {
     }
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// Verificar que se haya proporcionado un ID de entrada para editar
+if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+    header("Location: admin_panel.php?msg=" . urlencode("ID de publicación no válido.") . "&msgType=error");
+    exit();
+}
+
+$id_entrada = intval($_GET['id']);
+
+// Obtener los datos actuales de la publicación
+$publicacion = null;
+
+$stmt = $conn->prepare("SELECT e.*, i.imagen, i.id_imagen FROM entradas e 
+                        LEFT JOIN imagenes i ON e.id_entrada = i.id_entrada 
+                        WHERE e.id_entrada = ?");
+if ($stmt) {
+    $stmt->bind_param("i", $id_entrada);
+    if ($stmt->execute()) {
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            $publicacion = $result->fetch_assoc();
+        } else {
+            header("Location: admin_panel.php?msg=" . urlencode("Publicación no encontrada.") . "&msgType=error");
+            exit();
+        }
+    } else {
+        header("Location: admin_panel.php?msg=" . urlencode("Error al obtener datos de la publicación.") . "&msgType=error");
+        exit();
+    }
+    $stmt->close();
+} else {
+    header("Location: admin_panel.php?msg=" . urlencode("Error en la consulta.") . "&msgType=error");
+    exit();
+}
+
+// Procesa el formulario al enviarlo
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['titulo'])) {
+    // Recoger y sanitizar datos
     $titulo    = trim($_POST['titulo']);
-    $categoria = intval($_POST['categoria']); // Ahora es un ID de categoría
+    $categoria = intval($_POST['categoria']); 
     $contenido = trim($_POST['contenido']);
     $cita = isset($_POST['cita']) ? trim($_POST['cita']) : '';
+    // Convertir el contenido a UTF-8
     $contenido = mb_convert_encoding($contenido, 'UTF-8', 'auto');
-
+    
+    // Actualiza la publicación en la tabla entradas
     $stmt = $conn->prepare("UPDATE entradas SET titulo = ?, categoria = ?, contenido = ?, cita = ? WHERE id_entrada = ?");
     if ($stmt) {
-        $stmt->bind_param("sissi", $titulo, $categoria, $contenido, $cita, $id_publicacion);
+        $stmt->bind_param("sissi", $titulo, $categoria, $contenido, $cita, $id_entrada);
         if ($stmt->execute()) {
+            
+            // Procesa la imagen si se sube alguna nueva
             if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
                 $destino = "uploads/";
                 if (!is_dir($destino)) {
                     mkdir($destino, 0777, true);
                 }
-
+                
                 $nombreArchivo = time() . "_" . basename($_FILES['imagen']['name']);
                 $rutaDestino   = $destino . $nombreArchivo;
-
+                
                 if (move_uploaded_file($_FILES['imagen']['tmp_name'], $rutaDestino)) {
-                    $stmtImg = $conn->prepare("UPDATE imagenes SET imagen = ? WHERE id_entrada = ?");
-                    if ($stmtImg) {
-                        $stmtImg->bind_param("si", $rutaDestino, $id_publicacion);
-                        $stmtImg->execute();
-                        $stmtImg->close();
+                    // Si ya existe una imagen para esta entrada, actualizar el registro
+                    if ($publicacion['id_imagen']) {
+                        $stmtImg = $conn->prepare("UPDATE imagenes SET imagen = ? WHERE id_entrada = ?");
+                        if ($stmtImg) {
+                            $stmtImg->bind_param("si", $rutaDestino, $id_entrada);
+                            if (!$stmtImg->execute()) {
+                                error_log("Error al actualizar la imagen: " . $stmtImg->error);
+                            }
+                            $stmtImg->close();
+                        }
+                    } else {
+                        // Si no existe, insertar un nuevo registro
+                        $stmtImg = $conn->prepare("INSERT INTO imagenes (imagen, id_entrada) VALUES (?, ?)");
+                        if ($stmtImg) {
+                            $stmtImg->bind_param("si", $rutaDestino, $id_entrada);
+                            if (!$stmtImg->execute()) {
+                                error_log("Error al insertar la imagen: " . $stmtImg->error);
+                            }
+                            $stmtImg->close();
+                        }
                     }
+                } else {
+                    header("Location: editar_publicacion.php?id={$id_entrada}&msg=" . urlencode("Error al subir la imagen.") . "&msgType=error");
+                    exit();
                 }
             }
-            header("Location: editar_publicacion.php?id=$id_publicacion&msg=" . urlencode("Publicación actualizada exitosamente.") . "&msgType=success");
+            header("Location: editar_publicacion.php?id={$id_entrada}&msg=" . urlencode("Publicación actualizada exitosamente.") . "&msgType=success");
             exit();
         } else {
-            header("Location: editar_publicacion.php?id=$id_publicacion&msg=" . urlencode("Error al actualizar la publicación.") . "&msgType=error");
+            header("Location: editar_publicacion.php?id={$id_entrada}&msg=" . urlencode("Error al actualizar la publicación: " . $stmt->error) . "&msgType=error");
             exit();
         }
         $stmt->close();
+    } else {
+        error_log("Error en la preparación de la consulta UPDATE entradas: " . $conn->error);
+        header("Location: editar_publicacion.php?id={$id_entrada}&msg=" . urlencode("Error al preparar la consulta para actualizar la publicación.") . "&msgType=error");
+        exit();
     }
-}
-
-$stmt = $conn->prepare("SELECT e.titulo, e.categoria, e.contenido, e.cita, i.imagen FROM entradas e LEFT JOIN imagenes i ON e.id_entrada = i.id_entrada WHERE e.id_entrada = ?");
-$stmt->bind_param("i", $id_publicacion);
-$stmt->execute();
-$result = $stmt->get_result();
-$publicacion = $result->fetch_assoc();
-$stmt->close();
-
-if (!$publicacion) {
-    header("Location: lista_publicaciones.php?msg=" . urlencode("Publicación no encontrada.") . "&msgType=error");
-    exit();
 }
 
 $message = "";
 $messageType = "";
-if (isset($_GET['msg'])) {
+if(isset($_GET['msg'])){
     $message = $_GET['msg'];
     $messageType = isset($_GET['msgType']) ? $_GET['msgType'] : "success";
 }
@@ -110,13 +167,20 @@ if (isset($_GET['msg'])) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title><?= $translator->__("Editar Publicación") ?></title>
+  <title>Voces del Proceso - Editar Publicación</title>
   <link rel="stylesheet" href="../assets/css/publicar.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="../assets/js/loggin_scripts.js" defer></script>
+  
   <script>
+    // Función de formateo con capacidad de toggle para bloques (h2, p, listas)
     function format(command, value = null) {
+      // Solo aplicamos el toggle para bloques 'h2', 'p', 'insertOrderedList', 'insertUnorderedList'
       if (command === 'h2' || command === 'p') {
         let sel = window.getSelection();
         if (sel.rangeCount > 0) {
@@ -131,79 +195,185 @@ if (isset($_GET['msg'])) {
           }
         }
       } else {
+        // Para comandos como listas ordenadas/no ordenadas y otros
         document.execCommand(command, false, value);
       }
     }
-
-    // Nueva función para insertar imagen en el editor
+    
+    // Función para insertar imagen en el editor
     function insertarImagenEnEditor() {
-      const fileInput = document.createElement('input');
-      fileInput.type = 'file';
-      fileInput.accept = 'image/*';
-      fileInput.style.display = 'none';
-      document.body.appendChild(fileInput);
+      // Guardar referencia al elemento actual con foco
+      const activeElement = document.activeElement;
       
-      fileInput.addEventListener('change', function() {
-        if (fileInput.files && fileInput.files[0]) {
+      // Crear un input de tipo file invisible
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.style.display = 'none';
+      document.body.appendChild(input);
+      
+      // Cuando el usuario selecciona un archivo
+      input.addEventListener('change', function() {
+        if (input.files && input.files[0]) {
           const formData = new FormData();
-          formData.append('imagen', fileInput.files[0]);
+          formData.append('image', input.files[0]);
           
-          // Mostrar indicador de carga
-          Swal.fire({
-            title: '<?= $translator->__("Subiendo imagen...") ?>',
-            allowOutsideClick: false,
-            didOpen: () => {
-              Swal.showLoading();
-            }
-          });
+          // Mostrar indicador de carga sin usar aria-hidden
+          const loadingContainer = document.createElement('div');
+          loadingContainer.innerHTML = '<div style="text-align:center;padding:20px;"><i class="fas fa-spinner fa-spin fa-3x"></i><p><?= $translator->__("Subiendo imagen...") ?></p></div>';
+          document.body.appendChild(loadingContainer);
           
-          // Subir la imagen al servidor
-          fetch('upload_image_inline.php', {
+          // Subir imagen al servidor
+          fetch('upload_inline_image.php', {
             method: 'POST',
             body: formData
           })
           .then(response => response.json())
-          .then(data => {
-            Swal.close();
+          .then(result => {
+            // Eliminar indicador de carga
+            document.body.removeChild(loadingContainer);
             
-            if (data.success) {
-              // Insertar la imagen en el contenido
-              const imgHtml = `<img src="${data.url}" alt="${data.filename}" style="max-width:100%; margin:10px 0;">`;
-              document.execCommand('insertHTML', false, imgHtml);
+            if (result.success) {
+              // Restaurar el foco al editor explícitamente
+              const editor = document.getElementById('editor');
+              editor.focus();
+              
+              // Insertar la imagen en el editor en la posición del cursor
+              const img = document.createElement('img');
+              img.src = result.file.url;
+              img.alt = result.file.name;
+              img.className = 'editor-inline-image'; // Añadir clase para estilos CSS
+              img.style.maxWidth = '500px'; // Limitar ancho máximo
+              img.style.maxHeight = '300px'; // Limitar altura máxima
+              img.style.height = 'auto'; // Mantener proporción
+              img.style.marginTop = '10px';
+              img.style.marginBottom = '10px';
+              
+              // Insertar en la posición del cursor
+              const selection = window.getSelection();
+              if (selection.rangeCount) {
+                const range = selection.getRangeAt(0);
+                range.deleteContents();
+                range.insertNode(img);
+                
+                // Mover el cursor después de la imagen
+                range.setStartAfter(img);
+                range.setEndAfter(img);
+                selection.removeAllRanges();
+                selection.addRange(range);
+              }
             } else {
-              Swal.fire({
-                icon: 'error',
-                title: '<?= $translator->__("Error") ?>',
-                text: data.error || '<?= $translator->__("Error al subir la imagen") ?>'
-              });
+              alert('<?= $translator->__("Error al subir la imagen") ?>: ' + (result.message || ''));
             }
           })
           .catch(error => {
-            Swal.close();
-            Swal.fire({
-              icon: 'error',
-              title: '<?= $translator->__("Error") ?>',
-              text: '<?= $translator->__("Hubo un problema al subir la imagen") ?>'
-            });
+            // Eliminar indicador de carga en caso de error
+            if (document.body.contains(loadingContainer)) {
+              document.body.removeChild(loadingContainer);
+            }
+            
+            alert('<?= $translator->__("Ha ocurrido un error al procesar la imagen") ?>');
             console.error('Error:', error);
           });
         }
         
-        // Eliminar el input una vez usado
-        document.body.removeChild(fileInput);
+        // Restaurar el foco al elemento original si es posible
+        if (activeElement && typeof activeElement.focus === 'function') {
+          activeElement.focus();
+        }
+        
+        // Eliminar el input después de usarlo
+        document.body.removeChild(input);
       });
       
-      fileInput.click();
+      // Activar el diálogo de selección de archivo
+      input.click();
     }
-
+    
+    // Mostrar el nombre del archivo seleccionado y previsualizar la imagen
+    function mostrarNombreArchivo() {
+      var input = document.getElementById('imagen');
+      var nombre = input.files.length > 0 ? input.files[0].name : '';
+      document.getElementById('nombre-archivo').textContent = nombre;
+      
+      // Previsualizar la imagen
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        
+        reader.onload = function(e) {
+          // Comprobar si ya existe la previsualización
+          var imgPreview = document.getElementById('image-preview');
+          if (!imgPreview) {
+            // Crear el contenedor de previsualización si no existe
+            imgPreview = document.createElement('div');
+            imgPreview.id = 'image-preview';
+            imgPreview.style.marginTop = '10px';
+            imgPreview.style.marginBottom = '20px';
+            imgPreview.style.textAlign = 'center';
+            
+            // Insertar después del span nombre-archivo
+            var nombreArchivo = document.getElementById('nombre-archivo');
+            nombreArchivo.parentNode.insertBefore(imgPreview, nombreArchivo.nextSibling);
+          }
+          
+          // Crear o actualizar la imagen
+          var img = imgPreview.querySelector('img') || document.createElement('img');
+          img.src = e.target.result;
+          img.style.maxWidth = '100%';
+          img.style.maxHeight = '300px';
+          img.style.borderRadius = '8px';
+          img.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+          
+          // Añadir la imagen al contenedor si es nueva
+          if (!imgPreview.querySelector('img')) {
+            imgPreview.appendChild(img);
+          }
+        };
+        
+        reader.readAsDataURL(input.files[0]);
+      } else {
+        // Eliminar previsualización si no hay archivo
+        var imgPreview = document.getElementById('image-preview');
+        if (imgPreview) {
+          imgPreview.remove();
+        }
+      }
+    }
+    
+    // Confirmar antes de enviar el formulario y cargar contenido inicial
     document.addEventListener('DOMContentLoaded', function() {
-      const editor = document.getElementById('editor');
-      const contenido = document.getElementById('contenido');
-
-      // Al enviar el formulario, copiar el contenido con etiquetas al campo oculto
+      // Cargar el contenido actual en el editor
+      var editor = document.getElementById('editor');
+      editor.innerHTML = <?= json_encode($publicacion['contenido']) ?>;
+      
+      // Mostrar previsualización de la imagen actual si existe
+      if ('<?= $publicacion['imagen'] ?>' !== '') {
+        var imgPreview = document.createElement('div');
+        imgPreview.id = 'image-preview-actual';
+        imgPreview.style.marginTop = '10px';
+        imgPreview.style.marginBottom = '20px';
+        imgPreview.style.textAlign = 'center';
+        
+        var img = document.createElement('img');
+        img.src = '<?= $publicacion['imagen'] ?>';
+        img.style.maxWidth = '100%';
+        img.style.maxHeight = '300px';
+        img.style.borderRadius = '8px';
+        img.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+        
+        imgPreview.appendChild(img);
+        
+        // Insertar después del span imagen-actual
+        var imagenActual = document.getElementById('imagen-actual');
+        if (imagenActual) {
+          imagenActual.appendChild(imgPreview);
+        }
+      }
+      
+      // Confirmar antes de enviar el formulario
       document.getElementById('publicacionForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        contenido.value = editor.innerHTML;
+        document.getElementById('contenido').value = document.getElementById('editor').innerHTML;
         
         const titulo = document.getElementById('titulo').value;
         
@@ -222,61 +392,37 @@ if (isset($_GET['msg'])) {
           }
         });
       });
-
-      // Crear contenedor de previsualización si hay imagen actual
-      var nombreArchivo = document.getElementById('nombre-archivo');
-      if (nombreArchivo && nombreArchivo.textContent.trim() !== '') {
-        var imagenActual = '<?= !empty($publicacion['imagen']) ? $publicacion['imagen'] : '' ?>';
-        if (imagenActual) {
-          var imgPreview = document.createElement('div');
-          imgPreview.id = 'image-preview';
-          imgPreview.style.marginTop = '10px';
-          imgPreview.style.marginBottom = '20px';
-          imgPreview.style.textAlign = 'center';
-          
-          var img = document.createElement('img');
-          img.src = imagenActual;
-          img.style.maxWidth = '100%';
-          img.style.maxHeight = '300px';
-          img.style.borderRadius = '8px';
-          img.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
-          
-          imgPreview.appendChild(img);
-          nombreArchivo.parentNode.insertBefore(imgPreview, nombreArchivo.nextSibling);
-        }
-      }
     });
-
-    function mostrarNombreArchivo() {
-      var input = document.getElementById('imagen');
-      var nombre = input.files.length > 0 ? input.files[0].name : '';
-      document.getElementById('nombre-archivo').textContent = nombre;
-      
-      // Previsualizar la imagen
-      if (input.files && input.files[0]) {
-        var reader = new FileReader();
-        
-        reader.onload = function(e) {
-          // Actualizar la previsualización
-          var imgPreview = document.getElementById('image-preview');
-          imgPreview.querySelector('img').src = e.target.result;
-          imgPreview.style.display = 'block';
-        };
-        
-        reader.readAsDataURL(input.files[0]);
-      }
-    }
   </script>
   <style>
     /* Estilos adicionales para la previsualización */
-    #image-preview {
+    #image-preview, #image-preview-actual {
       transition: all 0.3s ease;
     }
-    #image-preview img {
+    #image-preview img, #image-preview-actual img {
       transition: transform 0.3s ease;
     }
-    #image-preview img:hover {
+    #image-preview img:hover, #image-preview-actual img:hover {
       transform: scale(1.03);
+    }
+    
+    /* Estilos para imágenes dentro del editor */
+    #editor img.editor-inline-image {
+      max-width: 500px;
+      max-height: 300px;
+      height: auto;
+      display: block;
+      margin: 10px auto;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    /* Para pantallas pequeñas */
+    @media (max-width: 768px) {
+      #editor img.editor-inline-image {
+        max-width: 100%;
+        max-height: 250px;
+      }
     }
   </style>
 </head>
@@ -285,16 +431,15 @@ if (isset($_GET['msg'])) {
 
   <main class="main">
     <h1><?= $translator->__("Editar Publicación") ?></h1>
-    <form id="publicacionForm" action="editar_publicacion.php?id=<?= $id_publicacion ?>" method="POST" enctype="multipart/form-data">
+    <form id="publicacionForm" action="editar_publicacion.php?id=<?= $id_entrada ?>" method="POST" enctype="multipart/form-data">
       <label for="titulo"><?= $translator->__("Título:") ?></label>
       <input type="text" name="titulo" id="titulo" value="<?= htmlspecialchars($publicacion['titulo']) ?>" required>
 
       <label for="categoria"><?= $translator->__("Categoría:") ?></label>
       <select name="categoria" id="categoria" required>
+        <option value=""><?= $translator->__("Seleccione una categoría") ?></option>
         <?php foreach ($categorias as $cat): ?>
-        <option value="<?= $cat['id_categoria'] ?>" <?= $cat['id_categoria'] == $publicacion['categoria'] ? 'selected' : '' ?>>
-          <?= htmlspecialchars($cat['categoria']) ?>
-        </option>
+        <option value="<?= $cat['id_categoria'] ?>" <?= ($publicacion['categoria'] == $cat['id_categoria']) ? 'selected' : '' ?>><?= htmlspecialchars($cat['categoria']) ?></option>
         <?php endforeach; ?>
       </select>
 
@@ -332,17 +477,23 @@ if (isset($_GET['msg'])) {
       </div>
       
       <!-- Editor de texto editable -->
-      <div id="editor" contenteditable="true"><?= $publicacion['contenido'] ?></div>
+      <div id="editor" contenteditable="true"></div>
       
       <!-- Campo oculto para enviar el contenido formateado -->
-      <textarea name="contenido" id="contenido" style="display:none;"><?= $publicacion['contenido'] ?></textarea>
+      <textarea name="contenido" id="contenido" style="display:none;"></textarea>
 
-      <label for="imagen"><?= $translator->__("Imagen") ?>:</label>
+      <label for="imagen"><?= $translator->__("Imagen") ?> / Banner <?= $translator->__("(dejar vacío para mantener la actual)") ?>:</label>
       <label for="imagen" class="custom-file-upload">
         <?= $translator->__("Seleccionar archivo") ?>
       </label>
       <input type="file" name="imagen" id="imagen" accept="image/*" onchange="mostrarNombreArchivo()">
-      <span id="nombre-archivo" style="margin-left:10px;"><?= basename($publicacion['imagen']) ?></span>
+      <span id="nombre-archivo" style="margin-left:10px;"></span>
+      
+      <?php if ($publicacion['imagen']): ?>
+        <div id="imagen-actual">
+          <p><?= $translator->__("Imagen actual") ?>: <?= basename($publicacion['imagen']) ?></p>
+        </div>
+      <?php endif; ?>
 
       <button type="submit"><?= $translator->__("Actualizar Publicación") ?></button>
     </form>

@@ -428,6 +428,20 @@ body {
   transition: var(--transition-normal);
 }
 
+/* Estilo para el botón de modo oscuro */
+.hf-dark-mode-toggle {
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+}
+
+/* Estilo para mantener la alineación correcta entre los elementos del header */
+.hf-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
 .hf-login-btn:hover {
   background: linear-gradient(135deg, rgba(255, 215, 0, 0.4), rgba(255, 215, 0, 0.6));
   transform: translateY(-3px);

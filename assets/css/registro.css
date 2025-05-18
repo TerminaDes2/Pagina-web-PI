@@ -173,7 +173,7 @@ main form h1 {
   font-size: 2.2rem;
   position: relative;
   padding-bottom: 15px;
-  text-shadow: 1px 1px 0 rgba(255,255,255,0.8);
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8);
 }
 main form h1::after {
   content: '';
@@ -333,9 +333,16 @@ main form p {
   padding-left: 45px !important; /* Espacio para el icono */
 }
 
-/* Ajustar padding del input para dar espacio al botón */
 .input-container input[type="password"] {
   padding-right: 45px !important;
+}
+
+.input-container img {
+  max-width: 100%;
+  max-height: 150px;
+  margin-top: 10px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Estilo especial para el input de tipo file */
@@ -367,7 +374,7 @@ main form p {
 .custom-file-upload {
   position: relative;
   width: 100%;
-  margin-bottom: 25px;
+  margin-bottom: 10px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -436,13 +443,15 @@ main form p {
 }
 
 .custom-file-upload .file-name {
-  margin-top: 8px;
-  font-size: 14px;
-  color: #6c757d;
+  margin-top: 5px;
+  font-size: 0.8rem;
+  color: #666;
+  display: block;
   font-style: italic;
-  word-break: break-all;
-  padding-left: 5px;
-  transition: all 0.3s ease;
+}
+
+.dark-mode .file-name {
+  color: #aaa;
 }
 
 /* Hover en botones */
@@ -811,4 +820,201 @@ body {
     padding: 25px 20px;
     margin-top: 15%;
   }
+}
+
+/* === MODO OSCURO REGISTRO === */
+body.dark-mode,
+.dark-mode body {
+  background-color: #232323 !important;
+  color: #e0e0e0 !important;
+  background-image: none !important;
+}
+
+.dark-mode main form,
+.dark-mode .card,
+.dark-mode .modal-content {
+  background: #292929 !important;
+  color: #e0e0e0 !important;
+  border: 1px solid #333 !important;
+  box-shadow: 0 8px 24px rgba(30,30,30,0.12) !important;
+}
+
+.dark-mode main form h1,
+.dark-mode .modal-content h2 {
+  color: #7fdc9c !important;
+  text-shadow: none !important;
+}
+
+.dark-mode main form h1::after,
+.dark-mode .modal-content h2::after {
+  background: #116434 !important;
+}
+
+.dark-mode main form label,
+.dark-mode .modal-content label {
+  color: #7fdc9c !important;
+}
+
+.dark-mode main form input,
+.dark-mode main form select,
+.dark-mode main form textarea,
+.dark-mode .modal-content input,
+.dark-mode .modal-content select {
+  background: #232323 !important;
+  color: #e0e0e0 !important;
+  border: 1px solid #444 !important;
+}
+
+.dark-mode main form input:focus,
+.dark-mode main form select:focus,
+.dark-mode .modal-content input:focus,
+.dark-mode .modal-content select:focus {
+  border-color: #7fdc9c !important;
+  box-shadow: 0 0 0 3px rgba(127,220,156,0.2) !important;
+}
+
+.dark-mode .btn,
+.dark-mode .btin,
+.dark-mode .modal-content button {
+  background: #116434 !important;
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(30,30,30,0.3) !important;
+}
+
+.dark-mode .btn:hover,
+.dark-mode .btin:hover,
+.dark-mode .modal-content button:hover {
+  background: #185c36 !important;
+  color: #fff !important;
+}
+
+.dark-mode .custom-file-upload label {
+  background: #232323 !important;
+  color: #7fdc9c !important;
+  border: 1px solid #444 !important;
+}
+
+.dark-mode .custom-file-upload label:hover {
+  background: #353535 !important;
+  color: #fff !important;
+  border-color: #7fdc9c !important;
+}
+
+.dark-mode .custom-file-upload .file-name {
+  color: #b0b0b0 !important;
+}
+
+.dark-mode .alert {
+  background-color: #353535 !important;
+  color: #7fdc9c !important;
+  border-left: 6px solid #116434 !important;
+}
+
+.dark-mode .terms-checkbox label {
+  color: #e0e0e0 !important;
+}
+
+.dark-mode .terms-checkbox a {
+  color: #7fdc9c !important;
+}
+
+.dark-mode .terms-checkbox a:hover {
+  color: #116434 !important;
+}
+
+.dark-mode .modal-content {
+  background: #292929 !important;
+  color: #e0e0e0 !important;
+  border: 1px solid #333 !important;
+}
+
+.dark-mode .modal-content .close {
+  color: #7fdc9c !important;
+}
+
+.dark-mode .modal-content .close:hover {
+  color: #fff !important;
+  background-color: #232323 !important;
+}
+
+.dark-mode .modal-content p {
+  color: #b0b0b0 !important;
+}
+
+.dark-mode form p {
+  line-height: 165%;
+  margin-bottom: 5px;
+  font-size: 15px;
+  color: #ffffff;
+  font-weight: 400;
+  max-width: 330px;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.dark-mode #datos a {
+  font-size: 14px;
+  color: #b2bdbd;
+}
+
+/* Estilos para la previsualización de imagen */
+.preview-container {
+  margin: 15px 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeIn 0.5s ease;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 15px;
+  border: 1px dashed rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.dark-mode .preview-container {
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.preview-container:hover {
+  border-color: var(--color-carousel-btn-bg);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.preview-title {
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dark-mode .preview-title {
+  color: #ddd;
+}
+
+.preview-image-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+#imagen-preview {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  object-fit: cover;
+}
+
+#imagen-preview:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
