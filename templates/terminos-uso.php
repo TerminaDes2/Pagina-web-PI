@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idioma'])) {
       <p><?= $translator->__('Eres responsable del contenido que publiques (comentarios, foto de perfil, apodo). Nos concedes una licencia no exclusiva para reproducirlo y mostrarlo en la plataforma.') ?></p>
 
       <h2>5. <?= $translator->__('Propiedad intelectual') ?></h2>
-      <p><?= $translator->__('Todos los derechos de este sitio (texto, diseño, código) son de Voces del Proceso. Queda prohibida la reproducción total o parcial sin autorización.') ?></p>
+      <p><?= $translator->__('Todos los derechos de este sitio (texto, diseño, código) son de POALCE. Queda prohibida la reproducción total o parcial sin autorización.') ?></p>
 
       <h2>6. <?= $translator->__('Responsabilidades y garantías') ?></h2>
       <p><?= $translator->__('Ofrecemos el servicio "tal cual" y no garantizamos disponibilidad ininterrumpida.') ?></p>
