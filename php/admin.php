@@ -218,16 +218,16 @@ if ($result) {
 ?>
 
 <!DOCTYPE html>
-<html lang="<?= $_SESSION['idioma'] ?>">
+<html lang="<?= isset($_SESSION['idioma']) ? $_SESSION['idioma'] : 'es' ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $translator->__("Panel de Administración") ?></title>
     <link rel="stylesheet" href="../assets/css/admin.css">
-    <link rel="stylesheet" href="../assets/css/admin-dark.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="/Pagina-web-PI/assets/img/Poalce-logo.png" type="image/x-icon">
     <script>
         function confirmarEliminarUsuario(id, nombre) {
             Swal.fire({
@@ -351,6 +351,32 @@ if ($result) {
                 showConfirmButton: true
             });
             <?php endif; ?>
+            
+            // Botón para volver arriba
+            $(window).scroll(function() {
+                if ($(this).scrollTop() > 300) {
+                    $('.admin-top-btn').addClass('visible');
+                } else {
+                    $('.admin-top-btn').removeClass('visible');
+                }
+            });
+            
+            $('.admin-top-btn').click(function() {
+                $('html, body').animate({scrollTop: 0}, 500);
+                return false;
+            });
+            
+            // Funcionalidad para expandir/contraer comentarios
+            $(document).on('click', '.expand-comment-btn', function() {
+                var commentCell = $(this).prev('.comment-cell');
+                commentCell.toggleClass('comment-expanded');
+                
+                if (commentCell.hasClass('comment-expanded')) {
+                    $(this).text('<?= $translator->__("Ver menos") ?>');
+                } else {
+                    $(this).text('<?= $translator->__("Ver más") ?>');
+                }
+            });
         });
     </script>
 </head>
@@ -537,7 +563,7 @@ if ($result) {
                                 <td data-label="<?= $translator->__("Acciones") ?>">
                                     <div class="acciones-container">
                                         <!-- Ver publicación -->
-                                        <a href="detalle_articulo.php?id=<?= $publicacion['id_entrada'] ?>" class="admin-button" target="_blank">
+                                        <a href="publicacion.php?id=<?= $publicacion['id_entrada'] ?>" class="admin-button" target="_blank">
                                             <i class="fas fa-eye"></i> <?= $translator->__("Ver") ?>
                                         </a>
                                         
@@ -594,15 +620,21 @@ if ($result) {
                                     <?= htmlspecialchars($comentario['nombre'] . ' ' . $comentario['primer_apellido']) ?>
                                 </td>
                                 <td data-label="<?= $translator->__("Publicación") ?>">
-                                    <a href="detalle_articulo.php?id=<?= $comentario['id_entrada'] ?>" target="_blank">
-                                        <?= htmlspecialchars($comentario['titulo_entrada']) ?>
-                                    </a>
+                                    <div style="display:flex; align-items:center; gap:10px;">
+                                        <?php if (!empty($publicacion['imagen'])): ?>
+                                            <img src="<?= htmlspecialchars($publicacion['imagen']) ?>" alt="<?= $translator->__("Imagen de publicación") ?>" 
+                                                 style="width: 40px; height: 40px; border-radius: 5px; object-fit: cover;">
+                                        <?php endif; ?>
+                                        <span href="publicacion.php?id=<?= $comentario['id_entrada'] ?>"><?= htmlspecialchars($comentario['titulo_entrada']) ?></span>
+                                    </div>
                                 </td>
                                 <td data-label="<?= $translator->__("Comentario") ?>">
-                                    <?php 
-                                    $texto = htmlspecialchars($comentario['descripcion']);
-                                    echo (strlen($texto) > 100) ? substr($texto, 0, 100) . '...' : $texto;
-                                    ?>
+                                    <div class="comment-cell">
+                                        <?= htmlspecialchars($comentario['descripcion']) ?>
+                                    </div>
+                                    <?php if (strlen($comentario['descripcion']) > 100): ?>
+                                        <button class="expand-comment-btn"><?= $translator->__("Ver más") ?></button>
+                                    <?php endif; ?>
                                 </td>
                                 <td data-label="<?= $translator->__("Fecha") ?>">
                                     <?= date('d/m/Y H:i', strtotime($comentario['fecha'])) ?>
@@ -618,7 +650,7 @@ if ($result) {
                                     </form>
                                     
                                     <!-- Ver publicación -->
-                                    <a href="detalle_articulo.php?id=<?= $comentario['id_entrada'] ?>" class="admin-button" target="_blank">
+                                    <a href="publicacion.php?id=<?= $comentario['id_entrada'] ?>" class="admin-button" target="_blank">
                                         <i class="fas fa-eye"></i> <?= $translator->__("Ver Publicación") ?>
                                     </a>
                                 </td>
@@ -630,6 +662,11 @@ if ($result) {
             </div>
         </section>
     </div>
+    
+    <!-- Botón para volver arriba -->
+    <button class="admin-top-btn">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
     <?php include "../includes/footer.php"; ?>
 </body>

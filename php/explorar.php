@@ -273,11 +273,11 @@ if ($result_categorias_filtro && $result_categorias_filtro->num_rows > 0) {
 ?>
 
 <!DOCTYPE html>
-<html lang="<?= $_SESSION['idioma'] ?>">
+<html lang="<?= isset($_SESSION['idioma']) ? $_SESSION['idioma'] : 'es' ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $titulo_pagina ?> - Voces del Proceso</title>
+    <title><?= $titulo_pagina ?> - POALCE</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
@@ -285,8 +285,7 @@ if ($result_categorias_filtro && $result_categorias_filtro->num_rows > 0) {
     <link rel="stylesheet" href="../assets/css/categorias.css">
     <link rel="stylesheet" href="../assets/css/explorar.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="../assets/css/dark-mode.css">
-    <script src="../assets/js/dark-mode.js" defer></script>
+    <link rel="icon" href="/Pagina-web-PI/assets/img/Poalce-logo.png" type="image/x-icon">
     <!-- Se eliminó la etiqueta style, el código está ahora en explorar.css -->
 </head>
 <body>
@@ -389,7 +388,7 @@ if ($result_categorias_filtro && $result_categorias_filtro->num_rows > 0) {
         <?php elseif (!empty($articulos)): ?>
             <div class="articulos-grid">
                 <?php foreach ($articulos as $articulo): ?>
-                    <article class="articulo-card">
+                    <article class="articulo-card articulo-card-clickable" data-url="publicacion.php?id=<?= $articulo['id_entrada'] ?>">
                         <div class="articulo-imagen">
                             <?php if (!empty($articulo['imagen_principal'])): ?>
                                 <img src="<?= htmlspecialchars($articulo['imagen_principal']) ?>" alt="<?= htmlspecialchars($articulo['titulo']) ?>">
@@ -418,7 +417,7 @@ if ($result_categorias_filtro && $result_categorias_filtro->num_rows > 0) {
                             <p class="articulo-extracto">
                                 <?= htmlspecialchars($articulo['extracto']) ?>
                             </p>
-                            <a href="publicacion.php?id=<?= $articulo['id_entrada'] ?>" class="btn-leer-mas"><?= $translator->__("Leer más") ?></a>
+                            <a href="publicacion.php?id=<?= $articulo['id_entrada'] ?>" class="btn-leer-mas" onclick="event.stopPropagation();"><?= $translator->__("Leer más") ?></a>
                         </div>
                     </article>
                 <?php endforeach; ?>
@@ -489,6 +488,20 @@ if ($result_categorias_filtro && $result_categorias_filtro->num_rows > 0) {
             // Redirigir
             window.location.href = nuevaURL.toString();
         }
+
+        // Hacer que las tarjetas de artículos sean clickeables
+        document.addEventListener('DOMContentLoaded', function() {
+            const tarjetasClickeables = document.querySelectorAll('.articulo-card-clickable');
+            
+            tarjetasClickeables.forEach(function(tarjeta) {
+                tarjeta.addEventListener('click', function() {
+                    const url = this.getAttribute('data-url');
+                    if (url) {
+                        window.location.href = url;
+                    }
+                });
+            });
+        });
     </script>
 </body>
 </html>

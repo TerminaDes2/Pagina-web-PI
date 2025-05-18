@@ -78,11 +78,11 @@ if(isset($_GET['msg'])){
 ?>
 
 <!DOCTYPE html>
-<html lang="<?= $_SESSION['idioma'] ?>">
+<html lang="<?= isset($_SESSION['idioma']) ? $_SESSION['idioma'] : 'es' ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $translator->__("Mi Perfil") ?> - Voces del Proceso</title>
+    <title><?= $translator->__("Mi Perfil") ?> - POALCE</title>
     <link rel="stylesheet" href="../assets/css/perfil.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -90,6 +90,7 @@ if(isset($_GET['msg'])){
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="icon" href="/Pagina-web-PI/assets/img/Poalce-logo.png" type="image/x-icon">
     <script>
         function mostrarPestana(pestanaId) {
             // Ocultar todas las pestañas
@@ -300,10 +301,10 @@ if(isset($_GET['msg'])){
                         <tbody>
                             <?php foreach ($publicaciones as $pub): ?>
                             <tr>
-                                <td><?= htmlspecialchars($pub['titulo']) ?></td>
-                                <td><?= htmlspecialchars($pub['nombre_categoria']) ?></td>
-                                <td><?= $pub['fecha'] ?></td>
-                                <td class="acciones">
+                                <td data-label="<?= $translator->__("Título") ?>"><?= htmlspecialchars($pub['titulo']) ?></td>
+                                <td data-label="<?= $translator->__("Categoría") ?>"><?= htmlspecialchars($pub['nombre_categoria']) ?></td>
+                                <td data-label="<?= $translator->__("Fecha") ?>"><?= $pub['fecha'] ?></td>
+                                <td class="acciones" data-label="<?= $translator->__("Acciones") ?>">
                                     <a href="publicacion.php?id=<?= $pub['id_entrada'] ?>" class="btn-accion ver">
                                         <i class="fas fa-eye"></i> <?= $translator->__("Ver") ?>
                                     </a>
@@ -345,10 +346,10 @@ if(isset($_GET['msg'])){
                         <tbody>
                             <?php foreach ($comentarios as $com): ?>
                             <tr>
-                                <td><?= htmlspecialchars(substr($com['descripcion'], 0, 100)) . (strlen($com['descripcion']) > 100 ? '...' : '') ?></td>
-                                <td><?= htmlspecialchars($com['titulo']) ?></td>
-                                <td><?= $com['fecha'] ?></td>
-                                <td class="acciones">
+                                <td data-label="<?= $translator->__("Comentario") ?>"><?= htmlspecialchars(substr($com['descripcion'], 0, 100)) . (strlen($com['descripcion']) > 100 ? '...' : '') ?></td>
+                                <td data-label="<?= $translator->__("Publicación") ?>"><?= htmlspecialchars($com['titulo']) ?></td>
+                                <td data-label="<?= $translator->__("Fecha") ?>"><?= $com['fecha'] ?></td>
+                                <td class="acciones" data-label="<?= $translator->__("Acciones") ?>">
                                     <a href="publicacion.php?id=<?= $com['id_entrada'] ?>#comentario-<?= $com['id_comentario'] ?>" class="btn-accion ver">
                                         <i class="fas fa-eye"></i> <?= $translator->__("Ver") ?>
                                     </a>

@@ -762,6 +762,84 @@ body {
   opacity: 1;
 }
 
+/* Estilos para los checkboxes de recordarme */
+.remember-me-checkbox {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  width: 100%;
+  position: relative;
+}
+
+.remember-me-checkbox input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  margin-right: 12px;
+  min-width: 22px;
+  cursor: pointer;
+  border: 2px solid #719743;
+  border-radius: 5px;
+  background-color: #fff;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.remember-me-checkbox input[type="checkbox"]:checked {
+  background-color: #719743;
+  border-color: #719743;
+}
+
+.remember-me-checkbox input[type="checkbox"]:checked::after {
+  content: '✓';
+  position: absolute;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.remember-me-checkbox input[type="checkbox"]:hover {
+  border-color: #187424;
+  box-shadow: 0 0 5px rgba(113, 151, 67, 0.3);
+}
+
+.remember-me-checkbox label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 0;
+  line-height: 1.5;
+  color: #41502f;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.remember-me-checkbox label:hover {
+  color: #187424;
+}
+
+/* Modo oscuro para checkboxes de recordarme */
+.dark-mode .remember-me-checkbox input[type="checkbox"] {
+  background: #232323;
+  border-color: #7fdc9c;
+}
+
+.dark-mode .remember-me-checkbox input[type="checkbox"]:checked {
+  background-color: #116434;
+  border-color: #7fdc9c;
+}
+
+.dark-mode .remember-me-checkbox label {
+  color: #e0e0e0;
+}
+
+.dark-mode .remember-me-checkbox label:hover {
+  color: #7fdc9c;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   body::before, body::after {

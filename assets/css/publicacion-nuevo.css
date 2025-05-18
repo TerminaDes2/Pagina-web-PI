@@ -526,6 +526,9 @@ main {
   border-radius: 15px;
   padding: 20px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  overflow-x: hidden;
 }
 
 .usuario-info {
@@ -535,7 +538,8 @@ main {
 }
 
 /* Estilos mejorados para el avatar */
-.usuario-info .avatar {
+.usuario-info .avatar,
+.usuario-info .fa-user {
   width: 42px; /* Aumentar tamaño */
   height: 42px;
   border-radius: 50%;
@@ -547,6 +551,11 @@ main {
   background-color: #f5f5f5; /* Color de fondo si la imagen no carga */
   display: block; /* Asegurar comportamiento de bloque */
   position: relative; /* Para posicionamiento */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px; /* Tamaño del ícono */
+  color: var(--color-font-light); /* Color del ícono */
 }
 
 .usuario-info strong {
@@ -562,6 +571,12 @@ main {
 .comentario-texto {
   line-height: 1.6;
   color: var(--color-font-main);
+  word-wrap: break-word;       /* Permite que el texto se rompa entre palabras */
+  overflow-wrap: break-word;   /* Versión moderna de word-wrap */
+  word-break: break-word;      /* Rompe palabras solo cuando es necesario */
+  max-width: 100%;             /* Limita el ancho máximo al contenedor */
+  hyphens: auto;               /* Añade guiones donde sea posible al romper palabras */
+  overflow-x: hidden;          /* Evita el desplazamiento horizontal */
 }
 
 /* Errores */

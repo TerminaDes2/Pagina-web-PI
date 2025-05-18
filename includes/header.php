@@ -4,7 +4,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Roboto+Slab:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <script src="/Pagina-web-PI/assets/js/menu.js" defer></script>
-<script src="/Pagina-web-PI/assets/js/Main.js" defer></script>
 
 <?php
 // Verificar y actualizar la imagen de perfil del usuario en la sesión
@@ -51,9 +50,9 @@ if ($result_categorias && $result_categorias->num_rows > 0) {
         </div>
         <nav class="hf-main-nav">
             <ul class="hf-main-menu" id="mainMenu">
-                <li><a href="/Pagina-web-PI/index.php" class="hf-menu-link"><i class="fas fa-home hf-menu-icon"></i><?= $translator->__("Inicio") ?></a></li>
+                <li><a href="/Pagina-web-PI/index.php" class="hf-menu-link" data-title="<?= $translator->__("Inicio") ?>"><i class="fas fa-home hf-menu-icon"></i><?= $translator->__("Inicio") ?></a></li>
                 <li class="hf-menu-categorias">
-                    <a href="/Pagina-web-PI/php/explorar.php?modo=noticias" class="hf-menu-link hf-categoria-toggle"><i class="fas fa-newspaper hf-menu-icon"></i><?= $translator->__("Noticias") ?> <i class="fas fa-chevron-down hf-dropdown-arrow"></i></a>
+                    <a href="/Pagina-web-PI/php/explorar.php?modo=noticias" class="hf-menu-link hf-categoria-toggle" data-title="<?= $translator->__("Noticias") ?>"><i class="fas fa-newspaper hf-menu-icon"></i><?= $translator->__("Noticias") ?> <i class="fas fa-chevron-down hf-dropdown-arrow"></i></a>
                     <div class="hf-contenido-categorias">
                         <?php if (!empty($categorias_menu)): ?>
                             <?php foreach ($categorias_menu as $cat): ?>
@@ -65,10 +64,10 @@ if ($result_categorias && $result_categorias->num_rows > 0) {
                     </div>
                 </li>
                 <li>
-                    <a href="/Pagina-web-PI/templates/Contacto.php" class="hf-menu-link"><i class="fas fa-envelope hf-menu-icon"></i><?= $translator->__("Contacto") ?></a>
+                    <a href="/Pagina-web-PI/templates/Contacto.php" class="hf-menu-link" data-title="<?= $translator->__("Contacto") ?>"><i class="fas fa-envelope hf-menu-icon"></i><?= $translator->__("Contacto") ?></a>
                 </li>
                 <li>
-                    <a href="/Pagina-web-PI/templates/Acerca-de-nosotros.php" class="hf-menu-link"><i class="fas fa-info-circle hf-menu-icon"></i><?= $translator->__("Acerca de") ?></a>
+                    <a href="/Pagina-web-PI/templates/Acerca-de-nosotros.php" class="hf-menu-link" data-title="<?= $translator->__("Acerca de") ?>"><i class="fas fa-info-circle hf-menu-icon"></i><?= $translator->__("Acerca de") ?></a>
                 </li>
             </ul>
         </nav>

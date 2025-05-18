@@ -129,7 +129,7 @@ $stmt->close();
 ?>
 
 <!DOCTYPE html>
-<html lang="<?= $_SESSION['idioma'] ?>">
+<html lang="<?= isset($_SESSION['idioma']) ? $_SESSION['idioma'] : 'es' ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -138,6 +138,7 @@ $stmt->close();
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="/Pagina-web-PI/assets/img/Poalce-logo.png" type="image/x-icon">
     <script>
         function confirmarEliminarPublicacion(id, titulo) {
             Swal.fire({
@@ -169,10 +170,6 @@ $stmt->close();
                 cancelButtonColor: '#3085d6',
                 confirmButtonText: '<?= $translator->__("Sí, eliminar") ?>',
                 cancelButtonText: '<?= $translator->__("Cancelar") ?>'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    document.getElementById('form-eliminar-comentario-' + id).submit();
-                }
             });
         }
         
@@ -200,6 +197,20 @@ $stmt->close();
                 showConfirmButton: true
             });
             <?php endif; ?>
+            
+            // Botón para volver arriba
+            $(window).scroll(function() {
+                if ($(this).scrollTop() > 300) {
+                    $('.admin-top-btn').addClass('visible');
+                } else {
+                    $('.admin-top-btn').removeClass('visible');
+                }
+            });
+            
+            $('.admin-top-btn').click(function() {
+                $('html, body').animate({scrollTop: 0}, 500);
+                return false;
+            });
         });
     </script>
 </head>
@@ -309,7 +320,7 @@ $stmt->close();
                                 <td data-label="<?= $translator->__("Acciones") ?>">
                                     <div class="acciones-container">
                                         <!-- Ver publicación -->
-                                        <a href="detalle_articulo.php?id=<?= $publicacion['id_entrada'] ?>" class="admin-button" target="_blank">
+                                        <a href="publicacion.php?id=<?= $publicacion['id_entrada'] ?>" class="admin-button" target="_blank">
                                             <i class="fas fa-eye"></i> <?= $translator->__("Ver") ?>
                                         </a>
                                         
@@ -358,7 +369,7 @@ $stmt->close();
                             <tr>
                                 <td data-label="ID"><?= $comentario['id_comentario'] ?></td>
                                 <td data-label="<?= $translator->__("Publicación") ?>">
-                                    <a href="detalle_articulo.php?id=<?= $comentario['id_entrada'] ?>" target="_blank">
+                                    <a href="publicacion.php?id=<?= $comentario['id_entrada'] ?>" target="_blank">
                                         <?= htmlspecialchars($comentario['titulo_entrada']) ?>
                                     </a>
                                 </td>
@@ -374,7 +385,7 @@ $stmt->close();
                                 <td data-label="<?= $translator->__("Acciones") ?>">
                                     <div class="acciones-container">
                                         <!-- Ver publicación -->
-                                        <a href="detalle_articulo.php?id=<?= $comentario['id_entrada'] ?>" class="admin-button" target="_blank">
+                                        <a href="publicacion.php?id=<?= $comentario['id_entrada'] ?>" class="admin-button" target="_blank">
                                             <i class="fas fa-eye"></i> <?= $translator->__("Ver Publicación") ?>
                                         </a>
                                         
@@ -396,6 +407,11 @@ $stmt->close();
             </div>
         </div>
     </div>
+    
+    <!-- Botón para volver arriba -->
+    <button class="admin-top-btn">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
     <?php include "../includes/footer.php"; ?>
 </body>

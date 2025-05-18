@@ -19,3 +19,212 @@ h3{
     text-decoration: none;
     
 }
+
+/* Estilos para la página de error 404 */
+.error-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 85vh;
+    padding: 40px 20px;
+    text-align: center;
+    position: relative;
+    background: var(--color-bg-gradient);
+    overflow: hidden;
+    z-index: 1;
+}
+
+.error-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
+    height: 200px;
+    background: var(--color-hero-deco-gradient);
+    border-radius: 0 0 0 100%;
+    opacity: 0.8;
+    z-index: -1;
+}
+
+.error-container::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 150px;
+    height: 150px;
+    background: var(--color-cta-shape2);
+    border-radius: 0 100% 0 0;
+    opacity: 0.6;
+    z-index: -1;
+}
+
+.error-icon {
+    font-size: 3rem; /* Reducido de 4rem */
+    color: var(--color-font-accent);
+    margin-bottom: 10px; /* Reducido de 20px */
+    animation: pulse 2s infinite;
+}
+
+.error-img {
+    max-width: 280px; /* Reducido de 350px */
+    height: auto;
+    margin: 10px 0; /* Reducido de 20px */
+    border-radius: 15px;
+    box-shadow: 0 15px 30px var(--color-hero-img-shadow);
+    transform: perspective(800px) rotateY(5deg);
+    transition: transform 0.5s ease;
+    border: 5px solid var(--color-hero-img-border);
+}
+
+.error-img:hover {
+    transform: perspective(800px) rotateY(-5deg);
+}
+
+.error-title {
+    font-size: 2.5rem; /* Reducido de 3rem */
+    font-weight: 800;
+    color: var(--color-font-title);
+    margin: 10px 0; /* Reducido de 20px */
+    position: relative;
+}
+
+.error-title::after {
+    content: '';
+    position: absolute;
+    bottom: -8px; /* Ajustado de -10px */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px; /* Reducido de 100px */
+    height: 4px;
+    background: linear-gradient(to right, var(--color-font-accent), var(--color-font-accent-dark));
+    border-radius: 2px;
+}
+
+.error-subtitle {
+    font-size: 1.2rem; /* Reducido de 1.5rem */
+    color: var(--color-font-subtitle);
+    margin-bottom: 20px; /* Reducido de 30px */
+    max-width: 500px; /* Ajustado para limitar el ancho */
+}
+
+.shapes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.shape {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.4;
+}
+
+.shape-1 {
+    width: 60px; /* Reducido de 80px */
+    height: 60px; /* Reducido de 80px */
+    background: var(--color-cta-shape1);
+    top: 20%;
+    left: 10%;
+    animation: float 6s ease-in-out infinite;
+}
+
+.shape-2 {
+    width: 45px; /* Reducido de 60px */
+    height: 45px; /* Reducido de 60px */
+    background: var(--color-cta-shape3);
+    bottom: 25%;
+    right: 15%;
+    animation: float 8s ease-in-out infinite 1s;
+}
+
+@keyframes float {
+    0% { transform: translateY(0) rotate(0); }
+    50% { transform: translateY(-15px) rotate(5deg); }
+    100% { transform: translateY(0) rotate(0); }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+@media (max-width: 768px) {
+    .error-title {
+        font-size: 2.2rem;
+    }
+
+    .error-subtitle {
+        font-size: 1.2rem;
+    }
+
+    .error-img {
+        max-width: 280px;
+    }
+}
+
+/* Estilos específicos para la página de error 404 */
+body.error-page {
+    background-color: transparent;
+    padding: 0;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+}
+
+.error-page .error-container {
+    min-height: 100vh;
+    padding: 20px;
+    width: 100%;
+    border-radius: 0;
+    margin: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 15px; /* Reduce el espacio entre elementos */
+}
+
+.error-page .btn {
+    margin-top: 10px; /* Espacio reducido arriba del botón */
+    padding: 10px 20px; /* Tamaño de botón más pequeño */
+    font-size: 0.95rem; /* Texto más pequeño */
+}
+
+/* Media Query para pantallas muy pequeñas */
+@media (max-height: 600px) {
+    .error-page .error-container {
+        padding: 10px;
+        gap: 10px;
+    }
+    
+    .error-icon {
+        font-size: 2rem;
+        margin-bottom: 5px;
+    }
+    
+    .error-img {
+        max-width: 220px;
+        margin: 5px 0;
+    }
+    
+    .error-title {
+        font-size: 2rem;
+        margin: 5px 0;
+    }
+    
+    .error-subtitle {
+        font-size: 1rem;
+        margin-bottom: 15px;
+    }
+}

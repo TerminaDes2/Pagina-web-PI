@@ -163,7 +163,7 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
 ?>
 
 <!DOCTYPE html>
-<html lang="<?= $_SESSION['idioma'] ?>">
+<html lang="<?= isset($_SESSION['idioma']) ? $_SESSION['idioma'] : 'es' ?>">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/> <!-- Asegura diseño responsivo -->
@@ -173,6 +173,7 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/publicacion-nuevo.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="icon" href="/Pagina-web-PI/assets/img/Poalce-logo.png" type="image/x-icon">
 </head>
 <body>
   <?php include '../includes/header.php'; ?>
@@ -272,14 +273,18 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
                     $nombre_completo = $row['nombre'] . ' ' . $row['primer_apellido'] . ' ' . $row['segundo_apellido'];
                     $fecha = $row['fecha'];
                     $descripcion = htmlspecialchars($row['descripcion']);
-                    // Corregir la ruta de la imagen
-                    $imagen = !empty($row['imagen']) ? '/Pagina-web-PI/' . $row['imagen'] : '/Pagina-web-PI/assets/img/default-avatar.png';
                     echo "
                     <div class='comentario-container'>
                       <div class='comentario'>
-                        <div class='usuario-info'>
-                          <img src='$imagen' alt='avatar' class='avatar'>
-                          <div>
+                        <div class='usuario-info'>";
+                    // Mostrar la imagen de usuario o un ícono por defecto
+                    if (isset($row['imagen']) && !empty($row['imagen'])) {
+                        $imagen = '/Pagina-web-PI/' . ltrim($row['imagen'], '/');
+                        echo "<img src='$imagen' alt='avatar' class='avatar'>";
+                    } else {
+                        echo '<i class="fas fa-user"></i>';
+                    }
+                    echo "      <div>
                             <strong>$nombre_completo</strong><br>
                             <span class='fecha'>$fecha</span>
                           </div>

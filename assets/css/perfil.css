@@ -855,6 +855,105 @@ body {
     .btn-accion.eliminar:hover {
         transform: translateY(-3px);
     }
+    
+    /* Estilos responsivos específicos para tablas en móviles */
+    .tabla-contenido {
+        border: none;
+        box-shadow: none;
+    }
+    
+    .tabla-contenido thead {
+        display: none; /* Oculta los encabezados en móviles */
+    }
+    
+    .tabla-contenido tbody tr {
+        display: block;
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        background-color: white;
+    }
+    
+    .tabla-contenido td {
+        display: block;
+        text-align: right;
+        padding: 0.8rem 0.5rem;
+        position: relative;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    /* Añadir etiquetas para cada celda */
+    .tabla-contenido td:before {
+        content: attr(data-label);
+        float: left;
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 0.8em;
+        color: #666;
+    }
+    
+    /* Ajustes para la columna de acciones */
+    .tabla-contenido td.acciones {
+        border-bottom: none;
+        text-align: center;
+        padding-top: 1.2rem;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+    }
+    
+    /* Mejorar botones de acción para uso táctil */
+    .btn-accion {
+        margin: 0.3rem;
+        padding: 10px 16px;
+        min-width: 110px;
+        text-align: center;
+        justify-content: center;
+    }
+    
+    /* Mejorar el espacio para contenido extenso */
+    .lista-contenido {
+        padding: 0 0.5rem;
+    }
+}
+
+/* Añadir media query específica para dispositivos muy pequeños */
+@media (max-width: 480px) {
+    .perfil-container {
+        margin-top: 80px;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+    
+    .perfil-contenido {
+        padding: 20px 15px;
+    }
+    
+    /* Ajustar el tamaño de los botones de acción para pantallas pequeñas */
+    .btn-accion {
+        width: calc(50% - 16px);
+        padding: 12px 8px;
+        font-size: 0.9rem;
+    }
+    
+    /* Cambiar la orientación de los botones */
+    .tabla-contenido td.acciones {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .btn-accion {
+        width: 100%;
+        margin: 0.2rem 0;
+    }
+    
+    /* Hacer el texto más legible */
+    .tabla-contenido td {
+        font-size: 0.95rem;
+        padding: 0.7rem 0.4rem;
+    }
 }
 
 /* Nuevas animaciones y efectos */

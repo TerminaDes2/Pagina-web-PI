@@ -357,11 +357,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 <!DOCTYPE html>
-<html lang="<?= $_SESSION['idioma'] ?>">
+<html lang="<?= isset($_SESSION['idioma']) ? $_SESSION['idioma'] : 'es' ?>">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Voces del Proceso</title>
+  <title>POALCE</title>
   <link rel="stylesheet" href="../assets/css/registro.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -370,8 +370,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <link rel="stylesheet" href="../assets/css/dark-mode.css">
-  <script src="../assets/js/dark-mode.js" defer></script>
+  <link rel="icon" href="/Pagina-web-PI/assets/img/Poalce-logo.png" type="image/x-icon">
   
   <!-- Añadir objeto de traducciones para JavaScript -->
   <script>
@@ -543,10 +542,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 });
               }
             } catch (e) {
-              console.error("Error parsing JSON: ", e, response);
+              console.error("<?= $translator->__("Error al procesar JSON") ?>: ", e, response);
               Swal.fire({
-                title: 'Error',
-                text: 'Ocurrió un error al procesar la respuesta',
+                title: '<?= $translator->__("Error") ?>',
+                text: '<?= $translator->__("Ocurrió un error al procesar la respuesta") ?>',
                 icon: 'error',
                 showConfirmButton: true
               });
@@ -555,8 +554,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           error: function(xhr, status, error) {
             console.error("AJAX Error: ", status, error);
             Swal.fire({
-              title: 'Error de conexión',
-              text: 'No se pudo conectar con el servidor',
+              title: '<?= $translator->__("Error de conexión") ?>',
+              text: '<?= $translator->__("No se pudo conectar con el servidor") ?>',
               icon: 'error',
               showConfirmButton: true
             });
@@ -573,6 +572,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
       $("#changeForm").on("submit", function (e) {
         e.preventDefault();
+        
+        // Deshabilitar el botón de envío para evitar múltiples clics
+        const submitBtn = $(this).find('button[type="submit"]');
+        submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> ' + 
+          '<?= $translator->__("Procesando...") ?>');
+        
         $.ajax({
           url: "registro.php",
           type: "POST",
@@ -604,7 +609,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 showConfirmButton: true
               });
             }
+            // Reactivar el botón
+            submitBtn.prop('disabled', false).html('<?= $translator->__("Enviar") ?>');
           },
+          error: function() {
+            Swal.fire({
+              title: '<?= $translator->__("Error de conexión") ?>',
+              text: '<?= $translator->__("Hubo un problema al procesar tu solicitud. Inténtalo más tarde.") ?>',
+              icon: 'error',
+              showConfirmButton: true
+            });
+            // Reactivar el botón
+            submitBtn.prop('disabled', false).html('<?= $translator->__("Enviar") ?>');
+          }
         });
       });
 
@@ -631,7 +648,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <main class="main">
     <div class="card" id="datos">
       <form id="form-right" action="registro.php" method="POST">
-        <input type="hidden" name="action" value="login">x
+        <input type="hidden" name="action" value="login">
           <h1><?= $translator->__("Inicio de Sesión") ?></h1>
           <p><?= $translator->__("Bienvenido de vuelta! Inicia sesión en tu cuenta para registrar las asistencias de tu club.") ?></p>
           <div class="input-container">
@@ -647,6 +664,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </button>
             <a href="#" id="changePassword"><?= $translator->__("¿Olvidaste tu contraseña?") ?></a>
           </div>
+          
+          <div class="remember-me-checkbox">
+            <input type="checkbox" id="recordarme-login" name="recordarme" value="true">
+            <label for="recordarme-login"><?= $translator->__("Mantener sesión iniciada en este dispositivo") ?></label>
+          </div>
+          
           <button type="submit" class="btn"><?= $translator->__("Iniciar Sesión") ?></button>
           <button class="btin" type="button" onclick="mostrarFormulario2()"><?= $translator->__("Crear una cuenta nueva") ?></button>
       </form>
@@ -693,7 +716,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </button>
           </div>
           <span id="mensaje-coincidencia" class="password-match-message"></span>
-          
+
+          <div class="remember-me-checkbox">
+            <input type="checkbox" id="recordarme-registro" name="recordarme" value="true">
+            <label for="recordarme-registro"><?= $translator->__("Mantener sesión iniciada en este dispositivo") ?></label>
+          </div>
+
           <div class="input-container">
             <i class="fa fa-image"></i>
             <input type="file" id="imagen" name="imagen" accept="image/*" onchange="mostrarVistaPrevia()">

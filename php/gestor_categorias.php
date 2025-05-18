@@ -116,7 +116,7 @@ if ($result) {
 ?>
 
 <!DOCTYPE html>
-<html lang="<?= $_SESSION['idioma'] ?>">
+<html lang="<?= isset($_SESSION['idioma']) ? $_SESSION['idioma'] : 'es' ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -125,6 +125,7 @@ if ($result) {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="icon" href="/Pagina-web-PI/assets/img/Poalce-logo.png" type="image/x-icon">
     <style>
         .categoria-form {
             background-color: white;
@@ -163,6 +164,27 @@ if ($result) {
         }
         .categoria-form button:hover {
             background-color: #45a049;
+        }
+        .admin-top-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .admin-top-btn:hover {
+            background-color: #45a049;
+        }
+        .admin-top-btn.visible {
+            display: block;
+        }
+        .admin-top-btn {
+            display: none;
         }
     </style>
     <script>
@@ -209,6 +231,20 @@ if ($result) {
                     showConfirmButton: true
                 });
             }
+            
+            // Botón para volver arriba
+            $(window).scroll(function() {
+                if ($(this).scrollTop() > 300) {
+                    $('.admin-top-btn').addClass('visible');
+                } else {
+                    $('.admin-top-btn').removeClass('visible');
+                }
+            });
+            
+            $('.admin-top-btn').click(function() {
+                $('html, body').animate({scrollTop: 0}, 500);
+                return false;
+            });
         });
     </script>
 </head>
@@ -299,6 +335,11 @@ if ($result) {
             <?php endif; ?>
         </section>
     </div>
+    
+    <!-- Botón para volver arriba -->
+    <button class="admin-top-btn">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
     <?php include "../includes/footer.php"; ?>
 </body>
