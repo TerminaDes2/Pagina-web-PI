@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idioma'])) {
   <main id="publicacion">
     <div class="noticia">
       <h2>1. <?= $translator->__('Responsable del tratamiento') ?></h2>
-      <p><strong><?= $translator->__('Titular:') ?></strong> Voces del Proceso</p>
+      <p><strong><?= $translator->__('Titular:') ?></strong> POALCE</p>
       <p><strong><?= $translator->__('Correo de contacto:') ?></strong> contactopoalce@gmail.com</p>
 
       <h2>2. <?= $translator->__('Datos que recopilamos') ?></h2>

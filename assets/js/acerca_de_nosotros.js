@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <h1>Acerca de Nosotros</h1>
 
           <h2>¿Quiénes somos?</h2>
-          <p><strong>Voces del Proceso</strong> es una plataforma digital comprometida con la difusión de información clara, accesible y verificada sobre derechos laborales, reformas sociales y leyes que impactan la vida de las personas.</p>
+          <p><strong>POALCE</strong> es una plataforma digital comprometida con la difusión de información clara, accesible y verificada sobre derechos laborales, reformas sociales y leyes que impactan la vida de las personas.</p>
 
           <h2>¿Qué hacemos?</h2>
           <p>Brindamos noticias, análisis y recursos prácticos que permiten a los ciudadanos conocer y ejercer sus derechos laborales, fomentando así el trabajo digno y el crecimiento económico sostenible.</p>
@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
           </ul>
 
           <h2>Información Adicional</h2>
-          <p>En <strong>Voces del Proceso</strong>, nos dedicamos a brindar información precisa, actualizada y verificada sobre reformas, derechos laborales y leyes que impactan a trabajadores y ciudadanos.</p>
+          <p>En <strong>POALCE</strong>, nos dedicamos a brindar información precisa, actualizada y verificada sobre reformas, derechos laborales y leyes que impactan a trabajadores y ciudadanos.</p>
           <p>Somos un equipo comprometido con la difusión de noticias que promueven el trabajo decente, el crecimiento económico y el desarrollo sostenible.</p>
           <p>Nuestra misión es impulsar una ciudadanía informada, capaz de participar activamente en las decisiones que transforman nuestras comunidades.</p>
           <p>Creemos en la importancia de acercar la información de manera clara, accesible y basada en hechos, fomentando el diálogo y el análisis crítico.</p>
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <p>8 TRABAJO DECENTE Y CRECIMIENTO ECONÓMICO</p>
       </div>
       <div class="franja-derechos">
-          <p>©2025 Voces del Proceso. Todos los derechos reservados.</p>
+          <p>©2025 POALCE. Todos los derechos reservados.</p>
       </div>
   `;
 

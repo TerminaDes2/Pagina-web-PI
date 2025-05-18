@@ -167,7 +167,7 @@ if(isset($_GET['msg'])){
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Voces del Proceso - Editar Publicación</title>
+  <title>POALCE - Editar Publicación</title>
   <link rel="stylesheet" href="../assets/css/publicar.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

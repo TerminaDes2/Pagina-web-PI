@@ -361,7 +361,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Voces del Proceso</title>
+  <title>POALCE</title>
   <link rel="stylesheet" href="../assets/css/registro.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -572,6 +572,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
       $("#changeForm").on("submit", function (e) {
         e.preventDefault();
+        
+        // Deshabilitar el botón de envío para evitar múltiples clics
+        const submitBtn = $(this).find('button[type="submit"]');
+        submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> ' + 
+          '<?= $translator->__("Procesando...") ?>');
+        
         $.ajax({
           url: "registro.php",
           type: "POST",
@@ -603,7 +609,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 showConfirmButton: true
               });
             }
+            // Reactivar el botón
+            submitBtn.prop('disabled', false).html('<?= $translator->__("Enviar") ?>');
           },
+          error: function() {
+            Swal.fire({
+              title: '<?= $translator->__("Error de conexión") ?>',
+              text: '<?= $translator->__("Hubo un problema al procesar tu solicitud. Inténtalo más tarde.") ?>',
+              icon: 'error',
+              showConfirmButton: true
+            });
+            // Reactivar el botón
+            submitBtn.prop('disabled', false).html('<?= $translator->__("Enviar") ?>');
+          }
         });
       });
 
