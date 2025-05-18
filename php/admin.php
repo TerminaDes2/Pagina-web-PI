@@ -537,7 +537,7 @@ if ($result) {
                                 <td data-label="<?= $translator->__("Acciones") ?>">
                                     <div class="acciones-container">
                                         <!-- Ver publicación -->
-                                        <a href="detalle_articulo.php?id=<?= $publicacion['id_entrada'] ?>" class="admin-button" target="_blank">
+                                        <a href="publicacion.php?id=<?= $publicacion['id_entrada'] ?>" class="admin-button" target="_blank">
                                             <i class="fas fa-eye"></i> <?= $translator->__("Ver") ?>
                                         </a>
                                         
@@ -594,7 +594,7 @@ if ($result) {
                                     <?= htmlspecialchars($comentario['nombre'] . ' ' . $comentario['primer_apellido']) ?>
                                 </td>
                                 <td data-label="<?= $translator->__("Publicación") ?>">
-                                    <a href="detalle_articulo.php?id=<?= $comentario['id_entrada'] ?>" target="_blank">
+                                    <a href="publicacion.php?id=<?= $comentario['id_entrada'] ?>" target="_blank">
                                         <?= htmlspecialchars($comentario['titulo_entrada']) ?>
                                     </a>
                                 </td>
@@ -618,7 +618,7 @@ if ($result) {
                                     </form>
                                     
                                     <!-- Ver publicación -->
-                                    <a href="detalle_articulo.php?id=<?= $comentario['id_entrada'] ?>" class="admin-button" target="_blank">
+                                    <a href="publicacion.php?id=<?= $comentario['id_entrada'] ?>" class="admin-button" target="_blank">
                                         <i class="fas fa-eye"></i> <?= $translator->__("Ver Publicación") ?>
                                     </a>
                                 </td>

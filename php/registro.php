@@ -543,10 +543,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 });
               }
             } catch (e) {
-              console.error("Error parsing JSON: ", e, response);
+              console.error("<?= $translator->__("Error al procesar JSON") ?>: ", e, response);
               Swal.fire({
-                title: 'Error',
-                text: 'Ocurrió un error al procesar la respuesta',
+                title: '<?= $translator->__("Error") ?>',
+                text: '<?= $translator->__("Ocurrió un error al procesar la respuesta") ?>',
                 icon: 'error',
                 showConfirmButton: true
               });
@@ -555,8 +555,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           error: function(xhr, status, error) {
             console.error("AJAX Error: ", status, error);
             Swal.fire({
-              title: 'Error de conexión',
-              text: 'No se pudo conectar con el servidor',
+              title: '<?= $translator->__("Error de conexión") ?>',
+              text: '<?= $translator->__("No se pudo conectar con el servidor") ?>',
               icon: 'error',
               showConfirmButton: true
             });
@@ -647,6 +647,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </button>
             <a href="#" id="changePassword"><?= $translator->__("¿Olvidaste tu contraseña?") ?></a>
           </div>
+          
+          <div class="remember-me-checkbox">
+            <input type="checkbox" id="recordarme-login" name="recordarme" value="true">
+            <label for="recordarme-login"><?= $translator->__("Mantener sesión iniciada en este dispositivo") ?></label>
+          </div>
+          
           <button type="submit" class="btn"><?= $translator->__("Iniciar Sesión") ?></button>
           <button class="btin" type="button" onclick="mostrarFormulario2()"><?= $translator->__("Crear una cuenta nueva") ?></button>
       </form>
@@ -693,7 +699,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </button>
           </div>
           <span id="mensaje-coincidencia" class="password-match-message"></span>
-          
+
+          <div class="remember-me-checkbox">
+            <input type="checkbox" id="recordarme-registro" name="recordarme" value="true">
+            <label for="recordarme-registro"><?= $translator->__("Mantener sesión iniciada en este dispositivo") ?></label>
+          </div>
+
           <div class="input-container">
             <i class="fa fa-image"></i>
             <input type="file" id="imagen" name="imagen" accept="image/*" onchange="mostrarVistaPrevia()">

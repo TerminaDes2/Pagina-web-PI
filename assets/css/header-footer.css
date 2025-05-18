@@ -261,13 +261,8 @@ body {
   transition: var(--transition-normal);
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.hf-search-box:hover, .hf-search-box:focus-within {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.2), inset 0 2px 5px rgba(0, 0, 0, 0.1);
-  transform: translateY(-2px);
+  min-width: 80px; /* Asegurar un ancho mínimo */
+  overflow: hidden; /* Evitar desbordamiento */
 }
 
 .hf-search-box form {
@@ -275,6 +270,7 @@ body {
   flex-direction: row;
   align-items: center;
   width: 100%;
+  min-width: 0; /* Permite que el formulario se contraiga adecuadamente */
 }
 
 .hf-search-box input[type="text"] {
@@ -283,11 +279,13 @@ body {
   border-radius: 20px;
   height: 32px;
   flex: 1;
+  min-width: 0; /* Permite que el input se contraiga */
   background: transparent;
   color: var(--text-light);
   outline: none;
   transition: var(--transition-normal);
   font-family: var(--font-primary);
+  text-overflow: ellipsis; /* Muestra "..." cuando el texto es demasiado largo */
 }
 
 .hf-search-box input[type="text"]::placeholder {
@@ -304,6 +302,7 @@ body {
   border: none;
   cursor: pointer;
   transition: var(--transition-normal);
+  min-width: 32px; /* Ancho mínimo fijo */
   width: 32px;
   height: 32px;
   display: flex;
@@ -312,11 +311,24 @@ body {
   padding: 0;
   font-size: 1rem;
   margin-left: 5px;
+  flex-shrink: 0; /* Evita que el botón se contraiga */
 }
 
 .hf-search-box button:hover {
   color: var(--accent-color);
   transform: scale(1.1) rotate(5deg);
+}
+
+/* Asegurar que la barra de búsqueda se adapta correctamente en diferentes tamaños */
+@media (min-width: 769px) and (max-width: 1273px) {
+  .hf-search-box {
+    width: clamp(100px, 18vw, 180px);
+    padding: 2px 5px 2px 10px; /* Reducir padding derecho para dar más espacio */
+  }
+  
+  .hf-search-box button {
+    margin-left: 2px; /* Reducir margen en pantallas más pequeñas */
+  }
 }
 
 .hf-social-icons {
@@ -1476,4 +1488,70 @@ select option:checked {
   position: relative;
   right: 0;
   margin-left: auto;
+}
+
+/* Media query para mostrar solo iconos en el menú entre 769px y 1273px */
+@media (min-width: 769px) and (max-width: 922px) {
+  /* Ocultar texto del menú principal */
+  .hf-menu-link {
+    font-size: 0; /* Hace invisible el texto */
+    padding: 10px;
+    justify-content: center;
+    text-align: center;
+  }
+  
+  /* Restaurar visibilidad y estilo de los iconos */
+  .hf-menu-icon {
+    font-size: 1.2rem !important; /* Aumentar tamaño de iconos */
+    margin: 0 !important;
+  }
+  
+  /* Ocultar flechas de dropdown */
+  .hf-dropdown-arrow {
+    display: none !important;
+  }
+  
+  /* Ajustar espaciado entre elementos del menú */
+  .hf-main-nav li {
+    margin-right: 8px;
+  }
+  
+  /* Tooltips para mostrar texto al hacer hover */
+  .hf-main-nav li {
+    position: relative;
+  }
+  
+  .hf-menu-link:hover::after {
+    content: attr(data-title);
+    position: absolute;
+    bottom: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(11, 117, 27, 0.9);
+    color: var(--text-light);
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 100;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--accent-color);
+  }
+  
+  /* Asegurar que el menú de categorías sigue funcionando */
+  .hf-menu-categorias .hf-contenido-categorias {
+    min-width: 180px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .hf-menu-categorias .hf-contenido-categorias a {
+    font-size: 14px; /* Restaurar tamaño de fuente para el submenú */
+  }
+  
+  /* Crear más espacio para el menú de usuario */
+  .hf-search-box {
+    width: clamp(100px, 18vw, 180px);
+  }
 }
