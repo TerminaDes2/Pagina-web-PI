@@ -25,7 +25,8 @@ $translator = new Translator($conn);
 // Manejar cambio de idioma
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idioma'])) {
     $translator->cambiarIdioma($_POST['idioma']);
-    header("Location: " . $_SERVER['PHP_SELF']);
+    $id_entrada = isset($_GET['id']) ? intval($_GET['id']) : 0; // Obtener el ID de la publicación actual
+    header("Location: " . $_SERVER['PHP_SELF'] . "?id=$id_entrada"); // Redirigir incluyendo el ID
     exit();
 }
 
@@ -41,11 +42,11 @@ if (isset($_GET['id'])) {
     if ($result->num_rows > 0) {
         $entrada = $result->fetch_assoc();
     } else {
-        echo "No se encontró la publicación.";
+        echo $translator->__("No se encontró la publicación.");
         exit;
     }
 } else {
-    echo "No se especificó la publicación.";
+    echo $translator->__("No se especificó la publicación.");
     exit;
 }
 
@@ -76,7 +77,7 @@ if ($resultAds->num_rows > 0) {
 if(!isset($_SESSION['usuario'])) {
   if(!isset($_GET['error'])) {
     $id_entrada = isset($_GET['id']) ? $_GET['id'] : 0;
-    $error = urlencode("Es necesario iniciar sesión para poder realizar comentarios.");
+    $error = urlencode($translator->__("Es necesario iniciar sesión para poder realizar comentarios."));
     header("Location: publicacion.php?id=$id_entrada&error=$error");
     exit();
   }
@@ -94,14 +95,14 @@ if(isset($_POST['comentar']) && isset($_SESSION['usuario']) && isset($_GET['id']
     $stmt->bind_param("sii", $descripcion, $id_entrada, $id_usuario);
    
     if($stmt->execute()) {
-      echo "<p>Comentario publicado correctamente.</p>";
+      echo "<p>" . $translator->__("Comentario publicado correctamente.") . "</p>";
     } else {
-      echo "<p>Error al publicar el comentario: " . htmlspecialchars($stmt->error) . "</p>";
+      echo "<p>" . $translator->__("Error al publicar el comentario:") . " " . htmlspecialchars($stmt->error) . "</p>";
     }
 
     $stmt->close();
   } else {
-    echo "<p>El comentario no puede estar vacío.</p>";
+    echo "<p>" . $translator->__("El comentario no puede estar vacío.") . "</p>";
   }
 }
 
@@ -209,7 +210,7 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
         <?php if (!empty($entrada['cita'])): ?> 
         <!-- Si el campo de referencias no está vacío, entonces se muestra el bloque -->
           <div class="mt-4">
-            <h5><i class="fas fa-book"></i> Referencias</h5>
+            <h5><i class="fas fa-book"></i> <?= $translator->__("Referencias") ?></h5>
             <ul>
               <?php 
                 $lineas = explode("\n", $entrada['cita']); 
@@ -225,7 +226,7 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
                     // Obtiene el dominio del enlace (por ejemplo: www.ejemplo.com)
                     $nombreSitio = ucfirst(str_replace('www.', '', $host));
                     // Elimina el "www." si existe y pone la primera letra en mayúscula
-                    echo "<li>$nombreSitio. (s.f.). Recuperado de <a href=\"$ref\" target=\"_blank\">$ref</a></li>";
+                    echo "<li>$nombreSitio. (s.f.). " . $translator->__("Recuperado de") . " <a href=\"$ref\" target=\"_blank\">$ref</a></li>";
                     // Muestra la referencia con formato APA básico para sitios web
                     } else {
                     echo "<li>" . htmlspecialchars($ref) . "</li>";
@@ -273,6 +274,7 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
                     $nombre_completo = $row['nombre'] . ' ' . $row['primer_apellido'] . ' ' . $row['segundo_apellido'];
                     $fecha = $row['fecha'];
                     $descripcion = htmlspecialchars($row['descripcion']);
+                    $descripcion = $translator->traducirHTML($descripcion);
                     echo "
                     <div class='comentario-container'>
                       <div class='comentario'>
@@ -280,13 +282,13 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
                     // Mostrar la imagen de usuario o un ícono por defecto
                     if (isset($row['imagen']) && !empty($row['imagen'])) {
                         $imagen = '/Pagina-web-PI/' . ltrim($row['imagen'], '/');
-                        echo "<img src='$imagen' alt='avatar' class='avatar'>";
+                        echo "<img src='$imagen' alt='" . $translator->__("avatar") . "' class='avatar'>";
                     } else {
                         echo '<i class="fas fa-user"></i>';
                     }
                     echo "      <div>
                             <strong>$nombre_completo</strong><br>
-                            <span class='fecha'>$fecha</span>
+                            <span class='fecha'><i class='far fa-calendar-alt'></i> " . $translator->__("Fecha") . ": $fecha</span>
                           </div>
                         </div>
                         <p class='comentario-texto'>$descripcion</p>
@@ -313,15 +315,21 @@ $contenidoConAnchors = $translator->traducirHTML($resultado['contenido']);
                     $fecha = $row['fecha'];
                     $descripcion = htmlspecialchars($row['descripcion']);
                     // Corregir la ruta de la imagen
-                    $imagen = !empty($row['imagen']) ? '/Pagina-web-PI/' . $row['imagen'] : '/Pagina-web-PI/assets/img/default-avatar.png';
+                    // Mostrar la imagen de usuario o un ícono por defecto
+                    if (isset($row['imagen']) && !empty($row['imagen'])) {
+                        $imagen = '../' . ltrim($row['imagen'], '/');
+                        echo "<img src='$imagen' alt='avatar' class='avatar'>";
+                    } else {
+                        echo '<i class="fas fa-user"></i>';
+                    }
                     echo "
                     <div class='comentario-container'>
                       <div class='comentario'>
                         <div class='usuario-info'>
-                          <img src='$imagen' alt='avatar' class='avatar'>
+                          <img src='$imagen' alt='" . $translator->__("avatar") . "' class='avatar'>
                           <div>
                             <strong>$nombre_completo</strong><br>
-                            <span class='fecha'>$fecha</span>
+                            <span class='fecha'><i class='far fa-calendar-alt'></i> " . $translator->__("Fecha") . ": $fecha</span>
                           </div>
                         </div>
                         <p class='comentario-texto'>$descripcion</p>

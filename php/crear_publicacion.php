@@ -88,30 +88,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $stmtImg->bind_param("si", $rutaDestino, $id_entrada);
                         if (!$stmtImg->execute()) {
                             error_log("Error al ejecutar la consulta INSERT INTO imagenes: " . $stmtImg->error);
-                            header("Location: crear_publicacion.php?msg=" . urlencode("Error al guardar la imagen.") . "&msgType=error");
+                            header("Location: crear_publicacion.php?msg=" . urlencode($translator->__("Error al guardar la imagen.")) . "&msgType=error");
                             exit();
                         }
                         $stmtImg->close();
                     } else {
                         error_log("Error en la preparación de la consulta INSERT INTO imagenes: " . $conn->error);
-                        header("Location: crear_publicacion.php?msg=" . urlencode("Error al preparar la consulta para guardar la imagen.") . "&msgType=error");
+                        header("Location: crear_publicacion.php?msg=" . urlencode($translator->__("Error al preparar la consulta para guardar la imagen.")) . "&msgType=error");
                         exit();
                     }
                 } else {
-                    header("Location: crear_publicacion.php?msg=" . urlencode("Error al subir la imagen.") . "&msgType=error");
+                    header("Location: crear_publicacion.php?msg=" . urlencode($translator->__("Error al subir la imagen.")) . "&msgType=error");
                     exit();
                 }
             }
-            header("Location: crear_publicacion.php?msg=" . urlencode("Publicación creada exitosamente.") . "&msgType=success");
+            header("Location: crear_publicacion.php?msg=" . urlencode($translator->__("Publicación creada exitosamente.")) . "&msgType=success");
             exit();
         } else {
-            header("Location: crear_publicacion.php?msg=" . urlencode("Error al crear la publicación: " . $stmt->error) . "&msgType=error");
+            header("Location: crear_publicacion.php?msg=" . urlencode($translator->__("Error al crear la publicación: ") . $stmt->error) . "&msgType=error");
             exit();
         }
         $stmt->close();
     } else {
         error_log("Error en la preparación de la consulta INSERT INTO entradas: " . $conn->error);
-        header("Location: crear_publicacion.php?msg=" . urlencode("Error al preparar la consulta para crear la publicación.") . "&msgType=error");
+        header("Location: crear_publicacion.php?msg=" . urlencode($translator->__("Error al preparar la consulta para crear la publicación.")) . "&msgType=error");
         exit();
     }
     $conn->close();
