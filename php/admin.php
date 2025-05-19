@@ -196,7 +196,7 @@ $result = $conn->query("SELECT e.*, u.nombre, u.primer_apellido, u.segundo_apell
                         FROM entradas e 
                         LEFT JOIN usuarios u ON e.id_usuario = u.id_usuario 
                         LEFT JOIN categorias c ON e.categoria = c.id_categoria 
-                        ORDER BY e.fecha DESC");
+                        ORDER BY e.id_entrada DESC");
 if ($result) {
     while ($row = $result->fetch_assoc()) {
         $publicaciones[] = $row;
@@ -205,11 +205,12 @@ if ($result) {
 
 // Obtener todos los comentarios
 $comentarios = [];
-$result = $conn->query("SELECT c.*, u.nombre, u.primer_apellido, u.segundo_apellido, e.titulo as titulo_entrada 
+$result = $conn->query("SELECT c.*, u.nombre, u.primer_apellido, u.segundo_apellido, e.titulo as titulo_entrada, 
+                        (SELECT imagen FROM imagenes WHERE id_entrada = e.id_entrada LIMIT 1) as imagen_publicacion 
                         FROM comentarios c 
                         LEFT JOIN usuarios u ON c.id_usuario = u.id_usuario 
                         LEFT JOIN entradas e ON c.id_entrada = e.id_entrada 
-                        ORDER BY c.fecha DESC");
+                        ORDER BY c.id_comentario DESC");
 if ($result) {
     while ($row = $result->fetch_assoc()) {
         $comentarios[] = $row;
@@ -227,7 +228,7 @@ if ($result) {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" href="/Pagina-web-PI/assets/img/Poalce-logo.png" type="image/x-icon">
+    <link rel="icon" href="/Pagina-web-PI/assets/img/POALCE-logo.ico" type="image/x-icon">
     <script>
         function confirmarEliminarUsuario(id, nombre) {
             Swal.fire({
@@ -364,18 +365,6 @@ if ($result) {
             $('.admin-top-btn').click(function() {
                 $('html, body').animate({scrollTop: 0}, 500);
                 return false;
-            });
-            
-            // Funcionalidad para expandir/contraer comentarios
-            $(document).on('click', '.expand-comment-btn', function() {
-                var commentCell = $(this).prev('.comment-cell');
-                commentCell.toggleClass('comment-expanded');
-                
-                if (commentCell.hasClass('comment-expanded')) {
-                    $(this).text('<?= $translator->__("Ver menos") ?>');
-                } else {
-                    $(this).text('<?= $translator->__("Ver más") ?>');
-                }
             });
         });
     </script>
@@ -621,20 +610,17 @@ if ($result) {
                                 </td>
                                 <td data-label="<?= $translator->__("Publicación") ?>">
                                     <div style="display:flex; align-items:center; gap:10px;">
-                                        <?php if (!empty($publicacion['imagen'])): ?>
-                                            <img src="<?= htmlspecialchars($publicacion['imagen']) ?>" alt="<?= $translator->__("Imagen de publicación") ?>" 
+                                        <?php if (!empty($comentario['imagen_publicacion'])): ?>
+                                            <img src="<?= htmlspecialchars($comentario['imagen_publicacion']) ?>" alt="<?= $translator->__("Imagen de publicación") ?>" 
                                                  style="width: 40px; height: 40px; border-radius: 5px; object-fit: cover;">
                                         <?php endif; ?>
-                                        <span href="publicacion.php?id=<?= $comentario['id_entrada'] ?>"><?= htmlspecialchars($comentario['titulo_entrada']) ?></span>
+                                        <span><?= htmlspecialchars($comentario['titulo_entrada']) ?></span>
                                     </div>
                                 </td>
                                 <td data-label="<?= $translator->__("Comentario") ?>">
                                     <div class="comment-cell">
                                         <?= htmlspecialchars($comentario['descripcion']) ?>
                                     </div>
-                                    <?php if (strlen($comentario['descripcion']) > 100): ?>
-                                        <button class="expand-comment-btn"><?= $translator->__("Ver más") ?></button>
-                                    <?php endif; ?>
                                 </td>
                                 <td data-label="<?= $translator->__("Fecha") ?>">
                                     <?= date('d/m/Y H:i', strtotime($comentario['fecha'])) ?>

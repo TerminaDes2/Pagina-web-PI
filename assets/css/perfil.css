@@ -1085,3 +1085,122 @@ body {
     50% { transform: translateY(-10px) rotate(5deg); }
     100% { transform: translateY(0) rotate(0); }
 }
+
+/* Estilos para las notas de formulario */
+.form-note {
+    display: block;
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 5px;
+    font-style: italic;
+}
+
+.dark-mode .form-note {
+    color: #aaa;
+}
+
+/* Estilos para el modal de verificación */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.modal-content {
+    background: white;
+    margin: 10% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 450px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+    position: relative;
+    transform: scale(0.9) translateY(20px);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid rgba(255,255,255,0.7);
+    overflow: hidden;
+}
+
+.modal-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(to right, #719743, #187424);
+}
+
+.modal.active .modal-content {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.modal-content p {
+    margin-bottom: 20px;
+    color: #555;
+    line-height: 1.6;
+}
+
+.close {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 28px;
+    color: #aaa;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.close:hover {
+    color: #187424;
+    transform: rotate(90deg);
+}
+
+.form-actions.centered {
+    text-align: center;
+    margin-top: 25px;
+}
+
+/* Estilo para modo oscuro */
+.dark-mode .modal-content {
+    background: #292929;
+    color: #e0e0e0;
+}
+
+.dark-mode .modal-content h2 {
+    color: #7fdc9c;
+}
+
+.dark-mode .modal-content p {
+    color: #b0b0b0;
+}
+
+.dark-mode .close {
+    color: #7fdc9c;
+}
+
+.dark-mode .close:hover {
+    color: #fff;
+}
+
+@media (max-width: 768px) {
+    .modal-content {
+        margin: 15% auto;
+        padding: 25px 20px;
+    }
+}

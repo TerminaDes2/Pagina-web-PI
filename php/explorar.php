@@ -144,7 +144,7 @@ if ($modo === 'buscar') {
                    LEFT JOIN usuarios u ON e.id_usuario = u.id_usuario
                    LEFT JOIN categorias c ON e.categoria = c.id_categoria
                    WHERE e.categoria = ? 
-                   ORDER BY e.fecha DESC
+                   ORDER BY e.id_entrada DESC
                    LIMIT ?, ?";
             
             $stmt = $conn->prepare($sql);
@@ -208,7 +208,7 @@ if ($modo === 'buscar') {
                  ON i.id_entrada = e.id_entrada 
              LEFT JOIN usuarios u ON e.id_usuario = u.id_usuario
              LEFT JOIN categorias c ON e.categoria = c.id_categoria
-             ORDER BY e.fecha DESC
+             ORDER BY e.id_entrada DESC
              LIMIT ?, ?";
 
     $stmt = $conn->prepare($sql);
@@ -234,6 +234,8 @@ function procesarArticulo(&$row, $translator) {
     // Eliminar etiquetas h2 y su contenido antes de crear el extracto
     $contenido_limpio = preg_replace('/<h2>.*?<\/h2>/is', '', $row['contenido']);
     $contenido_limpio = strip_tags($contenido_limpio);
+    // Decodificar entidades HTML para mostrar correctamente espacios y caracteres especiales
+    $contenido_limpio = html_entity_decode($contenido_limpio, ENT_QUOTES | ENT_HTML5, 'UTF-8');
     
     // Obtener un extracto del contenido (primeras 18 palabras o menos)
     $palabras = explode(' ', $contenido_limpio);
@@ -285,7 +287,7 @@ if ($result_categorias_filtro && $result_categorias_filtro->num_rows > 0) {
     <link rel="stylesheet" href="../assets/css/categorias.css">
     <link rel="stylesheet" href="../assets/css/explorar.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="icon" href="/Pagina-web-PI/assets/img/Poalce-logo.png" type="image/x-icon">
+    <link rel="icon" href="/Pagina-web-PI/assets/img/POALCE-logo.ico" type="image/x-icon">
     <!-- Se eliminó la etiqueta style, el código está ahora en explorar.css -->
 </head>
 <body>
@@ -449,11 +451,11 @@ if ($result_categorias_filtro && $result_categorias_filtro->num_rows > 0) {
                             echo '<a href="' . getPaginationUrl($i, $modo, isset($busqueda) ? $busqueda : '', isset($_GET['cat']) ? intval($_GET['cat']) : 0) . '">' . $i . '</a>';
                         }
                     }
-                    ?> página
+                    ?> 
                     
                     <?php if ($fin_rango < $total_paginas): ?>
-                        if ($fin_rango < $total_paginas - 1) echo '<span class="puntos">...</span>';
-                        echo '<a href="' . getPaginationUrl($total_paginas, $modo, isset($busqueda) ? $busqueda : '', isset($_GET['cat']) ? intval($_GET['cat']) : 0) . '">' . $total_paginas . '</a>';
+                        <?php if ($fin_rango < $total_paginas - 1) echo '<span class="puntos">...</span>'; ?>
+                        <?php echo '<a href="' . getPaginationUrl($total_paginas, $modo, isset($busqueda) ? $busqueda : '', isset($_GET['cat']) ? intval($_GET['cat']) : 0) . '">' . $total_paginas . '</a>'; ?>
                     <?php endif; ?>
                     
                     <?php if ($pagina_actual < $total_paginas): ?>   

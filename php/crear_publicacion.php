@@ -88,30 +88,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $stmtImg->bind_param("si", $rutaDestino, $id_entrada);
                         if (!$stmtImg->execute()) {
                             error_log("Error al ejecutar la consulta INSERT INTO imagenes: " . $stmtImg->error);
-                            header("Location: crear_publicacion.php?msg=" . urlencode("Error al guardar la imagen.") . "&msgType=error");
+                            header("Location: crear_publicacion.php?msg=" . urlencode($translator->__("Error al guardar la imagen.")) . "&msgType=error");
                             exit();
                         }
                         $stmtImg->close();
                     } else {
                         error_log("Error en la preparación de la consulta INSERT INTO imagenes: " . $conn->error);
-                        header("Location: crear_publicacion.php?msg=" . urlencode("Error al preparar la consulta para guardar la imagen.") . "&msgType=error");
+                        header("Location: crear_publicacion.php?msg=" . urlencode($translator->__("Error al preparar la consulta para guardar la imagen.")) . "&msgType=error");
                         exit();
                     }
                 } else {
-                    header("Location: crear_publicacion.php?msg=" . urlencode("Error al subir la imagen.") . "&msgType=error");
+                    header("Location: crear_publicacion.php?msg=" . urlencode($translator->__("Error al subir la imagen.")) . "&msgType=error");
                     exit();
                 }
             }
-            header("Location: crear_publicacion.php?msg=" . urlencode("Publicación creada exitosamente.") . "&msgType=success");
+            header("Location: crear_publicacion.php?msg=" . urlencode($translator->__("Publicación creada exitosamente.")) . "&msgType=success");
             exit();
         } else {
-            header("Location: crear_publicacion.php?msg=" . urlencode("Error al crear la publicación: " . $stmt->error) . "&msgType=error");
+            header("Location: crear_publicacion.php?msg=" . urlencode($translator->__("Error al crear la publicación: ") . $stmt->error) . "&msgType=error");
             exit();
         }
         $stmt->close();
     } else {
         error_log("Error en la preparación de la consulta INSERT INTO entradas: " . $conn->error);
-        header("Location: crear_publicacion.php?msg=" . urlencode("Error al preparar la consulta para crear la publicación.") . "&msgType=error");
+        header("Location: crear_publicacion.php?msg=" . urlencode($translator->__("Error al preparar la consulta para crear la publicación.")) . "&msgType=error");
         exit();
     }
     $conn->close();
@@ -139,7 +139,7 @@ if(isset($_GET['msg'])){
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="../assets/js/loggin_scripts.js" defer></script>
-  <link rel="icon" href="/Pagina-web-PI/assets/img/Poalce-logo.png" type="image/x-icon">
+  <link rel="icon" href="/Pagina-web-PI/assets/img/POALCE-logo.ico" type="image/x-icon">
   
   <script>
     // Función de formateo con capacidad de toggle para bloques (h2, p, listas)
@@ -304,12 +304,34 @@ if(isset($_GET['msg'])){
       }
     }
     
+    // Función para contar palabras en el contenido del editor
+    function contarPalabras(texto) {
+      // Eliminar HTML tags y contar palabras
+      const textoPlano = texto.replace(/<[^>]*>/g, ' ');
+      const palabras = textoPlano.split(/\s+/).filter(function(palabra) {
+        return palabra.length > 0;
+      });
+      return palabras.length;
+    }
+    
     // Confirmar antes de enviar el formulario
     document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('publicacionForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        document.getElementById('contenido').value = document.getElementById('editor').innerHTML;
+        const contenidoHTML = document.getElementById('editor').innerHTML;
+        const numeroPalabras = contarPalabras(contenidoHTML);
         
+        if (numeroPalabras < 10) {
+          Swal.fire({
+            title: '<?= $translator->__("Contenido insuficiente") ?>',
+            text: '<?= $translator->__("El contenido debe tener al menos 10 palabras") ?>',
+            icon: 'error',
+            confirmButtonColor: '#719743'
+          });
+          return;
+        }
+        
+        document.getElementById('contenido').value = contenidoHTML;
         const titulo = document.getElementById('titulo').value;
         
         Swal.fire({
@@ -417,11 +439,11 @@ if(isset($_GET['msg'])){
       <!-- Campo oculto para enviar el contenido formateado -->
       <textarea name="contenido" id="contenido" style="display:none;"></textarea>
 
-      <label for="imagen"><?= $translator->__("Imagen") ?> / Banner:</label>
+      <label for="imagen"><?= $translator->__("Imagen") ?> / Banner: <span class="required">*</span></label>
       <label for="imagen" class="custom-file-upload">
         <?= $translator->__("Seleccionar archivo") ?>
       </label>
-      <input type="file" name="imagen" id="imagen" accept="image/*" onchange="mostrarNombreArchivo()">
+      <input type="file" name="imagen" id="imagen" accept="image/*" onchange="mostrarNombreArchivo()" required>
       <span id="nombre-archivo" style="margin-left:10px;"></span>
 
       <button type="submit"><?= $translator->__("Crear Publicación") ?></button>

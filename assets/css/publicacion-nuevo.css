@@ -232,9 +232,66 @@ main {
   transition: all 0.5s ease;
 }
 
-.noticia article > img:hover {
+/* Contenido principal del artículo - Añadir estilos para imágenes inline */
+.noticia article img:not(:first-child) {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 20px auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.noticia article img:not(:first-child):hover {
   transform: scale(1.02);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Reglas más estrictas para imágenes dentro del artículo */
+.noticia article img, 
+.noticia article div img {
+  max-width: 100% !important;  /* Forzar ancho máximo */
+  width: auto !important;      /* Permitir que el ancho se ajuste automáticamente */
+  height: auto !important;     /* Mantener la proporción de aspecto */
+  display: block;              /* Evitar problemas con elementos inline */
+  margin-left: auto;           /* Centrar horizontalmente */
+  margin-right: auto;          /* Centrar horizontalmente */
+  box-sizing: border-box;      /* Incluir bordes en el cálculo de ancho */
+  object-fit: contain;         /* Asegurar que toda la imagen sea visible */
+}
+
+/* Eliminar comportamientos transform que puedan causar problemas */
+@media (max-width: 567px) {
+  .noticia article img,
+  .noticia article div img {
+    transform: none !important; /* Eliminar escalado que pueda causar desbordamiento */
+    margin: 15px auto !important;
+    border-radius: 5px;
+    max-width: 95% !important;  /* Dar un pequeño margen */
+  }
+  
+  /* Asegurar que el contenedor no permita desbordamiento */
+  .noticia article div {
+    overflow: hidden;
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+  }
+  
+  /* Deshabilitar hover effects en móviles */
+  .noticia article img:not(:first-child):hover {
+    transform: none !important;
+  }
+}
+
+/* Ajustar específicamente el contenido generado por el editor WYSIWYG */
+.noticia article figure,
+.noticia article .image-wrapper,
+.noticia article p img {
+  max-width: 100% !important;
+  margin: 15px auto !important;
+  text-align: center;
+  overflow: hidden;
 }
 
 .noticia h2 {
@@ -609,6 +666,14 @@ main {
     display: inline-block;
     margin: 1%;
   }
+  
+  .noticia article > img {
+    max-height: 400px;
+  }
+  
+  .noticia article img:not(:first-child) {
+    margin: 15px auto;
+  }
 }
 
 @media (max-width: 768px) {
@@ -649,7 +714,17 @@ main {
   }
   
   .noticia h2 {
-    font-size: 1.7rem;
+    font-size: 1.6rem;
+  }
+  
+  .noticia article > img {
+    max-height: 300px;
+    margin-bottom: 20px;
+  }
+  
+  .noticia article img:not(:first-child) {
+    max-width: 95%;
+    margin: 15px auto;
   }
   
   .publicidad .imagenes {
@@ -664,6 +739,80 @@ main {
   .men_container {
     padding: 20px;
   }
+}
+
+@media (max-width: 567px) {
+  .noticia article img {
+    max-width: 100%;
+    height: auto !important;
+    transform: scale(0.95);
+  }
+}
+
+@media (max-width: 450px) {
+  .noticia article img {
+    transform: scale(0.9);
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media (max-width: 400px) {
+  .noticia article img {
+    transform: scale(0.85);
+  }
+}
+
+@media (max-width: 350px) {
+  .noticia article img {
+    transform: scale(0.8);
+  }
+}
+
+@media (max-width: 320px) {
+  .noticia article img {
+    transform: scale(0.75);
+    max-width: 95%;
+  }
+}
+
+@media (max-width: 480px) {
+  .titulo h1 {
+    font-size: 2.2rem;
+  }
+  
+  .noticia article {
+    padding: 20px 15px;
+  }
+  
+  .noticia article > img {
+    max-height: 250px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+  }
+  
+  .noticia article img:not(:first-child) {
+    max-width: 100%;
+    margin: 12px auto;
+    border-radius: 6px;
+  }
+  
+  .noticia h2 {
+    font-size: 1.4rem;
+    margin: 20px 0 15px;
+  }
+  
+  .noticia p {
+    font-size: 0.95rem;
+  }
+}
+
+/* Añadir regla específica para imágenes generadas por el editor WYSIWYG */
+.noticia article .editor-inline-image {
+  max-width: 100%;
+  height: auto;
+  margin: 15px auto;
+  display: block;
 }
 
 /* Efecto de scroll suave para enlaces internos */
