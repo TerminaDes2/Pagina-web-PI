@@ -32,7 +32,7 @@ if (isset($_POST['idioma'])) {
         integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="../assets/css/acerca-nosotros.css">
-    <link rel="icon" href="/Pagina-web-PI/assets/img/Poalce-logo.png" type="image/x-icon">
+    <link rel="icon" href="/Pagina-web-PI/assets/img/POALCE-logo.ico" type="image/x-icon">
 </head>
 <body>
     <?php include(__DIR__ . '/../includes/header.php'); ?>
