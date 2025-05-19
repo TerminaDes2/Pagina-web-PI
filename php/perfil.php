@@ -4,6 +4,16 @@ session_start();
 //Uso de Cookie
 require_once '../includes/auth.php';
 
+// Librería PHPMailer para envío de correos de verificación
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+// Incluir los archivos necesarios de PHPMailer
+require_once '../PHPMailer-master/src/PHPMailer.php';
+require_once '../PHPMailer-master/src/SMTP.php';
+require_once '../PHPMailer-master/src/Exception.php';
+
 if (!isset($_SESSION['usuario'])) {
     header("Location: registro.php?error=Acceso+denegado");
     exit();
@@ -75,6 +85,127 @@ if(isset($_GET['msg'])){
     $message = $_GET['msg'];
     $messageType = isset($_GET['msgType']) ? $_GET['msgType'] : "success";
 }
+
+// Procesar solicitud AJAX
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action'])) {
+    if ($_POST['action'] == 'verificar_password') {
+        $password_actual = $_POST['password_actual'];
+        $stmt = $conn->prepare("SELECT contra FROM usuarios WHERE id_usuario = ?");
+        $stmt->bind_param("i", $id_usuario);
+        $stmt->execute();
+        $stmt->bind_result($hash_password);
+        $stmt->fetch();
+        $stmt->close();
+        
+        // Verificar la contraseña
+        if (password_verify($password_actual, $hash_password)) {
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['success' => false, 'error' => $translator->__("La contraseña actual es incorrecta")]);
+        }
+        exit();
+    } 
+    // Procesar solicitud de envío de código para cambio de correo o contraseña
+    else if ($_POST['action'] == 'enviar_codigo') {
+        $tipo_cambio = $_POST['tipo_cambio']; // 'correo' o 'password'
+        $nuevo_valor = isset($_POST['nuevo_valor']) ? $_POST['nuevo_valor'] : '';
+        
+        // Generar código aleatorio
+        $codigo = rand(100000, 999999);
+        
+        // Guardar en sesión para verificación posterior
+        $_SESSION['perfil_verificacion'] = [
+            'codigo' => $codigo,
+            'tipo' => $tipo_cambio,
+            'nuevo_valor' => $nuevo_valor,
+            'timestamp' => time()
+        ];
+        
+        // Enviar correo con el código
+        $mail = new PHPMailer(true);
+
+        try {
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'contactopoalce@gmail.com';
+            $mail->Password = 'umrv wpyz taio bgwu';
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = 587;
+
+            $mail->SMTPOptions = [
+                'ssl' => [
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                    'allow_self_signed' => true,
+                ],
+            ];
+
+            $mail->CharSet = 'UTF-8';
+            $mail->Encoding = 'base64';
+
+            $mail->setFrom('contactopoalce@gmail.com', 'POALCE');
+            $mail->addAddress($correo, "$nombre $primer_apellido");
+
+            $mail->isHTML(true);
+            
+            // Cambiar título y contenido según el tipo de cambio
+            if ($tipo_cambio == 'correo') {
+                $mail->Subject = $translator->__('Verificación para cambio de correo');
+                $mensaje = "<h2>" . $translator->__("Verificación de cambio") . "</h2>
+                           <p>" . $translator->__("Hola") . " {$nombre} {$primer_apellido},</p>
+                           <p>" . $translator->__("Has solicitado cambiar tu correo electrónico.") . "</p>
+                           <p>" . $translator->__("Para completar este cambio, por favor utiliza el siguiente código de verificación:") . "</p>
+                           <h3>" . $translator->__("Código de verificación:") . " </h3><h3 style='color: red;'>{$codigo}</h3>
+                           <p>" . $translator->__("Si no has solicitado este cambio, ignora este mensaje y revisa la seguridad de tu cuenta.") . "</p>
+                           <p>" . $translator->__("El equipo de POALCE") . "</p>";
+            } else {
+                $mail->Subject = $translator->__('Verificación para cambio de contraseña');
+                $mensaje = "<h2>" . $translator->__("Verificación de cambio") . "</h2>
+                           <p>" . $translator->__("Hola") . " {$nombre} {$primer_apellido},</p>
+                           <p>" . $translator->__("Has solicitado cambiar tu contraseña.") . "</p>
+                           <p>" . $translator->__("Para completar este cambio, por favor utiliza el siguiente código de verificación:") . "</p>
+                           <h3>" . $translator->__("Código de verificación:") . " </h3><h3 style='color: red;'>{$codigo}</h3>
+                           <p>" . $translator->__("Si no has solicitado este cambio, ignora este mensaje y revisa la seguridad de tu cuenta.") . "</p>
+                           <p>" . $translator->__("El equipo de POALCE") . "</p>";
+            }
+            
+            $mail->Body = $mensaje;
+            $mail->send();
+            
+            echo json_encode(['success' => true, 'message' => $translator->__("Se ha enviado un código de verificación a tu correo electrónico")]);
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'error' => $translator->__("Error al enviar el correo: ") . $mail->ErrorInfo]);
+        }
+        exit();
+    }
+    // Verificar código ingresado
+    else if ($_POST['action'] == 'verificar_codigo') {
+        $codigo_ingresado = $_POST['codigo'];
+        
+        if (!isset($_SESSION['perfil_verificacion'])) {
+            echo json_encode(['success' => false, 'error' => $translator->__("No hay solicitud de verificación pendiente")]);
+            exit();
+        }
+        
+        $verificacion = $_SESSION['perfil_verificacion'];
+        
+        // Verificar tiempo límite (10 minutos)
+        if (time() - $verificacion['timestamp'] > 600) {
+            echo json_encode(['success' => false, 'error' => $translator->__("El código ha expirado")]);
+            unset($_SESSION['perfil_verificacion']);
+            exit();
+        }
+        
+        // Verificar código
+        if ($codigo_ingresado == $verificacion['codigo']) {
+            echo json_encode(['success' => true, 'tipo' => $verificacion['tipo'], 'nuevo_valor' => $verificacion['nuevo_valor']]);
+        } else {
+            echo json_encode(['success' => false, 'error' => $translator->__("Código incorrecto")]);
+        }
+        exit();
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -93,16 +224,13 @@ if(isset($_GET['msg'])){
     <link rel="icon" href="/Pagina-web-PI/assets/img/Poalce-logo.png" type="image/x-icon">
     <script>
         function mostrarPestana(pestanaId) {
-            // Ocultar todas las pestañas
             const contenidos = document.querySelectorAll('.perfil-contenido');
             contenidos.forEach(contenido => {
                 contenido.style.display = 'none';
             });
             
-            // Mostrar la pestaña seleccionada
             document.getElementById(pestanaId).style.display = 'block';
             
-            // Actualizar clase activa
             const enlaces = document.querySelectorAll('.perfil-nav a');
             enlaces.forEach(enlace => {
                 enlace.classList.remove('active');
@@ -111,7 +239,6 @@ if(isset($_GET['msg'])){
                 }
             });
             
-            // Forzar repintado para mejorar la nitidez
             setTimeout(() => {
                 window.dispatchEvent(new Event('resize'));
             }, 10);
@@ -167,18 +294,215 @@ if(isset($_GET['msg'])){
             });
         }
         
+        function mostrarModalVerificacion(tipo, nuevoValor = '') {
+            $.ajax({
+                url: 'perfil.php',
+                type: 'POST',
+                data: {
+                    action: 'enviar_codigo',
+                    tipo_cambio: tipo,
+                    nuevo_valor: nuevoValor
+                },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({
+                            title: '<?= $translator->__("Verificación requerida") ?>',
+                            text: response.message,
+                            icon: 'info',
+                            showConfirmButton: true
+                        });
+                        
+                        $("#verificacionModal").show();
+                        $(".modal").addClass("active");
+                        $("#tipo_verificacion").val(tipo);
+                        $("#nuevo_valor_verificacion").val(nuevoValor);
+                    } else {
+                        Swal.fire({
+                            title: '<?= $translator->__("Error") ?>',
+                            text: response.error,
+                            icon: 'error',
+                            showConfirmButton: true
+                        });
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        title: '<?= $translator->__("Error de conexión") ?>',
+                        text: '<?= $translator->__("No se pudo conectar con el servidor") ?>',
+                        icon: 'error',
+                        showConfirmButton: true
+                    });
+                }
+            });
+        }
+        
+        function verificarYProcesar() {
+            const formData = new FormData(document.getElementById('form-perfil'));
+            const correoNuevo = formData.get('correo');
+            const correoActual = '<?= $correo ?>';
+            const contraNueva = formData.get('nueva_contra');
+            
+            if ((correoNuevo !== correoActual && correoNuevo) || contraNueva) {
+                Swal.fire({
+                    title: '<?= $translator->__("Verificación de seguridad") ?>',
+                    text: '<?= $translator->__("Por favor ingresa tu contraseña actual para continuar") ?>',
+                    input: 'password',
+                    inputPlaceholder: '<?= $translator->__("Contraseña actual") ?>',
+                    showCancelButton: true,
+                    confirmButtonText: '<?= $translator->__("Verificar") ?>',
+                    cancelButtonText: '<?= $translator->__("Cancelar") ?>',
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return '<?= $translator->__("Debes ingresar tu contraseña actual") ?>';
+                        }
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: 'perfil.php',
+                            type: 'POST',
+                            data: {
+                                action: 'verificar_password',
+                                password_actual: result.value
+                            },
+                            dataType: 'json',
+                            success: function(response) {
+                                if (response.success) {
+                                    if (correoNuevo !== correoActual && correoNuevo) {
+                                        mostrarModalVerificacion('correo', correoNuevo);
+                                    } else if (contraNueva) {
+                                        mostrarModalVerificacion('password', contraNueva);
+                                    }
+                                } else {
+                                    Swal.fire({
+                                        title: '<?= $translator->__("Error") ?>',
+                                        text: response.error,
+                                        icon: 'error',
+                                        showConfirmButton: true
+                                    });
+                                }
+                            },
+                            error: function() {
+                                Swal.fire({
+                                    title: '<?= $translator->__("Error de conexión") ?>',
+                                    text: '<?= $translator->__("No se pudo conectar con el servidor") ?>',
+                                    icon: 'error',
+                                    showConfirmButton: true
+                                });
+                            }
+                        });
+                    }
+                });
+            } else {
+                Swal.fire({
+                    title: '<?= $translator->__("Verificación de seguridad") ?>',
+                    text: '<?= $translator->__("Por favor ingresa tu contraseña actual para guardar los cambios") ?>',
+                    input: 'password',
+                    inputPlaceholder: '<?= $translator->__("Contraseña actual") ?>',
+                    showCancelButton: true,
+                    confirmButtonText: '<?= $translator->__("Verificar") ?>',
+                    cancelButtonText: '<?= $translator->__("Cancelar") ?>',
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return '<?= $translator->__("Debes ingresar tu contraseña actual") ?>';
+                        }
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: 'perfil.php',
+                            type: 'POST',
+                            data: {
+                                action: 'verificar_password',
+                                password_actual: result.value
+                            },
+                            dataType: 'json',
+                            success: function(response) {
+                                if (response.success) {
+                                    document.getElementById('form-perfil').submit();
+                                } else {
+                                    Swal.fire({
+                                        title: '<?= $translator->__("Error") ?>',
+                                        text: response.error,
+                                        icon: 'error',
+                                        showConfirmButton: true
+                                    });
+                                }
+                            },
+                            error: function() {
+                                Swal.fire({
+                                    title: '<?= $translator->__("Error de conexión") ?>',
+                                    text: '<?= $translator->__("No se pudo conectar con el servidor") ?>',
+                                    icon: 'error',
+                                    showConfirmButton: true
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+            return false;
+        }
+        
+        function verificarCodigo() {
+            const codigo = $("#codigo_verificacion").val();
+            const tipo = $("#tipo_verificacion").val();
+            const nuevoValor = $("#nuevo_valor_verificacion").val();
+            
+            if (!codigo) {
+                Swal.fire({
+                    title: '<?= $translator->__("Error") ?>',
+                    text: '<?= $translator->__("Debes ingresar el código de verificación") ?>',
+                    icon: 'error',
+                    showConfirmButton: true
+                });
+                return false;
+            }
+            
+            $.ajax({
+                url: 'perfil.php',
+                type: 'POST',
+                data: {
+                    action: 'verificar_codigo',
+                    codigo: codigo
+                },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        $("#verificacionModal").hide();
+                        $(".modal").removeClass("active");
+                        document.getElementById('form-perfil').submit();
+                    } else {
+                        Swal.fire({
+                            title: '<?= $translator->__("Error") ?>',
+                            text: response.error,
+                            icon: 'error',
+                            showConfirmButton: true
+                        });
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        title: '<?= $translator->__("Error de conexión") ?>',
+                        text: '<?= $translator->__("No se pudo conectar con el servidor") ?>',
+                        icon: 'error',
+                        showConfirmButton: true
+                    });
+                }
+            });
+            
+            return false;
+        }
+        
         document.addEventListener('DOMContentLoaded', function() {
-            // Iniciamos en la pestaña de perfil y optimizamos el renderizado
             setTimeout(() => {
                 mostrarPestana('perfil-info');
-                
-                // Aplicamos clase para mejorar nitidez
                 document.querySelectorAll('input, select, textarea').forEach(el => {
                     el.classList.add('sharp-text');
                 });
             }, 100);
             
-            // Mostrar mensaje si existe
             <?php if (!empty($message)): ?>
                 Swal.fire({
                     icon: '<?= $messageType ?>',
@@ -187,6 +511,11 @@ if(isset($_GET['msg'])){
                     timer: 3000
                 });
             <?php endif; ?>
+            
+            $(".close").on("click", function () {
+                $(this).closest(".modal").hide();
+                $(".modal").removeClass("active");
+            });
         });
     </script>
 </head>
@@ -235,7 +564,7 @@ if(isset($_GET['msg'])){
         <div id="perfil-info" class="perfil-contenido">
             <h2><?= $translator->__("Actualizar mi información") ?></h2>
             
-            <form action="../includes/guardar_usuario.php" method="POST" enctype="multipart/form-data">
+            <form id="form-perfil" action="../includes/guardar_usuario.php" method="POST" enctype="multipart/form-data" onsubmit="return verificarYProcesar()">
                 <div class="form-group">
                     <label for="nombre"><?= $translator->__("Nombre") ?>:</label>
                     <input type="text" id="nombre" name="nombre" value="<?= htmlspecialchars($nombre) ?>" required>
@@ -254,6 +583,7 @@ if(isset($_GET['msg'])){
                 <div class="form-group">
                     <label for="correo"><?= $translator->__("Correo Electrónico") ?>:</label>
                     <input type="email" id="correo" name="correo" value="<?= htmlspecialchars($correo) ?>" required>
+                    <small class="form-note"><?= $translator->__("Cambiar el correo electrónico requerirá verificación") ?></small>
                 </div>
                 
                 <div class="form-group">
@@ -268,6 +598,7 @@ if(isset($_GET['msg'])){
                 <div class="form-group">
                     <label for="nueva_contra"><?= $translator->__("Nueva Contraseña") ?> (<?= $translator->__("dejar en blanco para mantener la actual") ?>):</label>
                     <input type="password" id="nueva_contra" name="nueva_contra">
+                    <small class="form-note"><?= $translator->__("Cambiar la contraseña requerirá verificación") ?></small>
                 </div>
                 
                 <div class="form-actions">
@@ -363,6 +694,28 @@ if(isset($_GET['msg'])){
                     </table>
                 </div>
             <?php endif; ?>
+        </div>
+    </div>
+    
+    <!-- Modal de verificación -->
+    <div id="verificacionModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2><?= $translator->__("Verificación de seguridad") ?></h2>
+            <p><?= $translator->__("Hemos enviado un código de verificación a tu correo electrónico. Por favor, ingrésalo para continuar:") ?></p>
+            <form id="verificacionForm" onsubmit="return verificarCodigo()">
+                <input type="hidden" id="tipo_verificacion" name="tipo_verificacion" value="">
+                <input type="hidden" id="nuevo_valor_verificacion" name="nuevo_valor_verificacion" value="">
+                <div class="form-group">
+                    <label for="codigo_verificacion"><?= $translator->__("Código de verificación") ?>:</label>
+                    <input type="text" id="codigo_verificacion" name="codigo_verificacion" placeholder="<?= $translator->__("Ingrese el código de 6 dígitos") ?>" required>
+                </div>
+                <div class="form-actions centered">
+                    <button type="submit" class="btn-guardar">
+                        <i class="fas fa-check"></i> <?= $translator->__("Verificar") ?>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
     

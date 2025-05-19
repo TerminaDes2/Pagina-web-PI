@@ -144,7 +144,7 @@ if ($modo === 'buscar') {
                    LEFT JOIN usuarios u ON e.id_usuario = u.id_usuario
                    LEFT JOIN categorias c ON e.categoria = c.id_categoria
                    WHERE e.categoria = ? 
-                   ORDER BY e.fecha DESC
+                   ORDER BY e.id_entrada DESC
                    LIMIT ?, ?";
             
             $stmt = $conn->prepare($sql);
@@ -234,6 +234,8 @@ function procesarArticulo(&$row, $translator) {
     // Eliminar etiquetas h2 y su contenido antes de crear el extracto
     $contenido_limpio = preg_replace('/<h2>.*?<\/h2>/is', '', $row['contenido']);
     $contenido_limpio = strip_tags($contenido_limpio);
+    // Decodificar entidades HTML para mostrar correctamente espacios y caracteres especiales
+    $contenido_limpio = html_entity_decode($contenido_limpio, ENT_QUOTES | ENT_HTML5, 'UTF-8');
     
     // Obtener un extracto del contenido (primeras 18 palabras o menos)
     $palabras = explode(' ', $contenido_limpio);

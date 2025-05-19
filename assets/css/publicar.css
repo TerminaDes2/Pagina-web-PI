@@ -364,6 +364,7 @@ body {
   display: block;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   transition: transform 0.3s ease;
+  object-fit: contain; /* Asegura que la imagen se contenga dentro de sus dimensiones */
 }
 
 #editor img:hover {
@@ -371,7 +372,7 @@ body {
 }
 
 #editor img.editor-inline-image {
-  max-width: 500px;
+  max-width: 100%; /* Cambiado de 500px a 100% para evitar desbordamientos */
   max-height: 300px;
   height: auto;
   display: block;
@@ -581,6 +582,37 @@ input[type="file"] {
     white-space: nowrap;
     margin-left: 5px;
   }
+
+  #editor img, #editor img.editor-inline-image {
+    max-width: 100%;
+    height: auto;
+    margin: 10px auto;
+    max-height: 250px;
+    object-fit: contain;
+  }
+  
+  /* Evitar desbordamiento horizontal en el editor */
+  #editor {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+    padding: 15px 10px;
+  }
+}
+
+@media (max-width: 640px) {
+  #editor img, #editor img.editor-inline-image {
+    max-width: 100%;
+    max-height: 230px;
+  }
+}
+
+@media (max-width: 540px) {
+  #editor img, #editor img.editor-inline-image {
+    max-width: 100%;
+    max-height: 210px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -597,6 +629,73 @@ input[type="file"] {
 
   #toolbar button i {
     font-size: 1.3rem;
+  }
+
+  #editor img, #editor img.editor-inline-image {
+    max-width: 100%;
+    max-height: 200px;
+    width: 100%;
+    object-position: center;
+  }
+}
+
+@media (max-width: 423px) {
+  #editor {
+    padding: 10px 5px;
+    overflow-x: hidden; /* Evitar scroll horizontal */
+  }
+  
+  #editor img, 
+  #editor img.editor-inline-image {
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+    max-height: 180px;
+    margin: 10px auto;
+    object-fit: contain;
+    box-sizing: border-box;
+  }
+  
+  /* Prevenir que las imágenes rompan el diseño */
+  #editor * {
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
+  
+  /* Mejorar manejo de imágenes en preview */
+  #image-preview img, 
+  #image-preview-actual img {
+    max-width: 100%;
+    max-height: 180px;
+  }
+  
+  /* Ajuste de la toolbar */
+  #toolbar button {
+    padding: 6px 4px;
+    min-height: 32px;
+  }
+  
+  .main {
+    padding: 20px 10px;
+    margin: 15px 5px;
+  }
+}
+
+@media (max-width: 375px) {
+  #editor img, #editor img.editor-inline-image {
+    max-height: 160px;
+  }
+}
+
+@media (max-width: 320px) {
+  #editor img, #editor img.editor-inline-image {
+    max-height: 140px;
+  }
+  
+  .main {
+    padding: 15px 8px;
+    margin: 10px 3px;
   }
 }
 
